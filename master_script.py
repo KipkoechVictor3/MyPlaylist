@@ -31,7 +31,178 @@ except Exception as e:
     print(f"Error importing one of the scripts: {e}", file=sys.stderr)
     sys.exit(1)
 
-# ... (rest of your master script remains the same)
+# --- Output configuration ---
+OUTPUT_FILE_DIR = "MyStuff"
+OUTPUT_FILE_NAME = "MyStuff.m3u"
+OUTPUT_FILE_PATH = os.path.join(OUTPUT_FILE_DIR, OUTPUT_FILE_NAME)
+
+# --- Timezone configuration ---
+TIMEZONES = ["Asia/Tokyo", "Australia/Sydney", "Asia/Dhaka", "Asia/Hong_Kong", "Asia/Singapore"]
+
+# --- New scrapers ---
+NEW_SCRAPERS = {
+    "PPVLAND": "https://pigscanflyyy-scraper.vercel.app/ppv",
+    "FSTV": "https://pigscanflyyy-scraper.vercel.app/fstv",
+    "Timstreams": "https://pigscanflyyy-scraper.vercel.app/tims",
+    "RoxieStreams": "https://pigscanflyyy-scraper.vercel.app/roxiestreams",
+    "StreamEast": "https://pigscanflyyy-scraper.vercel.app/streameast",
+    "PixelSport": "https://pigscanflyyy-scraper.vercel.app/pixelsport",
+    "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
+}
+
+# --- Filter keywords ---
+FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball']
+
+# --- FSTVL Scraper wrapper ---
+async def _fetch_fstvl_with_retry(timezones):
+    random.shuffle(timezones)
+    for tz in timezones:
+        print(f"Attempting to fetch FSTVL streams with timezone '{tz}'...", flush=True)
+        fstvl_homepage_url = f"https://fstv.space/?timezone={urllib.parse.quote(tz)}"
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.get(fstvl_homepage_url)
+                response.raise_for_status()
+                content = response.text
+                if "Attention Required! | Cloudflare" in content:
+                    print(f"❌ Geoblocked for timezone '{tz}'. Trying next timezone...", flush=True)
+                    continue
+                print(f"✅ Successfully loaded FSTVL page with timezone '{tz}'.", flush=True)
+                return await FSTVL.get_sport_streams(fstvl_homepage_url, content)
+        except Exception as e:
+            print(f"❌ Error fetching FSTVL streams for timezone '{tz}': {e}. Trying next...", flush=True)
+            continue
+    print("⚠️ All timezones failed for FSTVL. Skipping.", flush=True)
+    return ""
+
+# --- Fetch remote M3U ---
+async def fetch_and_process_remote_m3u(url, source_name):
+    print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            modified_lines = []
+            if not lines[0].strip().startswith("#EXTM3U"):
+                modified_lines.append("#EXTM3U")
+            stream_block = []
+            filter_this_stream = False
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                if line.startswith("#EXTINF:-1"):
+                    if stream_block and not filter_this_stream:
+                        modified_lines.extend(stream_block)
+                    filter_this_stream = False
+                    stream_block = [line]
+                    full_stream_info = line.lower()
+                    if any(keyword in full_stream_info for keyword in FILTER_KEYWORDS):
+                        filter_this_stream = True
+                    extinf_parts = line.split(',', 1)
+                    attributes = extinf_parts[0][len("#EXTINF:-1"):].strip()
+                    title = extinf_parts[1].strip() if len(extinf_parts) > 1 else "Unknown"
+                    if 'tvg-id=' not in attributes:
+                        attributes += ' tvg-id="PPV.EVENTS.Dummy.us" tvg-name="Live Event"'
+                    if 'group-title=' not in attributes:
+                        attributes += ' group-title="Unknown"'
+                    stream_block[0] = f'#EXTINF:-1 {attributes},{title}'
+                elif not line.startswith('#'):
+                    stream_block.append(line)
+                    if not filter_this_stream:
+                        modified_lines.extend(stream_block)
+                    filter_this_stream = False
+                    stream_block = []
+                elif stream_block:
+                    stream_block.append(line)
+            if stream_block and not filter_this_stream:
+                modified_lines.extend(stream_block)
+            return "\n".join(modified_lines)
+    except Exception as e:
+        print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
+        return ""
+
+# --- Read local M3U ---
+async def read_local_m3u():
+    print("Reading local M3U file: Channels.m3u8...", flush=True)
+    try:
+        if os.path.exists("Channels.m3u8"):
+            with open("Channels.m3u8", "r", encoding="utf-8") as f:
+                content = f.read()
+            print("✅ Successfully read local M3U file.", flush=True)
+            return content
+        else:
+            print("⚠️ Local file Channels.m3u8 not found. Skipping.", flush=True)
+            return ""
+    except Exception as e:
+        print(f"❌ Error reading local file: {e}", flush=True)
+        return ""
+
+# --- Run all scrapers sequentially ---
+async def run_all_scrapers():
+    print("Starting all scrapers sequentially...", flush=True)
+    combined_results = {}
+    
+    combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
+    
+    print("🚀 Launching Playwright for WeAreChecking, StreamBTW, OvoGoals...")
+    async with async_playwright() as p:
+        browser = await p.firefox.launch(headless=True)
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
+            viewport={"width": 1280, "height": 800},
+            locale="en-US"
+        )
+        combined_results["OvoGoals"] = await OvoGoals.get_ovogoals_streams(context)
+        combined_results["WeAreChecking"] = await WeAreChecking.get_wearechecking_streams(context)
+        combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
+        await context.close()
+        await browser.close()
+    
+    combined_results["FSTV24"] = await fetch_and_process_remote_m3u(
+        "https://raw.githubusercontent.com/Drewski2423/DrewLive/main/FSTV24.m3u8", "FSTV24"
+    )
+    
+    for source_name, url in NEW_SCRAPERS.items():
+        combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
+    
+    combined_results["LocalChannels"] = await read_local_m3u()
+    
+    print("All scrapers finished.", flush=True)
+    return combined_results
+
+# --- Combine and save ---
+def combine_and_save_playlists(all_contents):
+    print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
+    full_content = "#EXTM3U\n"
+    ordered_sources = [
+        "FSTVL", "WeAreChecking", "StreamBTW",
+        "OvoGoals","DDL",
+        "FSTV24",
+        "PPVLAND", "FSTV", "Timstreams",
+        "RoxieStreams", "StreamEast", "PixelSport",
+        "LocalChannels"
+    ]
+    for source_name in ordered_sources:
+        content = all_contents.get(source_name)
+        if content and content.strip():
+            full_content += f"\n# --- Content from {source_name} ---\n\n"
+            if content.startswith("#EXTM3U"):
+                content = content.split('\n', 1)[1] if '\n' in content else ''
+            full_content += content
+            print(f"✅ Added content from {source_name}.", flush=True)
+        else:
+            print(f"⚠️ No content to add from {source_name}.", flush=True)
+    
+    os.makedirs(OUTPUT_FILE_DIR, exist_ok=True)
+    try:
+        with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as f:
+            f.write(full_content)
+        print(f"✅ Saved playlist to '{OUTPUT_FILE_PATH}'.", flush=True)
+    except Exception as e:
+        print(f"❌ Error saving file: {e}", flush=True)
 
 # --- Clean up temporary files at the end of the run ---
 def cleanup_temp_files():
@@ -43,6 +214,7 @@ def cleanup_temp_files():
     except OSError as e:
         print(f"Error cleaning up temporary files: {e}", file=sys.stderr)
 
+# --- Main ---
 async def main():
     combined_content = await run_all_scrapers()
     combine_and_save_playlists(combined_content)
