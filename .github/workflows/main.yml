@@ -2,6 +2,8 @@ name: Run Playwright Scripts MAIN (Debug)
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */5 * * *'
 
 jobs:
   run-scripts:
