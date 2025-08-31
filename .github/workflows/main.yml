@@ -1,9 +1,7 @@
-name: Run Playwright Scripts MAIN
+name: Run Playwright Scripts MAIN (Debug)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */5 * * *'
 
 jobs:
   run-scripts:
@@ -15,6 +13,12 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
       
+      - name: List files in repository
+        run: ls -al
+
+      - name: Print master script content
+        run: cat master_script.py
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
