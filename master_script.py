@@ -9,15 +9,9 @@ from playwright.async_api import async_playwright
 
 # --- Read and write private scripts from environment variables ---
 try:
-    # This block is crucial for GitHub Actions to work
-    # It dynamically creates the Python modules from environment secrets.
     with open("FSTVL_temp.py", "w", encoding="utf-8") as f:
         f.write(os.environ["FSTVL_SCRIPT"])
     import FSTVL_temp as FSTVL
-
-    with open("FSTV_Channels_temp.py", "w", encoding="utf-8") as f:
-        f.write(os.environ["FSTV_CHANNELS_SCRIPT"])
-    import FSTV_Channels_temp as FSTV_Channels
 
     with open("WeAreChecking_temp.py", "w", encoding="utf-8") as f:
         f.write(os.environ["WEARECHECKING_SCRIPT"])
@@ -31,7 +25,7 @@ try:
         f.write(os.environ["OVOGOALS_SCRIPT"])
     import OvoGoals_temp as OvoGoals
 except KeyError as e:
-    print(f"Error: Required secret not found in environment. Missing: {e}", file=sys.stderr)
+    print(f"Error: Required secret not found in environment. Make sure all private scripts are stored as secrets. Missing: {e}", file=sys.stderr)
     sys.exit(1)
 except Exception as e:
     print(f"Error importing one of the scripts: {e}", file=sys.stderr)
@@ -56,7 +50,10 @@ NEW_SCRAPERS = {
     "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
 }
 
-# --- FSTVL Scraper wrapper (non-Playwright) ---
+# --- Filter keywords ---
+FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball']
+
+# --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
     random.shuffle(timezones)
     for tz in timezones:
@@ -78,7 +75,7 @@ async def _fetch_fstvl_with_retry(timezones):
     print("⚠️ All timezones failed for FSTVL. Skipping.", flush=True)
     return ""
 
-# --- Fetch remote M3U (non-Playwright) ---
+# --- Fetch remote M3U ---
 async def fetch_and_process_remote_m3u(url, source_name):
     print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
     try:
@@ -127,7 +124,7 @@ async def fetch_and_process_remote_m3u(url, source_name):
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
         return ""
 
-# --- Read local M3U (non-Playwright) ---
+# --- Read local M3U ---
 async def read_local_m3u():
     print("Reading local M3U file: Channels.m3u8...", flush=True)
     try:
@@ -143,13 +140,26 @@ async def read_local_m3u():
         print(f"❌ Error reading local file: {e}", flush=True)
         return ""
 
-# --- Run all scrapers ---
+# --- Run all scrapers sequentially ---
 async def run_all_scrapers():
-    print("Starting all scrapers...", flush=True)
+    print("Starting all scrapers sequentially...", flush=True)
     combined_results = {}
-
-    # Run non-Playwright scrapers first
+    
     combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
+    
+    print("🚀 Launching Playwright for WeAreChecking, StreamBTW, OvoGoals...")
+    async with async_playwright() as p:
+        browser = await p.firefox.launch(headless=True)
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
+            viewport={"width": 1280, "height": 800},
+            locale="en-US"
+        )
+        combined_results["OvoGoals"] = await OvoGoals.get_ovogoals_streams(context)
+        combined_results["WeAreChecking"] = await WeAreChecking.get_wearechecking_streams(context)
+        combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
+        await context.close()
+        await browser.close()
     
     combined_results["FSTV24"] = await fetch_and_process_remote_m3u(
         "https://raw.githubusercontent.com/Drewski2423/DrewLive/main/FSTV24.m3u8", "FSTV24"
@@ -159,32 +169,7 @@ async def run_all_scrapers():
         combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
     
     combined_results["LocalChannels"] = await read_local_m3u()
-
-    # Run all Playwright scrapers in a single browser instance
-    print("🚀 Launching Playwright browser for FSTV Channels, WeAreChecking, StreamBTW, OvoGoals...")
-    try:
-        async with async_playwright() as p:
-            browser = await p.firefox.launch(headless=True)
-            context = await browser.new_context(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
-                viewport={"width": 1280, "height": 800},
-                locale="en-US"
-            )
-            
-            # Run all Playwright-based scrapers here
-            combined_results["FSTV_Channels"] = await FSTV_Channels.get_live_channels(context)
-            combined_results["OvoGoals"] = await OvoGoals.get_ovogoals_streams(context)
-            combined_results["WeAreChecking"] = await WeAreChecking.get_wearechecking_streams(context)
-            combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
-            
-            # Close the context and browser only after all scripts have finished
-            await context.close()
-            await browser.close()
-            print("✅ All Playwright scrapers finished and browser closed.", flush=True)
-    except Exception as e:
-        print(f"❌ An error occurred during Playwright scraping: {e}", file=sys.stderr)
-        # Handle the exception gracefully.
-        
+    
     print("All scrapers finished.", flush=True)
     return combined_results
 
@@ -193,7 +178,7 @@ def combine_and_save_playlists(all_contents):
     print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
     full_content = "#EXTM3U\n"
     ordered_sources = [
-        "FSTV_Channels", "FSTVL", "WeAreChecking", "StreamBTW",
+        "FSTVL", "WeAreChecking", "StreamBTW",
         "OvoGoals","DDL",
         "FSTV24",
         "PPVLAND", "FSTV", "Timstreams",
@@ -223,7 +208,6 @@ def combine_and_save_playlists(all_contents):
 def cleanup_temp_files():
     try:
         os.remove("FSTVL_temp.py")
-        os.remove("FSTV_Channels_temp.py")
         os.remove("WeAreChecking_temp.py")
         os.remove("StreamBTW_temp.py")
         os.remove("OvoGoals_temp.py")
