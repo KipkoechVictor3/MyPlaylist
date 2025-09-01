@@ -41,6 +41,7 @@ jobs:
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
+          FSTV_CHANNELS_SCRIPT: ${{ secrets.FSTV_CHANNELS_SCRIPT }}
 
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
