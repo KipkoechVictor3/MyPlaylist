@@ -45,7 +45,7 @@ NEW_SCRAPERS = {
 }
 
 # --- Filter keywords ---
-FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball','nba','mls','American Football','rugby','liga','basket','Women','nba w']
+FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball','nba','mls','American Football','rugby','liga','basket','Women','nba w','cricket']
 
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
