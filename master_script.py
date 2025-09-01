@@ -36,44 +36,13 @@ OUTPUT_FILE_DIR = "MyStuff"
 OUTPUT_FILE_NAME = "MyStuff.m3u"
 OUTPUT_FILE_PATH = os.path.join(OUTPUT_FILE_DIR, OUTPUT_FILE_NAME)
 
-# --- Timezone configuration ---
-TIMEZONES = ["Asia/Tokyo", "Australia/Sydney", "Asia/Dhaka", "Asia/Hong_Kong", "Asia/Singapore"]
-
 # --- New scrapers ---
 NEW_SCRAPERS = {
-    "PPVLAND": "https://pigscanflyyy-scraper.vercel.app/ppv",
-    "FSTV": "https://pigscanflyyy-scraper.vercel.app/fstv",
-    "Timstreams": "https://pigscanflyyy-scraper.vercel.app/tims",
-    "RoxieStreams": "https://pigscanflyyy-scraper.vercel.app/roxiestreams",
-    "StreamEast": "https://pigscanflyyy-scraper.vercel.app/streameast",
-    "PixelSport": "https://pigscanflyyy-scraper.vercel.app/pixelsport",
     "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
 }
 
 # --- Filter keywords ---
 FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball']
-
-# --- FSTVL Scraper wrapper ---
-async def _fetch_fstvl_with_retry(timezones):
-    random.shuffle(timezones)
-    for tz in timezones:
-        print(f"Attempting to fetch FSTVL streams with timezone '{tz}'...", flush=True)
-        fstvl_homepage_url = f"https://fstv.space/?timezone={urllib.parse.quote(tz)}"
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.get(fstvl_homepage_url)
-                response.raise_for_status()
-                content = response.text
-                if "Attention Required! | Cloudflare" in content:
-                    print(f"❌ Geoblocked for timezone '{tz}'. Trying next timezone...", flush=True)
-                    continue
-                print(f"✅ Successfully loaded FSTVL page with timezone '{tz}'.", flush=True)
-                return await FSTVL.get_sport_streams(fstvl_homepage_url, content)
-        except Exception as e:
-            print(f"❌ Error fetching FSTVL streams for timezone '{tz}': {e}. Trying next...", flush=True)
-            continue
-    print("⚠️ All timezones failed for FSTVL. Skipping.", flush=True)
-    return ""
 
 # --- Fetch remote M3U ---
 async def fetch_and_process_remote_m3u(url, source_name):
@@ -142,49 +111,25 @@ async def read_local_m3u():
 
 # --- Run all scrapers sequentially ---
 async def run_all_scrapers():
-    print("Starting all scrapers sequentially...", flush=True)
+    print("Starting DDL and LocalChannels processing...", flush=True)
     combined_results = {}
     
-    combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
+    # Process only the DDL source
+    ddl_url = NEW_SCRAPERS["DDL"]
+    combined_results["DDL"] = await fetch_and_process_remote_m3u(ddl_url, "DDL")
     
-    print("🚀 Launching Playwright for WeAreChecking, StreamBTW, OvoGoals...")
-    async with async_playwright() as p:
-        browser = await p.firefox.launch(headless=True)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
-            viewport={"width": 1280, "height": 800},
-            locale="en-US"
-        )
-        combined_results["OvoGoals"] = await OvoGoals.get_ovogoals_streams(context)
-        combined_results["WeAreChecking"] = await WeAreChecking.get_wearechecking_streams(context)
-        combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
-        await context.close()
-        await browser.close()
-    
-    combined_results["FSTV24"] = await fetch_and_process_remote_m3u(
-        "https://raw.githubusercontent.com/Drewski2423/DrewLive/main/FSTV24.m3u8", "FSTV24"
-    )
-    
-    for source_name, url in NEW_SCRAPERS.items():
-        combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
-    
+    # Keep local channels processing
     combined_results["LocalChannels"] = await read_local_m3u()
     
-    print("All scrapers finished.", flush=True)
+    print("Processing finished.", flush=True)
     return combined_results
 
 # --- Combine and save ---
 def combine_and_save_playlists(all_contents):
     print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
     full_content = "#EXTM3U\n"
-    ordered_sources = [
-        "FSTVL", "WeAreChecking", "StreamBTW",
-        "OvoGoals","DDL",
-        "FSTV24",
-        "PPVLAND", "FSTV", "Timstreams",
-        "RoxieStreams", "StreamEast", "PixelSport",
-        "LocalChannels"
-    ]
+    ordered_sources = ["DDL", "LocalChannels"]
+    
     for source_name in ordered_sources:
         content = all_contents.get(source_name)
         if content and content.strip():
@@ -195,7 +140,7 @@ def combine_and_save_playlists(all_contents):
             print(f"✅ Added content from {source_name}.", flush=True)
         else:
             print(f"⚠️ No content to add from {source_name}.", flush=True)
-    
+            
     os.makedirs(OUTPUT_FILE_DIR, exist_ok=True)
     try:
         with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as f:
