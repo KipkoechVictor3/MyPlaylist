@@ -13,6 +13,10 @@ try:
         f.write(os.environ["FSTVL_SCRIPT"])
     import FSTVL_temp as FSTVL
 
+    with open("FSTV_Channels_temp.py", "w", encoding="utf-8") as f:
+        f.write(os.environ["FSTV_CHANNELS_SCRIPT"])
+    import FSTV_Channels_temp as FSTV_Channels
+
     with open("WeAreChecking_temp.py", "w", encoding="utf-8") as f:
         f.write(os.environ["WEARECHECKING_SCRIPT"])
     import WeAreChecking_temp as WeAreChecking
@@ -147,7 +151,7 @@ async def run_all_scrapers():
     
     combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
     
-    print("🚀 Launching Playwright for WeAreChecking, StreamBTW, OvoGoals...")
+    print("🚀 Launching Playwright for FSTV Channels, WeAreChecking, StreamBTW, OvoGoals...")
     async with async_playwright() as p:
         browser = await p.firefox.launch(headless=True)
         context = await browser.new_context(
@@ -155,6 +159,7 @@ async def run_all_scrapers():
             viewport={"width": 1280, "height": 800},
             locale="en-US"
         )
+        combined_results["FSTV_Channels"] = await FSTV_Channels.get_live_channels(context)
         combined_results["OvoGoals"] = await OvoGoals.get_ovogoals_streams(context)
         combined_results["WeAreChecking"] = await WeAreChecking.get_wearechecking_streams(context)
         combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
@@ -178,7 +183,7 @@ def combine_and_save_playlists(all_contents):
     print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
     full_content = "#EXTM3U\n"
     ordered_sources = [
-        "FSTVL", "WeAreChecking", "StreamBTW",
+        "FSTV_Channels", "FSTVL", "WeAreChecking", "StreamBTW",
         "OvoGoals","DDL",
         "FSTV24",
         "PPVLAND", "FSTV", "Timstreams",
@@ -208,6 +213,7 @@ def combine_and_save_playlists(all_contents):
 def cleanup_temp_files():
     try:
         os.remove("FSTVL_temp.py")
+        os.remove("FSTV_Channels_temp.py")
         os.remove("WeAreChecking_temp.py")
         os.remove("StreamBTW_temp.py")
         os.remove("OvoGoals_temp.py")
