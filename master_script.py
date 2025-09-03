@@ -57,7 +57,7 @@ async def _fetch_fstvl_with_retry(timezones):
         print(f"Attempting to fetch FSTVL streams with timezone '{tz}'...", flush=True)
         fstvl_homepage_url = f"https://fstv.space/?timezone={urllib.parse.quote(tz)}"
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
+            async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
                 response = await client.get(fstvl_homepage_url)
                 response.raise_for_status()
                 content = response.text
@@ -65,7 +65,9 @@ async def _fetch_fstvl_with_retry(timezones):
                     print(f"❌ Geoblocked for timezone '{tz}'. Trying next timezone...", flush=True)
                     continue
                 print(f"✅ Successfully loaded FSTVL page with timezone '{tz}'.", flush=True)
-                return await FSTVL.get_sport_streams(fstvl_homepage_url, content)
+                result = await FSTVL.get_sport_streams(fstvl_homepage_url, content)
+                print(f"✅ FSTVL → {len(result.splitlines())} lines", flush=True)
+                return result
         except Exception as e:
             print(f"❌ Error fetching FSTVL streams for timezone '{tz}': {e}. Trying next...", flush=True)
             continue
@@ -76,7 +78,7 @@ async def _fetch_fstvl_with_retry(timezones):
 async def fetch_and_process_remote_m3u(url, source_name):
     print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
             response = await client.get(url)
             response.raise_for_status()
             content = response.text
@@ -116,7 +118,7 @@ async def fetch_and_process_remote_m3u(url, source_name):
                     stream_block.append(line)
             if stream_block and not filter_this_stream:
                 modified_lines.extend(stream_block)
-            print(f"✅ Finished processing {source_name}", flush=True)
+            print(f"✅ Finished processing {source_name} → {len(modified_lines)} lines", flush=True)
             return "\n".join(modified_lines)
     except Exception as e:
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
