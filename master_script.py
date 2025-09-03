@@ -39,13 +39,16 @@ OUTPUT_FILE_PATH = os.path.join(OUTPUT_FILE_DIR, OUTPUT_FILE_NAME)
 # --- Timezone configuration ---
 TIMEZONES = ["Asia/Tokyo", "Australia/Sydney", "Asia/Dhaka", "Asia/Hong_Kong", "Asia/Singapore"]
 
-# --- New scrapers ---
+# --- Remote M3U sources ---
 NEW_SCRAPERS = {
-    "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
+    "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8",
+    "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=fq105ph4&dl=1",
+    "A1X": "https://bit.ly/a1xstream"
 }
 
 # --- Filter keywords ---
-FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball','nba','mls','American Football','rugby','liga','basket','Women','nba w','cricket']
+FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball', 'nba', 'mls',
+                   'American Football', 'rugby', 'liga', 'basket', 'Women', 'nba w', 'cricket']
 
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
@@ -113,6 +116,7 @@ async def fetch_and_process_remote_m3u(url, source_name):
                     stream_block.append(line)
             if stream_block and not filter_this_stream:
                 modified_lines.extend(stream_block)
+            print(f"✅ Finished processing {source_name}", flush=True)
             return "\n".join(modified_lines)
     except Exception as e:
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
@@ -122,10 +126,10 @@ async def fetch_and_process_remote_m3u(url, source_name):
 async def run_all_scrapers():
     print("Starting all scrapers sequentially...", flush=True)
     combined_results = {}
-    
+
     # Process FSTVL
     combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
-    
+
     # Process Playwright-based scrapers
     print("🚀 Launching Playwright for WeAreChecking, StreamBTW, OvoGoals...")
     async with async_playwright() as p:
@@ -140,11 +144,11 @@ async def run_all_scrapers():
         combined_results["StreamBTW"] = await StreamBTW.run_streambtw(context)
         await context.close()
         await browser.close()
-    
+
     # Process remote M3U sources
     for source_name, url in NEW_SCRAPERS.items():
         combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
-    
+
     # Read local channels from the environment secret
     try:
         combined_results["LocalChannels"] = os.environ["LocalChannels"]
@@ -152,7 +156,7 @@ async def run_all_scrapers():
     except KeyError:
         print("⚠️ LocalChannels secret not found. Skipping.", flush=True)
         combined_results["LocalChannels"] = ""
-    
+
     print("All scrapers finished.", flush=True)
     return combined_results
 
@@ -162,7 +166,7 @@ def combine_and_save_playlists(all_contents):
     full_content = "#EXTM3U\n"
     ordered_sources = [
         "FSTVL", "WeAreChecking", "StreamBTW",
-        "OvoGoals", "DDL",
+        "OvoGoals", "DDL", "FSTVChannels", "A1X",
         "LocalChannels"
     ]
     for source_name in ordered_sources:
@@ -175,7 +179,7 @@ def combine_and_save_playlists(all_contents):
             print(f"✅ Added content from {source_name}.", flush=True)
         else:
             print(f"⚠️ No content to add from {source_name}.", flush=True)
-    
+
     os.makedirs(OUTPUT_FILE_DIR, exist_ok=True)
     try:
         with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as f:
