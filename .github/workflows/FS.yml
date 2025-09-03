@@ -1,0 +1,44 @@
+name: Update FSTV Channels
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs every day at 00:00 UTC
+    - cron: '0 0 * * *'
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install
+
+      - name: Create Python script from secret
+        env:
+          FSTV_SCRIPT: ${{ secrets.FSTVChannels }}
+        run: |
+          echo "$FSTV_SCRIPT" > FSTV_Scraper.py
+          
+      - name: Run Python script to generate playlist
+        run: |
+          python FSTV_Scraper.py
+          
+      - name: Upload file to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: FSTVChannels.m3u
+          DEST_PATH: /MyStuff/FSTVChannels.m3u
