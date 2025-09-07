@@ -25,11 +25,12 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      # 🔍 Debug which secrets are actually available
+      # 🔍 Debug which secrets are actually available (POSIX sh compatible)
       - name: Debug secrets availability
         run: |
           for var in FSTVL_SCRIPT PPV WEARECHECKING_SCRIPT STREAMBTW_SCRIPT OVOGOALS_SCRIPT LOCALCHANNELS; do
-            if [ -z "${!var}" ]; then
+            value=$(eval echo "\$$var")
+            if [ -z "$value" ]; then
               echo "$var ❌ NOT set"
             else
               echo "$var ✅ set"
