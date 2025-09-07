@@ -8,54 +8,27 @@ on:
 jobs:
   run-scripts:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/playwright-scraper:latest
+      options: --user root
     permissions:
       contents: write
-    container:
-      # This pulls the image that was built and pushed in the build-and-push workflow.
-      # Ensure the image name matches exactly what was pushed.
-      image: ghcr.io/${{ github.repository_owner }}/playwright-scraper:latest
-      options: --user root # Required for apt-get commands inside the container if needed later
 
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      
-      - name: List files in repository
+
+      - name: List repo files
         run: ls -al
 
-      - name: Print master script content
+      - name: Print master script
         run: cat master_script.py
 
-      # --- REMOVED: Python setup and dependency installation steps ---
-      # These are now part of the Docker image, so they are not needed here.
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.10'
-      # - name: Install Python and Playwright dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install requests aiohttp httpx playwright-stealth playwright
-      #     playwright install --with-deps firefox
-      # ---------------------------------------------------------------
-
-      - name: Run master script with private scripts
+      - name: Run master script
         run: python master_script.py
         env:
-          # The DOCKER_IMAGE_TAG is automatically handled by the container definition
-          # FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
-          # PPV_SCRIPT: ${{ secrets.PPV }} # Corrected to map to PPV secret
-          # WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
-          # STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
-          # OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          # LocalChannels: ${{ secrets.LOCALCHANNELS }}
-
-          # If your master_script.py needs these, ensure they are correctly passed.
-          # NOTE: I've commented these out because they were not directly referenced in your
-          # Dockerfile installation, but if your script needs them, uncomment and ensure
-          # they are correct.
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
-          PPV_SCRIPT: ${{ secrets.PPV }} # Assuming your script expects PPV_SCRIPT, and the secret is PPV
+          PPV_SCRIPT: ${{ secrets.PPV }}
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
