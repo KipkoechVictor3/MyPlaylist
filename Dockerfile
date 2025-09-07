@@ -29,8 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install playwright aiohttp httpx playwright-stealth requests
+# Install Python dependencies, including httpx
+RUN pip install --no-cache-dir playwright aiohttp httpx playwright-stealth requests
 
 # Install Playwright browsers (Firefox)
 RUN playwright install firefox
