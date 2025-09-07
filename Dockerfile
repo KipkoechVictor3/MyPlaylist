@@ -1,4 +1,3 @@
-# Base Python image
 FROM python:3.10-slim
 
 # Install system dependencies for Playwright
@@ -14,11 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 RUN pip install --no-cache-dir requests aiohttp httpx playwright playwright-stealth
 
-# Install Playwright browsers and required OS deps
+# Install Playwright browsers
 RUN playwright install --with-deps firefox
 
-# Set working directory
 WORKDIR /app
-
-# Default command (can be overridden in workflow)
 CMD ["python", "--version"]
