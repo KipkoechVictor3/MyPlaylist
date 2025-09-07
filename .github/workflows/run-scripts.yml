@@ -12,24 +12,29 @@ jobs:
       contents: write
 
     steps:
+      # Step 1: Lowercase the repo owner for GHCR image reference
       - name: Convert repository owner to lowercase
         id: repo_owner
         run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
+      # Step 2: Checkout your repo code
       - name: Checkout repository code
         uses: actions/checkout@v4
 
+      # Step 3: List files just for debugging
       - name: List repo files
         run: ls -al
 
+      # Step 4: Print master script to confirm it's there
       - name: Print master script
         run: cat master_script.py
 
+      # Step 5: Run your master script inside the container, with repo mounted
       - name: Run master script inside container
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/${{ steps.repo_owner.outputs.owner }}/playwright-scraper:latest
-          options: --user root
+          options: -v ${{ github.workspace }}:/app --workdir /app --user root
           run: python master_script.py
         env:
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
@@ -39,6 +44,7 @@ jobs:
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
           LocalChannels: ${{ secrets.LOCALCHANNELS }}
 
+      # Step 6: Upload playlist to Dropbox
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
