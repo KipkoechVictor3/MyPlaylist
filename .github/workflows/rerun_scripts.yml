@@ -28,7 +28,7 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      # 🛠️ Write Python scripts from secrets
+      # 🛠️ Sanitize and write Python scripts from secrets
       - name: Write scripts from secrets (sanitize NBSP & non-ASCII)
         run: |
           echo "${FSTVL_SCRIPT}"         | perl -pe 's/\x{00A0}/ /g' > FSTVL_temp.py
@@ -36,9 +36,9 @@ jobs:
           echo "${WEARECHECKING_SCRIPT}" | perl -pe 's/\x{00A0}/ /g' > WeAreChecking_temp.py
           echo "${STREAMBTW_SCRIPT}"     | perl -pe 's/\x{00A0}/ /g' > StreamBtw_temp.py
           echo "${OVOGOALS_SCRIPT}"      | perl -pe 's/\x{00A0}/ /g' > OvoGoals_temp.py
-          echo "${LOCALCHANNELS}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
+          echo "${LocalChannels}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
 
-          # 🔍 Clean invisible non-ASCII
+          # Clean invisible non-ASCII
           for f in *_temp.py; do
             LC_ALL=C tr -cd '\11\12\15\40-\176' < "$f" > "${f}.clean"
             mv "${f}.clean" "$f"
@@ -49,13 +49,12 @@ jobs:
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          LOCALCHANNELS: ${{ secrets.LOCALCHANNELS }}
+          LocalChannels: ${{ secrets.LOCALCHANNELS }}
 
-      # 🔍 Debug which scripts actually exist
-      - name: Debug secrets availability
+      - name: Debug scripts availability
         run: |
           for var in FSTVL PPV WEARECHECKING STREAMBTW OVOGOALS LOCALCHANNELS; do
-            file="${var^}_temp.py"   # uppercase → lowercase first letter fix
+            file="${var^}_temp.py"
             if [ -s "$file" ]; then
               echo "$var ✅ written and cleaned"
             else
@@ -64,7 +63,7 @@ jobs:
           done
 
       - name: Run master script
-        run: python master_script.py
+        run: python3 master_script.py
         env:
           PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
           HOME: /root
@@ -73,7 +72,7 @@ jobs:
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          LOCALCHANNELS: ${{ secrets.LOCALCHANNELS }}
+          LocalChannels: ${{ secrets.LOCALCHANNELS }}
 
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
