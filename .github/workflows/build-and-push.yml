@@ -31,4 +31,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/playwright-scraper:latest
+          # Correct tag to be lowercase
+          tags: ghcr.io/${{ github.repository | lower }}/playwright-scraper:latest
