@@ -10,10 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrandr2 libxkbcommon0 libx11-xcb1 libxss1 libxshmfence1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --no-cache-dir requests aiohttp httpx playwright playwright-stealth
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers
+# Install Playwright browsers (Firefox only for you)
 RUN playwright install --with-deps firefox
 
 WORKDIR /app
