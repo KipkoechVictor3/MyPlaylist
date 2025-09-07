@@ -9,7 +9,7 @@ jobs:
   run-scripts:
     runs-on: ubuntu-latest
     container:
-      # ✅ Hardcoded lowercase repo owner to avoid invalid reference errors
+      # ✅ Hardcoded lowercase repo owner to avoid Docker pull errors
       image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
       options: --user root
     permissions:
@@ -25,14 +25,21 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      - name: Write scripts from secrets (sanitize NBSP)
+      # 🛠️ Sanitize and write Python scripts from secrets
+      - name: Write scripts from secrets (sanitize NBSP & non-ASCII)
         run: |
-          echo "${FSTVL_SCRIPT}"        | sed 's/\xC2\xA0/ /g' > FSTVL_temp.py
-          echo "${PPV_SCRIPT}"          | sed 's/\xC2\xA0/ /g' > PPV_temp.py
-          echo "${WEARECHECKING_SCRIPT}"| sed 's/\xC2\xA0/ /g' > WeAreChecking_temp.py
-          echo "${STREAMBTW_SCRIPT}"    | sed 's/\xC2\xA0/ /g' > StreamBtw_temp.py
-          echo "${OVOGOALS_SCRIPT}"     | sed 's/\xC2\xA0/ /g' > OvoGoals_temp.py
-          echo "${LocalChannels}"       | sed 's/\xC2\xA0/ /g' > LocalChannels_temp.py
+          echo "${FSTVL_SCRIPT}"         | perl -pe 's/\x{00A0}/ /g' > FSTVL_temp.py
+          echo "${PPV_SCRIPT}"           | perl -pe 's/\x{00A0}/ /g' > PPV_temp.py
+          echo "${WEARECHECKING_SCRIPT}" | perl -pe 's/\x{00A0}/ /g' > WeAreChecking_temp.py
+          echo "${STREAMBTW_SCRIPT}"     | perl -pe 's/\x{00A0}/ /g' > StreamBtw_temp.py
+          echo "${OVOGOALS_SCRIPT}"      | perl -pe 's/\x{00A0}/ /g' > OvoGoals_temp.py
+          echo "${LocalChannels}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
+
+          # 🔍 Extra cleaning: strip any invisible non-ASCII chars
+          for f in *_temp.py; do
+            LC_ALL=C tr -cd '\11\12\15\40-\176' < "$f" > "${f}.clean"
+            mv "${f}.clean" "$f"
+          done
         env:
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
           PPV_SCRIPT: ${{ secrets.PPV }}
@@ -40,6 +47,17 @@ jobs:
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
           LocalChannels: ${{ secrets.LOCALCHANNELS }}
+
+      # 🔍 Debug which secrets are actually available
+      - name: Debug secrets availability
+        run: |
+          for var in FSTVL_SCRIPT PPV_SCRIPT WEARECHECKING_SCRIPT STREAMBTW_SCRIPT OVOGOALS_SCRIPT LocalChannels; do
+            if [ -s "${var}_temp.py" ]; then
+              echo "$var ✅ written and cleaned"
+            else
+              echo "$var ❌ missing or empty"
+            fi
+          done
 
       - name: Run master script
         run: python master_script.py
