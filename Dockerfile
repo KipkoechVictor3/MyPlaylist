@@ -8,13 +8,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgbm1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 \
     libpango-1.0-0 libpangocairo-1.0-0 libxcomposite1 \
     libxrandr2 libxkbcommon0 libx11-xcb1 libxss1 libxshmfence1 \
+    build-essential python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
+# Copy requirements first (to leverage Docker cache)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers (Firefox only for you)
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Install Playwright browsers (Firefox only)
 RUN playwright install --with-deps firefox
 
 WORKDIR /app
