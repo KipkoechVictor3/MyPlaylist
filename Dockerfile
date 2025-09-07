@@ -1,44 +1,24 @@
-# Use a Python base image
+# Base Python image
 FROM python:3.10-slim
 
-# Set environment variables for non-interactive installs
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install system dependencies for Playwright's Firefox browser
+# Install system dependencies for Playwright
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    fonts-liberation \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcairo2 \
-    libcups2 \
-    libdbus-1-3 \
-    libdrm2 \
-    libegl1 \
-    libgbm1 \
-    libglib2.0-0 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libxcomposite1 \
-    libxrandr2 \
-    libxkbcommon0 \
-    libx11-xcb1 \
-    libxss1 \
-    libxshmfence1 \
-    libxvidcore4 \
-    --fix-missing \
+    curl unzip xvfb x11-utils fonts-liberation \
+    libasound2 libatk-bridge2.0-0 libatk1.0-0 \
+    libcairo2 libcups2 libdbus-1-3 libdrm2 libegl1 \
+    libgbm1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 \
+    libpango-1.0-0 libpangocairo-1.0-0 libxcomposite1 \
+    libxrandr2 libxkbcommon0 libx11-xcb1 libxss1 libxshmfence1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies, including httpx
-RUN pip install --no-cache-dir \
-    playwright \
-    aiohttp \
-    httpx \
-    playwright-stealth \
-    requests
+# Install Python dependencies
+RUN pip install --no-cache-dir requests aiohttp httpx playwright playwright-stealth
 
-# Install Playwright browsers (Firefox)
+# Install Playwright browsers and required OS deps
 RUN playwright install --with-deps firefox
+
+# Set working directory
+WORKDIR /app
+
+# Default command (can be overridden in workflow)
+CMD ["python", "--version"]
