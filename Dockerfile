@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.47.0
+FROM mcr.microsoft.com/playwright/python:v1.55.0-noble
 
 # Set working directory
 WORKDIR /app
