@@ -38,6 +38,7 @@ jobs:
         run: python master_script.py
         env:
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
+          PPV: ${{ secrets.PPV }}
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
