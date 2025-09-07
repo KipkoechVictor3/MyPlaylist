@@ -9,14 +9,12 @@ jobs:
   run-scripts:
     runs-on: ubuntu-latest
     container:
-      # ✅ Hardcoded lowercase repo owner to avoid Docker pull errors
       image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
       options: --user root
     permissions:
       contents: write
 
     env:
-      # ✅ Fix for Firefox refusing to run in GitHub Actions as root
       PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
       HOME: /root
 
@@ -30,7 +28,7 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      # 🛠️ Sanitize and write Python scripts from secrets
+      # 🛠️ Write Python scripts from secrets
       - name: Write scripts from secrets (sanitize NBSP & non-ASCII)
         run: |
           echo "${FSTVL_SCRIPT}"         | perl -pe 's/\x{00A0}/ /g' > FSTVL_temp.py
@@ -38,26 +36,27 @@ jobs:
           echo "${WEARECHECKING_SCRIPT}" | perl -pe 's/\x{00A0}/ /g' > WeAreChecking_temp.py
           echo "${STREAMBTW_SCRIPT}"     | perl -pe 's/\x{00A0}/ /g' > StreamBtw_temp.py
           echo "${OVOGOALS_SCRIPT}"      | perl -pe 's/\x{00A0}/ /g' > OvoGoals_temp.py
-          echo "${LocalChannels}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
+          echo "${LOCALCHANNELS}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
 
-          # 🔍 Extra cleaning: strip any invisible non-ASCII chars
+          # 🔍 Clean invisible non-ASCII
           for f in *_temp.py; do
             LC_ALL=C tr -cd '\11\12\15\40-\176' < "$f" > "${f}.clean"
             mv "${f}.clean" "$f"
           done
         env:
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
-          PPV_SCRIPT: ${{ secrets.PPV }}
+          PPV_SCRIPT: ${{ secrets.PPV_SCRIPT }}
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          LocalChannels: ${{ secrets.LOCALCHANNELS }}
+          LOCALCHANNELS: ${{ secrets.LOCALCHANNELS }}
 
-      # 🔍 Debug which secrets are actually available
+      # 🔍 Debug which scripts actually exist
       - name: Debug secrets availability
         run: |
-          for var in FSTVL_SCRIPT PPV_SCRIPT WEARECHECKING_SCRIPT STREAMBTW_SCRIPT OVOGOALS_SCRIPT LocalChannels; do
-            if [ -s "${var}_temp.py" ]; then
+          for var in FSTVL PPV WEARECHECKING STREAMBTW OVOGOALS LOCALCHANNELS; do
+            file="${var^}_temp.py"   # uppercase → lowercase first letter fix
+            if [ -s "$file" ]; then
               echo "$var ✅ written and cleaned"
             else
               echo "$var ❌ missing or empty"
@@ -70,11 +69,11 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
           HOME: /root
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
-          PPV_SCRIPT: ${{ secrets.PPV }}
+          PPV_SCRIPT: ${{ secrets.PPV_SCRIPT }}
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          LocalChannels: ${{ secrets.LOCALCHANNELS }}
+          LOCALCHANNELS: ${{ secrets.LOCALCHANNELS }}
 
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
