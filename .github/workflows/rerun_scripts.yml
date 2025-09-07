@@ -1,0 +1,84 @@
+name: Run Playwright Scripts MAIN (Debug)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */5 * * *'
+
+jobs:
+  run-scripts:
+    runs-on: ubuntu-latest
+    container:
+      # ✅ Use prebuilt image with browsers installed
+      image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
+      options: --user root
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Verify Python & Playwright installation
+        run: |
+          python --version
+          pip show playwright || true
+          playwright --version || true
+
+      - name: List repo files
+        run: ls -al
+
+      - name: Print master script
+        run: cat master_script.py
+
+      # 🛠️ Sanitize and write Python scripts from secrets
+      - name: Write scripts from secrets (sanitize NBSP & non-ASCII)
+        run: |
+          echo "${FSTVL_SCRIPT}"         | perl -pe 's/\x{00A0}/ /g' > FSTVL_temp.py
+          echo "${PPV_SCRIPT}"           | perl -pe 's/\x{00A0}/ /g' > PPV_temp.py
+          echo "${WEARECHECKING_SCRIPT}" | perl -pe 's/\x{00A0}/ /g' > WeAreChecking_temp.py
+          echo "${STREAMBTW_SCRIPT}"     | perl -pe 's/\x{00A0}/ /g' > StreamBtw_temp.py
+          echo "${OVOGOALS_SCRIPT}"      | perl -pe 's/\x{00A0}/ /g' > OvoGoals_temp.py
+          echo "${LocalChannels}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
+
+          # 🔍 Extra cleaning: strip invisible non-ASCII chars
+          for f in *_temp.py; do
+            LC_ALL=C tr -cd '\11\12\15\40-\176' < "$f" > "${f}.clean"
+            mv "${f}.clean" "$f"
+          done
+        env:
+          FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
+          PPV_SCRIPT: ${{ secrets.PPV }}
+          WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
+          STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
+          OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
+          LocalChannels: ${{ secrets.LOCALCHANNELS }}
+
+      - name: Debug secrets availability
+        run: |
+          for var in FSTVL_SCRIPT PPV_SCRIPT WEARECHECKING_SCRIPT STREAMBTW_SCRIPT OVOGOALS_SCRIPT LocalChannels; do
+            if [ -s "${var}_temp.py" ]; then
+              echo "$var ✅ written and cleaned"
+            else
+              echo "$var ❌ missing or empty"
+            fi
+          done
+
+      - name: Run master script
+        run: python master_script.py
+        env:
+          FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
+          PPV_SCRIPT: ${{ secrets.PPV }}
+          WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
+          STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
+          OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
+          LocalChannels: ${{ secrets.LOCALCHANNELS }}
+
+      - name: Upload file to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: MyStuff/MyStuff.m3u
+          DEST_PATH: /MyStuff/MyStuff.m3u
