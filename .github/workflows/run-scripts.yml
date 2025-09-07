@@ -9,7 +9,8 @@ jobs:
   run-scripts:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ github.repository_owner }}/playwright-scraper:latest
+      # 🔧 Hardcoded lowercase repo owner to avoid invalid reference errors
+      image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
       options: --user root
     permissions:
       contents: write
