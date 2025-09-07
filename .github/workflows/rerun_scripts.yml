@@ -9,21 +9,18 @@ jobs:
   run-scripts:
     runs-on: ubuntu-latest
     container:
-      # ✅ Use prebuilt image with browsers installed
       image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
       options: --user root
     permissions:
       contents: write
 
+    env:
+      # ✅ Force Playwright to reuse preinstalled browsers
+      PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
+
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-
-      - name: Verify Python & Playwright installation
-        run: |
-          python --version
-          pip show playwright || true
-          playwright --version || true
 
       - name: List repo files
         run: ls -al
@@ -31,7 +28,6 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      # 🛠️ Sanitize and write Python scripts from secrets
       - name: Write scripts from secrets (sanitize NBSP & non-ASCII)
         run: |
           echo "${FSTVL_SCRIPT}"         | perl -pe 's/\x{00A0}/ /g' > FSTVL_temp.py
@@ -41,7 +37,7 @@ jobs:
           echo "${OVOGOALS_SCRIPT}"      | perl -pe 's/\x{00A0}/ /g' > OvoGoals_temp.py
           echo "${LocalChannels}"        | perl -pe 's/\x{00A0}/ /g' > LocalChannels_temp.py
 
-          # 🔍 Extra cleaning: strip invisible non-ASCII chars
+          # 🔍 Strip any invisible non-ASCII chars
           for f in *_temp.py; do
             LC_ALL=C tr -cd '\11\12\15\40-\176' < "$f" > "${f}.clean"
             mv "${f}.clean" "$f"
