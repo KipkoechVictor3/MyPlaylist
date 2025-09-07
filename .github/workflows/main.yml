@@ -6,29 +6,48 @@ on:
     - cron: '0 */5 * * *'
 
 jobs:
-  run-scripts:
+  build-and-push-docker-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_NAME="playwright-scraper"
+          # Use github.repository_owner and convert to lowercase
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TAG="ghcr.io/${REPO_OWNER_LOWER}/${IMAGE_NAME}:latest"
+          
+          echo "Building and pushing Docker image: $TAG"
+          
+          docker buildx build . --push --tag "$TAG"
+          
+          # Explicitly set DOCKER_IMAGE_TAG for subsequent steps
+          echo "DOCKER_IMAGE_TAG=${TAG}" >> $GITHUB_ENV
+
+  run-main-script:
+    runs-on: ubuntu-latest
+    needs: build-and-push-docker-image # Ensure Docker image is built first
+    container:
+      image: ghcr.io/${{ github.repository_owner | lower }}/playwright-scraper:latest # Use lowercase owner name here
     permissions:
       contents: write
 
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Set Docker image tag
-        id: docker_tag
-        run: |
-          IMAGE_TAG="ghcr.io/${{ github.repository_owner }}/playwright-scraper:latest"
-          LOWERCASE_TAG=$(echo "$IMAGE_TAG" | tr '[:upper:]' '[:lower:]')
-          echo "DOCKER_IMAGE_TAG=${LOWERCASE_TAG}" >> $GITHUB_ENV
-
-      - name: Pull Docker image
-        run: docker pull ${{ env.DOCKER_IMAGE_TAG }}
 
       - name: Run master script with private scripts
         run: python master_script.py
