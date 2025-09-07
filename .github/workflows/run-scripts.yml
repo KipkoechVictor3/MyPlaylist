@@ -9,7 +9,7 @@ jobs:
   run-scripts:
     runs-on: ubuntu-latest
     container:
-      # 🔧 Hardcoded lowercase repo owner to avoid invalid reference errors
+      # ✅ Hardcoded lowercase repo owner to avoid invalid reference errors
       image: ghcr.io/kipkoechvictor3/playwright-scraper:latest
       options: --user root
     permissions:
@@ -25,24 +25,21 @@ jobs:
       - name: Print master script
         run: cat master_script.py
 
-      # 🔍 Debug which secrets are actually available (POSIX sh compatible)
-      - name: Debug secrets availability
+      - name: Write scripts from secrets (sanitize NBSP)
         run: |
-          for var in FSTVL_SCRIPT PPV WEARECHECKING_SCRIPT STREAMBTW_SCRIPT OVOGOALS_SCRIPT LOCALCHANNELS; do
-            value=$(eval echo "\$$var")
-            if [ -z "$value" ]; then
-              echo "$var ❌ NOT set"
-            else
-              echo "$var ✅ set"
-            fi
-          done
+          echo "${FSTVL_SCRIPT}"        | sed 's/\xC2\xA0/ /g' > FSTVL_temp.py
+          echo "${PPV_SCRIPT}"          | sed 's/\xC2\xA0/ /g' > PPV_temp.py
+          echo "${WEARECHECKING_SCRIPT}"| sed 's/\xC2\xA0/ /g' > WeAreChecking_temp.py
+          echo "${STREAMBTW_SCRIPT}"    | sed 's/\xC2\xA0/ /g' > StreamBtw_temp.py
+          echo "${OVOGOALS_SCRIPT}"     | sed 's/\xC2\xA0/ /g' > OvoGoals_temp.py
+          echo "${LocalChannels}"       | sed 's/\xC2\xA0/ /g' > LocalChannels_temp.py
         env:
           FSTVL_SCRIPT: ${{ secrets.FSTVL_SCRIPT }}
-          PPV: ${{ secrets.PPV }}
+          PPV_SCRIPT: ${{ secrets.PPV }}
           WEARECHECKING_SCRIPT: ${{ secrets.WEARECHECKING_SCRIPT }}
           STREAMBTW_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
           OVOGOALS_SCRIPT: ${{ secrets.OVOGOALS_SCRIPT }}
-          LOCALCHANNELS: ${{ secrets.LOCALCHANNELS }}
+          LocalChannels: ${{ secrets.LOCALCHANNELS }}
 
       - name: Run master script
         run: python master_script.py
