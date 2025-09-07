@@ -1,5 +1,8 @@
-# Start from a base image that already has Python
+# Use a Python base image
 FROM python:3.10-slim
+
+# Set environment variables for non-interactive installs
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies for Playwright's Firefox browser
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -30,7 +33,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies, including httpx
-RUN pip install --no-cache-dir playwright aiohttp httpx playwright-stealth requests
+RUN pip install --no-cache-dir \
+    playwright \
+    aiohttp \
+    httpx \
+    playwright-stealth \
+    requests
 
 # Install Playwright browsers (Firefox)
-RUN playwright install firefox
+RUN playwright install --with-deps firefox
