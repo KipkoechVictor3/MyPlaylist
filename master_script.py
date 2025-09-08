@@ -47,6 +47,7 @@ TIMEZONES = ["Asia/Tokyo", "Australia/Sydney", "Asia/Dhaka", "Asia/Hong_Kong", "
 # --- Remote M3U sources ---
 NEW_SCRAPERS = {
     "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8",
+    "LVN":"https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
     "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=fq105ph4&dl=1",
     "A1X": "https://bit.ly/a1xstream"
 }
@@ -188,7 +189,7 @@ def combine_and_save_playlists(all_contents):
     full_content = "#EXTM3U\n"
     ordered_sources = [
         "FSTVL", "PPV", "WeAreChecking", "StreamBTW",
-        "OvoGoals", "DDL", "FSTVChannels", "A1X",
+        "OvoGoals", "LVN", "DDL", "FSTVChannels", "A1X",
         "LocalChannels"
     ]
     for source_name in ordered_sources:
