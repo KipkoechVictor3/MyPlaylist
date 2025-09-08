@@ -56,6 +56,9 @@ NEW_SCRAPERS = {
 FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball', 'nba', 'mls',
                    'American Football', 'rugby', 'liga', 'basket', 'Women', 'nba w', 'cricket']
 
+# --- Extra filter keywords for BuddyChewChew ---
+BDC_KEYWORDS = ["tsn", "netflix", "sky sports", "tnt sports", "primevideo+", "bbc", "itv", "hulu"]
+
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
     random.shuffle(timezones)
@@ -130,6 +133,59 @@ async def fetch_and_process_remote_m3u(url, source_name):
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
         return ""
 
+# --- Fetch BuddyChewChew stream1.m3u ---
+async def fetch_bdc_streams():
+    url = "https://raw.githubusercontent.com/BuddyChewChew/My-Streams/2a46f7064f959f4098140cde484791940695fbd8/stream1.m3u"
+    print(f"Fetching BuddyChewChew streams from {url}...", flush=True)
+    try:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            output_lines = ["#EXTM3U"]
+
+            keep_block = False
+            stream_block = []
+
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                if line.startswith("#EXTINF:-1"):
+                    # finalize previous block if it was kept
+                    if stream_block and keep_block:
+                        output_lines.extend(stream_block)
+
+                    stream_block = [line]
+                    keep_block = False
+
+                    # check channel name
+                    channel_name = line.split(",", 1)[-1].lower()
+                    if any(keyword in channel_name for keyword in BDC_KEYWORDS):
+                        keep_block = True
+
+                        # adjust group-title
+                        match = re.search(r'group-title="([^"]+)"', line)
+                        if match:
+                            original_group = match.group(1)
+                            new_group = f'BDC | {original_group}'
+                            line = re.sub(r'group-title="[^"]+"', f'group-title="{new_group}"', line)
+                            stream_block[0] = line
+
+                elif not line.startswith("#"):
+                    stream_block.append(line)
+
+            # finalize last block
+            if stream_block and keep_block:
+                output_lines.extend(stream_block)
+
+            print(f"✅ BuddyChewChew → {len(output_lines)} lines", flush=True)
+            return "\n".join(output_lines)
+    except Exception as e:
+        print(f"❌ Error fetching BuddyChewChew streams: {e}", flush=True)
+        return ""
+
 # --- Run all scrapers sequentially ---
 async def run_all_scrapers():
     print("Starting all scrapers sequentially...", flush=True)
@@ -172,6 +228,9 @@ async def run_all_scrapers():
     for source_name, url in NEW_SCRAPERS.items():
         combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
 
+    # Process BuddyChewChew
+    combined_results["BuddyChewChew"] = await fetch_bdc_streams()
+
     # Read local channels from the environment secret
     try:
         combined_results["LocalChannels"] = os.environ["LocalChannels"]
@@ -190,7 +249,7 @@ def combine_and_save_playlists(all_contents):
     ordered_sources = [
         "FSTVL", "PPV", "WeAreChecking", "StreamBTW",
         "OvoGoals", "LVN", "DDL", "FSTVChannels", "A1X",
-        "LocalChannels"
+        "BuddyChewChew", "LocalChannels"
     ]
     for source_name in ordered_sources:
         content = all_contents.get(source_name)
