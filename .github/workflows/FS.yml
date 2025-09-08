@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Runs every day at 00:00 UTC
-    - cron: '0 */4 * * *'
+    - cron: '0 */2.5 * * *'
 
 jobs:
   update-playlist:
