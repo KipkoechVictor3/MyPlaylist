@@ -47,7 +47,7 @@ TIMEZONES = ["Asia/Tokyo", "Australia/Sydney", "Asia/Dhaka", "Asia/Hong_Kong", "
 # --- Remote M3U sources ---
 NEW_SCRAPERS = {
     "DDL": "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8",
-    "LVN":"https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
+    "LVN": "https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
     "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=fq105ph4&dl=1",
     "A1X": "https://bit.ly/a1xstream"
 }
@@ -58,6 +58,9 @@ FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball', 'nba', 'mls',
 
 # --- Extra filter keywords for BuddyChewChew ---
 BDC_KEYWORDS = ["tsn", "netflix", "sky sports", "tnt sports", "primevideo+", "bbc", "itv", "hulu"]
+
+# --- LVN filter keywords ---
+LVN_KEYWORDS = ["uk sky sports", "nz hd", "nz: sky", "bein sports english", "dstv:", "beinsports"]
 
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
@@ -83,8 +86,10 @@ async def _fetch_fstvl_with_retry(timezones):
     print("⚠️ All timezones failed for FSTVL. Skipping.", flush=True)
     return ""
 
-# --- Fetch remote M3U ---
+# --- Fetch remote M3U (generic for DDL, A1X, etc.) ---
 async def fetch_and_process_remote_m3u(url, source_name):
+    if source_name == "LVN":
+        return await fetch_lvn_streams(url)
     print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
     try:
         async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
@@ -133,6 +138,53 @@ async def fetch_and_process_remote_m3u(url, source_name):
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
         return ""
 
+# --- Fetch LVN with filtering and group renaming ---
+async def fetch_lvn_streams(url):
+    print(f"Fetching LVN streams from {url}...", flush=True)
+    try:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            output_lines = ["#EXTM3U"]
+
+            keep_block = False
+            stream_block = []
+
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                if line.startswith("#EXTINF:-1"):
+                    if stream_block and keep_block:
+                        output_lines.extend(stream_block)
+
+                    stream_block = [line]
+                    keep_block = False
+
+                    channel_name = line.split(",", 1)[-1].lower()
+                    if any(keyword.lower() in channel_name for keyword in LVN_KEYWORDS):
+                        keep_block = True
+                        # force group-title = LVN
+                        if "group-title=" in line:
+                            line = re.sub(r'group-title="[^"]+"', 'group-title="LVN"', line)
+                        else:
+                            line = line.replace("#EXTINF:-1", '#EXTINF:-1 group-title="LVN"', 1)
+                        stream_block[0] = line
+
+                elif not line.startswith("#"):
+                    stream_block.append(line)
+
+            if stream_block and keep_block:
+                output_lines.extend(stream_block)
+
+            print(f"✅ LVN → {len(output_lines)} lines", flush=True)
+            return "\n".join(output_lines)
+    except Exception as e:
+        print(f"❌ Error fetching LVN streams: {e}", flush=True)
+        return ""
+
 # --- Fetch BuddyChewChew stream1.m3u ---
 async def fetch_bdc_streams():
     url = "https://raw.githubusercontent.com/BuddyChewChew/My-Streams/2a46f7064f959f4098140cde484791940695fbd8/stream1.m3u"
@@ -153,30 +205,27 @@ async def fetch_bdc_streams():
                 if not line:
                     continue
                 if line.startswith("#EXTINF:-1"):
-                    # finalize previous block if it was kept
                     if stream_block and keep_block:
                         output_lines.extend(stream_block)
 
                     stream_block = [line]
                     keep_block = False
 
-                    # check channel name
                     channel_name = line.split(",", 1)[-1].lower()
                     if any(keyword in channel_name for keyword in BDC_KEYWORDS):
                         keep_block = True
-
-                        # adjust group-title
                         match = re.search(r'group-title="([^"]+)"', line)
                         if match:
                             original_group = match.group(1)
                             new_group = f'BDC | {original_group}'
                             line = re.sub(r'group-title="[^"]+"', f'group-title="{new_group}"', line)
-                            stream_block[0] = line
+                        else:
+                            line = line.replace("#EXTINF:-1", '#EXTINF:-1 group-title="BDC | Unknown"', 1)
+                        stream_block[0] = line
 
                 elif not line.startswith("#"):
                     stream_block.append(line)
 
-            # finalize last block
             if stream_block and keep_block:
                 output_lines.extend(stream_block)
 
@@ -191,10 +240,8 @@ async def run_all_scrapers():
     print("Starting all scrapers sequentially...", flush=True)
     combined_results = {}
 
-    # Process FSTVL
     combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
 
-    # Process Playwright-based scrapers
     print("🚀 Launching Playwright for PPV, OvoGoals, WeAreChecking, StreamBTW...", flush=True)
     async with async_playwright() as p:
         browser = await p.firefox.launch(headless=True)
@@ -204,7 +251,6 @@ async def run_all_scrapers():
             locale="en-US"
         )
 
-        # List of scrapers in order
         scraper_list = [
             ("PPV", PPV.get_ppv_streams),
             ("OvoGoals", OvoGoals.get_ovogoals_streams),
@@ -224,14 +270,11 @@ async def run_all_scrapers():
         await context.close()
         await browser.close()
 
-    # Process remote M3U sources
     for source_name, url in NEW_SCRAPERS.items():
         combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
 
-    # Process BuddyChewChew
     combined_results["BuddyChewChew"] = await fetch_bdc_streams()
 
-    # Read local channels from the environment secret
     try:
         combined_results["LocalChannels"] = os.environ["LocalChannels"]
         print("✅ Successfully read local channels from secret.", flush=True)
