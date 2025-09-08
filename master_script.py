@@ -57,7 +57,7 @@ FILTER_KEYWORDS = ['nfl', 'mlb', 'basketball', 'baseball', 'nba', 'mls',
                    'American Football', 'rugby', 'liga', 'basket', 'Women', 'nba w', 'cricket']
 
 # --- Extra filter keywords for BuddyChewChew ---
-BDC_KEYWORDS = ["tsn", "netflix", "sky sports", "tnt sports", "primevideo+", "bbc", "itv", "hulu"]
+BDC_KEYWORDS = ["tsn", "netflix", "sky sports", "tnt sports", "primevideo+", "itv", "hulu"]
 
 # --- LVN filter keywords ---
 LVN_KEYWORDS = ["uk sky sports", "nz hd", "nz: sky", "bein sports english", "dstv:", "beinsports"]
