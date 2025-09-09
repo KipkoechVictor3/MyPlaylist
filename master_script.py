@@ -64,7 +64,7 @@ BDC_KEYWORDS = ["netflix", "primevideo+", "hulu"]
 LVN_KEYWORDS = ["uk sky sports", "nz hd", "nz: sky", "bein sports english", "dstv:", "beinsports"]
 
 # --- CIV4 filter keywords ---
-CIV4_KEYWORDS = ['sky sports', 'tnt sports', 'supersport', 'itv', 'bbc', 'astro', 'uhd', 'bein sports', '4k']
+CIV4_KEYWORDS = ['sky sports', 'tnt sports', 'supersport', 'astro Premier', 'uhd', 'bein sports English','Bein Sports Indonesia']
 
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
