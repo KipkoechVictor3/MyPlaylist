@@ -294,10 +294,8 @@ def combine_and_save_playlists(all_contents):
     print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
     full_content = "#EXTM3U\n"
     ordered_sources = [
-        "FSTVL", "PPV", "WeAreChecking", "StreamBTW",
-        "OvoGoals", "LVN", "DDL", "FSTVChannels", "A1X",
-        "TIS",
-        "BuddyChewChew", "LocalChannels"
+        "FSTVL","TIS", "PPV", "WeAreChecking", "LocalChannels", "A1X", "StreamBTW",
+        "OvoGoals", "LVN", "FSTVChannels", "DDL","BuddyChewChew"
     ]
     for source_name in ordered_sources:
         content = all_contents.get(source_name)
