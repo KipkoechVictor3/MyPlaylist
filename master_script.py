@@ -50,7 +50,7 @@ NEW_SCRAPERS = {
     "LVN": "https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
     "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=fq105ph4&dl=1",
     "A1X": "https://bit.ly/a1xstream",
-    "CIV4": "http://civ4kap.mooo.com/discord.gg.civ4.m3u8?username=civ10&password=civ10"
+    "TIS": "https://www.dropbox.com/scl/fi/lcfb6miqcdsnmot02dw4e/Tim.m3u8?rlkey=lcbb6o7pnzfkuuh6p80qrymo4&st=h8j7kadk&dl=1"
 }
 
 # --- Filter keywords ---
@@ -62,9 +62,6 @@ BDC_KEYWORDS = ["netflix", "primevideo+", "hulu"]
 
 # --- LVN filter keywords ---
 LVN_KEYWORDS = ["uk sky sports", "nz hd", "nz: sky", "bein sports english", "dstv:", "beinsports"]
-
-# --- CIV4 filter keywords ---
-CIV4_KEYWORDS = ['sky sports', 'tnt sports', 'supersport', 'astro Premier', 'bein sports English','Bein Sports Indonesia']
 
 # --- FSTVL Scraper wrapper ---
 async def _fetch_fstvl_with_retry(timezones):
@@ -94,8 +91,6 @@ async def _fetch_fstvl_with_retry(timezones):
 async def fetch_and_process_remote_m3u(url, source_name):
     if source_name == "LVN":
         return await fetch_lvn_streams(url)
-    if source_name == "CIV4":
-        return await fetch_civ4_streams(url)
     print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
     try:
         async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
@@ -241,69 +236,6 @@ async def fetch_bdc_streams():
         print(f"❌ Error fetching BuddyChewChew streams: {e}", flush=True)
         return ""
 
-# --- Fetch CIV4 streams ---
-async def fetch_civ4_streams(url):
-    """
-    Fetches M3U content from the CIV4 URL and filters it based on keywords.
-    It handles multi-line streams and renames the group-title.
-    """
-    print(f"Fetching and processing CIV4 streams from {url}...", flush=True)
-    try:
-        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            content = response.text
-            lines = content.splitlines()
-
-            output_lines = ["#EXTM3U"]
-            
-            stream_block = []
-            keep_block = False
-
-            for line in lines:
-                line = line.strip()
-                if not line:
-                    continue
-
-                if line.startswith("#EXTINF:-1"):
-                    if stream_block and keep_block:
-                        output_lines.extend(stream_block)
-                    
-                    stream_block = [line]
-                    keep_block = False
-                    
-                    channel_name_match = re.search(r',(.+)$', line)
-                    if channel_name_match:
-                        channel_name = channel_name_match.group(1).strip().lower()
-                        if any(keyword in channel_name for keyword in CIV4_KEYWORDS):
-                            keep_block = True
-                            if 'group-title=' in line:
-                                line = re.sub(r'group-title="([^"]+)"', r'group-title="CIV4|\1"', line)
-                            else:
-                                line = line.replace("#EXTINF:-1", '#EXTINF:-1 group-title="CIV4|Unknown"', 1)
-                            stream_block[0] = line
-
-                elif not line.startswith("#") and stream_block:
-                    stream_block.append(line)
-                    if any(ext in line.lower() for ext in ['.m3u8', '.m3u', '.ts', '.mp4', '.flv']):
-                        if keep_block:
-                            output_lines.extend(stream_block)
-                        stream_block = []
-                        keep_block = False
-
-                elif stream_block:
-                    stream_block.append(line)
-
-            if stream_block and keep_block:
-                output_lines.extend(stream_block)
-                
-            print(f"✅ Finished processing CIV4 → {len(output_lines) - 1} streams", flush=True)
-            return "\n".join(output_lines)
-
-    except Exception as e:
-        print(f"❌ Error fetching or processing CIV4 streams: {e}", flush=True)
-        return ""
-
 # --- Run all scrapers sequentially ---
 async def run_all_scrapers():
     print("Starting all scrapers sequentially...", flush=True)
@@ -340,9 +272,7 @@ async def run_all_scrapers():
         await browser.close()
 
     for source_name, url in NEW_SCRAPERS.items():
-        if source_name == "CIV4":
-            combined_results[source_name] = await fetch_civ4_streams(url)
-        elif source_name == "LVN":
+        if source_name == "LVN":
             combined_results[source_name] = await fetch_lvn_streams(url)
         else:
             combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
@@ -366,7 +296,7 @@ def combine_and_save_playlists(all_contents):
     ordered_sources = [
         "FSTVL", "PPV", "WeAreChecking", "StreamBTW",
         "OvoGoals", "LVN", "DDL", "FSTVChannels", "A1X",
-        "CIV4",
+        "TIS",
         "BuddyChewChew", "LocalChannels"
     ]
     for source_name in ordered_sources:
