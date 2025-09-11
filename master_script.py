@@ -50,7 +50,8 @@ NEW_SCRAPERS = {
     "LVN": "https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
     "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=fq105ph4&dl=1",
     "A1X": "https://bit.ly/a1xstream",
-    "TIS": "https://www.dropbox.com/scl/fi/lcfb6miqcdsnmot02dw4e/Tim.m3u8?rlkey=lcbb6o7pnzfkuuh6p80qrymo4&st=h8j7kadk&dl=1"
+    "TIS": "https://www.dropbox.com/scl/fi/lcfb6miqcdsnmot02dw4e/Tim.m3u8?rlkey=lcbb6o7pnzfkuuh6p80qrymo4&st=h8j7kadk&dl=1",
+    "ZXIPTV": "https://raw.githubusercontent.com/ZXArkin/my-personal-iptv/0ca106073e1d7ec9fd9fe07d2467cdb8eed13b13/ZXIPTV.m3u"
 }
 
 # --- Filter keywords ---
@@ -186,6 +187,64 @@ async def fetch_lvn_streams(url):
         print(f"❌ Error fetching LVN streams: {e}", flush=True)
         return ""
 
+# -----------------
+# New function for ZXIPTV streams
+# -----------------
+async def fetch_zxiptv_streams(url):
+    """
+    Fetches streams from the specified URL, filters for 'Kênh 4K' and 'THỂ THAO QUỐC TẾ'
+    groups, and renames them to 'ZXIPTV'.
+    """
+    print(f"Fetching ZXIPTV streams from {url}...", flush=True)
+    try:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            output_lines = ["#EXTM3U"]
+
+            stream_block = []
+            is_target_group = False
+            target_groups = ["Kênh 4K", "THỂ THAO QUỐC TẾ"]
+
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+
+                if line.startswith("#EXTINF:-1"):
+                    # Process the previous stream block if it was a target group
+                    if stream_block and is_target_group:
+                        output_lines.extend(stream_block)
+
+                    stream_block = [line]
+                    is_target_group = False
+                    
+                    # Check for a target group
+                    match = re.search(r'group-title="([^"]+)"', line)
+                    if match:
+                        original_group = match.group(1)
+                        if original_group in target_groups:
+                            is_target_group = True
+                            # Change the group title
+                            line = re.sub(r'group-title="[^"]+"', 'group-title="ZXIPTV"', line)
+                            stream_block[0] = line
+
+                elif not line.startswith("#"):
+                    stream_block.append(line)
+            
+            # Add the last stream block if it was a target group
+            if stream_block and is_target_group:
+                output_lines.extend(stream_block)
+
+            print(f"✅ ZXIPTV → {len(output_lines)} lines", flush=True)
+            return "\n".join(output_lines)
+
+    except Exception as e:
+        print(f"❌ Error fetching ZXIPTV streams: {e}", flush=True)
+        return ""
+
 # --- Fetch BuddyChewChew stream1.m3u ---
 async def fetch_bdc_streams():
     url = "https://raw.githubusercontent.com/BuddyChewChew/My-Streams/2a46f7064f959f4098140cde484791940695fbd8/stream1.m3u"
@@ -274,6 +333,8 @@ async def run_all_scrapers():
     for source_name, url in NEW_SCRAPERS.items():
         if source_name == "LVN":
             combined_results[source_name] = await fetch_lvn_streams(url)
+        elif source_name == "ZXIPTV":
+            combined_results[source_name] = await fetch_zxiptv_streams(url)
         else:
             combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
 
@@ -295,7 +356,7 @@ def combine_and_save_playlists(all_contents):
     full_content = "#EXTM3U\n"
     ordered_sources = [
         "FSTVL","TIS", "PPV", "WeAreChecking", "LocalChannels", "A1X", "StreamBTW",
-        "OvoGoals", "LVN", "FSTVChannels", "DDL","BuddyChewChew"
+        "OvoGoals", "LVN", "FSTVChannels", "DDL","BuddyChewChew", "ZXIPTV"
     ]
     for source_name in ordered_sources:
         content = all_contents.get(source_name)
