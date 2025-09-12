@@ -21,10 +21,6 @@ try:
         f.write(os.environ["STREAMBTW_SCRIPT"])
     import StreamBTW_temp as StreamBTW
 
-    with open("OvoGoals_temp.py", "w", encoding="utf-8") as f:
-        f.write(os.environ["OVOGOALS_SCRIPT"])
-    import OvoGoals_temp as OvoGoals
-
     with open("PPV_temp.py", "w", encoding="utf-8") as f:
         f.write(os.environ["PPV_SCRIPT"])
     import PPV_temp as PPV
@@ -119,8 +115,13 @@ async def fetch_and_process_remote_m3u(url, source_name):
                     extinf_parts = line.split(',', 1)
                     attributes = extinf_parts[0][len("#EXTINF:-1"):].strip()
                     title = extinf_parts[1].strip() if len(extinf_parts) > 1 else "Unknown"
-                    if 'tvg-id=' not in attributes:
-                        attributes += ' tvg-id="PPV.EVENTS.Dummy.us" tvg-name="Live Event"'
+
+                    # --- Force tvg-name when dummy id is used ---
+                    if 'tvg-id="PPV.EVENTS.Dummy.us"' in attributes:
+                        attributes = re.sub(r'tvg-name="[^"]*"', 'tvg-name="Live Event"', attributes)
+                    elif 'tvg-id=' not in attributes:
+                        attributes += ' tvg-name="Live Event"'
+
                     if 'group-title=' not in attributes:
                         attributes += ' group-title="Unknown"'
                     stream_block[0] = f'#EXTINF:-1 {attributes},{title}'
@@ -191,10 +192,6 @@ async def fetch_lvn_streams(url):
 # New function for ZXIPTV streams
 # -----------------
 async def fetch_zxiptv_streams(url):
-    """
-    Fetches streams from the specified URL, filters for 'Kênh 4K' and 'THỂ THAO QUỐC TẾ'
-    groups, and renames them to 'ZXIPTV'.
-    """
     print(f"Fetching ZXIPTV streams from {url}...", flush=True)
     try:
         async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
@@ -214,27 +211,23 @@ async def fetch_zxiptv_streams(url):
                     continue
 
                 if line.startswith("#EXTINF:-1"):
-                    # Process the previous stream block if it was a target group
                     if stream_block and is_target_group:
                         output_lines.extend(stream_block)
 
                     stream_block = [line]
                     is_target_group = False
                     
-                    # Check for a target group
                     match = re.search(r'group-title="([^"]+)"', line)
                     if match:
                         original_group = match.group(1)
                         if original_group in target_groups:
                             is_target_group = True
-                            # Change the group title
                             line = re.sub(r'group-title="[^"]+"', 'group-title="ZXIPTV"', line)
                             stream_block[0] = line
 
                 elif not line.startswith("#"):
                     stream_block.append(line)
             
-            # Add the last stream block if it was a target group
             if stream_block and is_target_group:
                 output_lines.extend(stream_block)
 
@@ -302,18 +295,17 @@ async def run_all_scrapers():
 
     combined_results["FSTVL"] = await _fetch_fstvl_with_retry(TIMEZONES)
 
-    print("🚀 Launching Playwright for PPV, OvoGoals, WeAreChecking, StreamBTW...", flush=True)
+    print("🚀 Launching Playwright for PPV, WeAreChecking, StreamBTW...", flush=True)
     async with async_playwright() as p:
         browser = await p.firefox.launch(headless=True)
         context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
+            user_agent="Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
             viewport={"width": 1280, "height": 800},
             locale="en-US"
         )
 
         scraper_list = [
             ("PPV", PPV.get_ppv_streams),
-            ("OvoGoals", OvoGoals.get_ovogoals_streams),
             ("WeAreChecking", WeAreChecking.get_wearechecking_streams),
             ("StreamBTW", StreamBTW.run_streambtw)
         ]
@@ -356,7 +348,7 @@ def combine_and_save_playlists(all_contents):
     full_content = "#EXTM3U\n"
     ordered_sources = [
         "FSTVL","TIS", "PPV", "WeAreChecking", "LocalChannels", "A1X", "StreamBTW",
-        "OvoGoals", "LVN", "FSTVChannels", "DDL","BuddyChewChew", "ZXIPTV"
+        "LVN", "FSTVChannels", "DDL","BuddyChewChew", "ZXIPTV"
     ]
     for source_name in ordered_sources:
         content = all_contents.get(source_name)
@@ -383,7 +375,6 @@ def cleanup_temp_files():
         os.remove("FSTVL_temp.py")
         os.remove("WeAreChecking_temp.py")
         os.remove("StreamBTW_temp.py")
-        os.remove("OvoGoals_temp.py")
         os.remove("PPV_temp.py")
     except OSError as e:
         print(f"Error cleaning up temporary files: {e}", file=sys.stderr)
