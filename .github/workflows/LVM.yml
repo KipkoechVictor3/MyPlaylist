@@ -1,0 +1,44 @@
+name: Update L M P
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs every 2 hours
+    - cron: '0 */2 * * *'
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright httpx
+          playwright install --with-deps firefox
+
+      - name: Create Python script from secret
+        env:
+          LIVEM_SCRIPT: ${{ secrets.LIVEM_SCRIPT }}
+        run: |
+          echo "$LIVEM_SCRIPT" > Live_Channels_Scraper.py
+
+      - name: Run Python script to generate playlist
+        run: |
+          python Live_Channels_Scraper.py
+
+      - name: Upload file to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: LiveMatches.m3u8
+          DEST_PATH: /LiveMatches.m3u8
