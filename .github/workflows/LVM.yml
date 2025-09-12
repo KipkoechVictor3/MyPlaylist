@@ -41,4 +41,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: LiveMatches.m3u8
-          DEST_PATH: /LiveMatches.m3u8
+          DEST_PATH: /MyStuff/LiveMatches.m3u8
