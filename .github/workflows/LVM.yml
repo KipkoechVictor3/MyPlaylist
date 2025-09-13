@@ -31,11 +31,22 @@ jobs:
           echo "$LIVEM_SCRIPT" > Live_Channels_Scraper.py
 
       - name: Run Python script to generate playlist
+        id: run_script # Add an ID to reference this step
         run: |
           python Live_Channels_Scraper.py
+          # Check if the playlist file was created
+          if [ -f "LiveMatches.m3u8" ]; then
+            echo "Playlist file generated."
+          else
+            echo "Playlist file not found. Skipping Dropbox upload."
+            echo "playlist_generated=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash # Ensure bash is used for file operations
 
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        # Only run this step if the playlist was generated
+        if: steps.run_script.outputs.playlist_generated != 'false'
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
