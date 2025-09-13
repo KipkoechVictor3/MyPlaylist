@@ -21,21 +21,22 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install dependencies and Playwright browsers
         run: |
           python -m pip install --upgrade pip
           pip install playwright httpx aiohttp
-          playwright install --with-deps firefox # <-- Installs Firefox browser
+          playwright install --with-deps firefox # Prioritize Firefox
+          # If Firefox is not available or fails, it will fall back to chromium in the script
 
       - name: Create Python script from secret
         env:
-          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }} # <-- Name of the secret holding your script
+          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }} # Use the secret containing the script
         run: |
-          echo "$PPL_SCRIPT" > ppl_script.py # <-- Creates the script file
+          echo "$PPL_SCRIPT" > master_script.py # Save the secret content to a file
 
-      - name: Run Python script
+      - name: Run Python script to generate playlist
         run: |
-          python ppl_script.py > PPV.m3u8 # <-- Runs the script and saves output to PPV.m3u8
+          python master_script.py > PPV.m3u8 # Run the script and redirect its stdout to PPV.m3u8
 
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
