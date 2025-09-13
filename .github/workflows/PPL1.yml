@@ -16,16 +16,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Cache Python packages (pip)
       - name: Cache pip
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             pip-${{ runner.os }}-
 
-      # Cache Playwright browsers
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
@@ -39,7 +37,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies (only once, then cached)
+      - name: Install dependencies & browsers (only runs on first build)
         run: |
           pip install -r requirements.txt
           playwright install --with-deps firefox
