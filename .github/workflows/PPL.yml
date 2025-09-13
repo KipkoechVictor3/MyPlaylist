@@ -24,6 +24,12 @@ jobs:
           pip install playwright aiohttp dropbox
           playwright install --with-deps firefox
 
+      - name: Create Python script from secret
+        env:
+          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }}
+        run: |
+          echo "$PPL_SCRIPT" > PPL_SCRIPT.py
+
       - name: Run PPL_SCRIPT to generate playlist
         id: run_script
         run: |
