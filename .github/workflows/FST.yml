@@ -1,94 +1,61 @@
-name: Run FST Scraper (standalone)
+name: Update F S T
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */2 * * *"   # every 2 hours
+    # Runs every 2 hours
+    - cron: '0 */2 * * *'
 
 jobs:
-  run-fst:
+  update-playlist:
     runs-on: ubuntu-latest
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # Cache pip wheels (stable key so cache can be used without requirements file)
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          # fixed key so cache persists until you change version strings below
-          key: pip-${{ runner.os }}-playwright1.55.0-aiohttp3.12.15-dropbox12.0.2
-          restore-keys: |
-            pip-${{ runner.os }}-
-
-      # Cache Playwright browsers
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-1.55.0
-          restore-keys: |
-            playwright-${{ runner.os }}-
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Only installs on cache miss; keeps installs off on subsequent runs
-      - name: Install dependencies & browsers (runs only on cache miss)
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install playwright==1.55.0 aiohttp dropbox
-          # Ensure Playwright's Python knows about the browser (only does network download if cache miss)
+          pip install playwright aiohttp dropbox
           playwright install --with-deps firefox
 
-      # Restore the script from secret into FST_SCRIPT.py
-      - name: Restore FST script from secret
+      - name: Create Python script from secret
         env:
           FST_SCRIPT: ${{ secrets.FST_SCRIPT }}
         run: |
           echo "$FST_SCRIPT" > FST_SCRIPT.py
-          chmod +x FST_SCRIPT.py
-          echo "Wrote FST_SCRIPT.py"
 
-      # Run the script. Provide URL either via secret FST_URL (recommended) or via workflow input
-      - name: Run FST script
-        id: run_fst
-        env:
-          FST_URL: ${{ secrets.FST_URL }}   # set this secret to your target homepage
+      - name: Run FST_SCRIPT with fallback URLs
+        id: run_script
         run: |
-          if [ -n "${FST_URL}" ]; then
-            echo "Running with FST_URL from secret"
-            python FST_SCRIPT.py "$FST_URL"
+          set -e
+          if python FST_SCRIPT.py "https://fstv.space/?timezone=Australia%2FSydney"; then
+            echo "Primary URL worked"
           else
-            echo "No FST_URL secret provided — expecting URL as workflow input or embedded in the script"
-            python FST_SCRIPT.py
+            echo "Primary failed, trying fallback..."
+            python FST_SCRIPT.py "https://fstv.zip/?timezone=Asia%2FTokyo"
           fi
 
-      # Check whether the playlist was created and set an output
-      - name: Check for output
-        id: check_output
-        run: |
-          if [ -f "FST.m3u8" ]; then
-            echo "playlist_generated=true" >> $GITHUB_OUTPUT
-            echo "Found FST.m3u8"
+          # Check if the playlist file was created
+          if [ -f "FST_playlist.m3u" ]; then
+            echo "Playlist file generated."
           else
+            echo "Playlist file not found. Skipping Dropbox upload."
             echo "playlist_generated=false" >> $GITHUB_OUTPUT
-            echo "No FST.m3u8 found"
           fi
+        shell: bash
 
-      # Upload to Dropbox if playlist exists
-      - name: Upload FST.m3u8 to Dropbox
-        if: steps.check_output.outputs.playlist_generated == 'true'
+      - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        if: steps.run_script.outputs.playlist_generated != 'false'
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: FST.m3u8
-          DEST_PATH: /MyStuff/FST.m3u8
+          source_path: FST_playlist.m3u
+          DEST_PATH: /MyStuff/FST_playlist.m3u
