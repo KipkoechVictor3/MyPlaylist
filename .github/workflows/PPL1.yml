@@ -1,4 +1,4 @@
-name: Update P P V
+name: Update P P V L
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      # ✅ Install pip deps first (to detect playwright version)
+      # Install pip deps first (to detect Playwright version)
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -26,7 +26,7 @@ jobs:
           PLAYWRIGHT_VERSION=$(python -c "import importlib.metadata; print(importlib.metadata.version('playwright'))")
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
-      # ✅ Cache browsers by OS + Playwright version
+      # Cache browsers by OS + Playwright version
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
@@ -34,23 +34,21 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-playwright-
+          save-always: true
 
-      # ✅ Install only Firefox browser (with system deps)
+      # Install only Firefox browser (with system deps)
       - name: Install Playwright Firefox
-        run: |
-          npx playwright install --with-deps firefox
+        run: npx playwright install --with-deps firefox
 
       - name: Create Python script from secret
         env:
           PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }}
-        run: |
-          echo "$PPL_SCRIPT" > PPL_SCRIPT.py
+        run: echo "$PPL_SCRIPT" > PPL_SCRIPT.py
 
       - name: Run PPL_SCRIPT to generate playlist
         id: run_script
         run: |
           python PPL_SCRIPT.py
-          # Check if the playlist file was created
           if [ -f "PPV_playlist.m3u" ]; then
             echo "playlist_generated=true" >> $GITHUB_OUTPUT
             echo "Playlist file generated."
