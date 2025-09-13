@@ -42,6 +42,7 @@ jobs:
           else
             echo "Playlist file not found. Skipping Dropbox upload."
             echo "playlist_generated=false" >> $GITHUB_OUTPUT
+          fi
         shell: bash
 
       - name: Upload file to Dropbox
