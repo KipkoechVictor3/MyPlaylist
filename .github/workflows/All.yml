@@ -23,9 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Create and Run Playlist Combination Script
+      - name: Create and Run Script
         run: |
-          cat << EOF > combined_playlist_script.py
+          cat << EOF > combined_p_script.py
           import requests
 
          
