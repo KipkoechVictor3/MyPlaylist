@@ -42,5 +42,28 @@ jobs:
           pip install -r requirements.txt
           playwright install --with-deps firefox
 
+      - name: Restore script from secret
+        env:
+          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }}
+        run: |
+          echo "$PPL_SCRIPT" > PPL_SCRIPT.py
+
       - name: Run scraper
-        run: python PPL_SCRIPT.py
+        id: run_script
+        run: |
+          python PPL_SCRIPT.py
+          if [ -f "PPV_playlist.m3u" ]; then
+            echo "playlist_generated=true" >> $GITHUB_OUTPUT
+          else
+            echo "playlist_generated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload playlist to Dropbox
+        if: steps.run_script.outputs.playlist_generated == 'true'
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: PPV_playlist.m3u
+          DEST_PATH: /MyStuff/PPV_playlist.m3u
