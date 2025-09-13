@@ -1,4 +1,4 @@
-name: Update P P V
+name: Update P P V standalone browser
 
 on:
   workflow_dispatch:
