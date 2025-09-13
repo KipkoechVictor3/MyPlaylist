@@ -1,60 +1,48 @@
-name: Update P P V
+name: Playwright Scraper
 
 on:
   workflow_dispatch:
-  schedule:
-    # Runs every 2 hours
-    - cron: '0 */2 * * *'
+  push:
+    branches: [ main ]
 
 jobs:
-  update-playlist:
+  run-script:
     runs-on: ubuntu-latest
+
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
+
+      # Cache Python packages (pip)
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.55.0
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      - name: Install Python dependencies
+      - name: Install dependencies (only once, then cached)
         run: |
-          python -m pip install --upgrade pip
-          pip install playwright aiohttp dropbox
+          pip install -r requirements.txt
+          playwright install --with-deps firefox
 
-      # ✅ Download and unpack Playwright standalone bundle (includes Node, browsers)
-      - name: Download Playwright Standalone
-        run: |
-          curl -L -o playwright-standalone.zip \
-            https://github.com/rgl/playwright-standalone/releases/latest/download/playwright-standalone-ubuntu.zip
-          unzip -q playwright-standalone.zip -d playwright-standalone
-          echo "$PWD/playwright-standalone" >> $GITHUB_PATH
-
-      - name: Create Python script from secret
-        env:
-          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }}
-        run: echo "$PPL_SCRIPT" > PPL_SCRIPT.py
-
-      - name: Run PPL_SCRIPT to generate playlist
-        id: run_script
-        run: |
-          python PPL_SCRIPT.py
-          if [ -f "PPV_playlist.m3u" ]; then
-            echo "playlist_generated=true" >> $GITHUB_OUTPUT
-            echo "Playlist file generated."
-          else
-            echo "playlist_generated=false" >> $GITHUB_OUTPUT
-            echo "Playlist file not found. Skipping Dropbox upload."
-          fi
-        shell: bash
-
-      - name: Upload file to Dropbox
-        if: steps.run_script.outputs.playlist_generated == 'true'
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: PPV_playlist.m3u
-          DEST_PATH: /MyStuff/PPV_playlist.m3u
+      - name: Run scraper
+        run: python PPL_SCRIPT.py
