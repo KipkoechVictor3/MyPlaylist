@@ -1,4 +1,4 @@
-name: Update P P V L
+name: Update P P V
 
 on:
   workflow_dispatch:
@@ -18,27 +18,18 @@ jobs:
         with:
           python-version: '3.10'
 
-      # Install pip deps first (to detect Playwright version)
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install playwright aiohttp dropbox
-          PLAYWRIGHT_VERSION=$(python -c "import importlib.metadata; print(importlib.metadata.version('playwright'))")
-          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
-      # Cache browsers by OS + Playwright version
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-          save-always: true
-
-      # Install only Firefox browser (with system deps)
-      - name: Install Playwright Firefox
-        run: npx playwright install --with-deps firefox
+      # ✅ Download and unpack Playwright standalone bundle (includes Node, browsers)
+      - name: Download Playwright Standalone
+        run: |
+          curl -L -o playwright-standalone.zip \
+            https://github.com/rgl/playwright-standalone/releases/latest/download/playwright-standalone-ubuntu.zip
+          unzip -q playwright-standalone.zip -d playwright-standalone
+          echo "$PWD/playwright-standalone" >> $GITHUB_PATH
 
       - name: Create Python script from secret
         env:
