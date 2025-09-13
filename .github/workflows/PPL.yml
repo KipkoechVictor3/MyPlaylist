@@ -1,4 +1,4 @@
-name: Update Script Workflow
+name: Update PPL
 
 on:
   workflow_dispatch:
