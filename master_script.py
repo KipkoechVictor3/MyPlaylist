@@ -1,6 +1,5 @@
 import asyncio
 import os
-import sys
 import httpx
 import re
 
@@ -26,7 +25,7 @@ SPORTS_KEYWORDS = [
     "ss hd", "uk sky sports", "tsn", "uk:", "usa network", "wwe"
 ]
 
-# --- Fetch remote M3U (generic) ---
+# --- Generic M3U fetch ---
 async def fetch_and_process_remote_m3u(url, source_name):
     print(f"Fetching and processing M3U from {url} (Source: {source_name})...", flush=True)
     try:
@@ -38,7 +37,7 @@ async def fetch_and_process_remote_m3u(url, source_name):
         print(f"❌ Error fetching {source_name}: {e}", flush=True)
         return ""
 
-# --- Fetch LVN with filtering ---
+# --- LVN ---
 async def fetch_lvn_streams(url):
     print(f"Fetching LVN streams from {url}...", flush=True)
     try:
@@ -50,7 +49,7 @@ async def fetch_lvn_streams(url):
         print(f"❌ LVN error: {e}", flush=True)
         return ""
 
-# --- Fetch ZXIPTV ---
+# --- ZXIPTV ---
 async def fetch_zxiptv_streams(url):
     print(f"Fetching ZXIPTV streams from {url}...", flush=True)
     try:
@@ -62,7 +61,7 @@ async def fetch_zxiptv_streams(url):
         print(f"❌ ZXIPTV error: {e}", flush=True)
         return ""
 
-# --- Fetch BuddyChewChew ---
+# --- BuddyChewChew ---
 async def fetch_bdc_streams():
     url = "https://raw.githubusercontent.com/BuddyChewChew/My-Streams/2a46f7064f959f4098140cde484791940695fbd8/stream1.m3u"
     print(f"Fetching BuddyChewChew from {url}...", flush=True)
@@ -75,7 +74,7 @@ async def fetch_bdc_streams():
         print(f"❌ BDC error: {e}", flush=True)
         return ""
 
-# --- Fetch and filter S_check ---
+# --- S_check with filtering ---
 async def fetch_scheck_streams():
     url = "https://raw.githubusercontent.com/Love4vn/love4vn/fdac4154dc60f3c09cede6f0c5ec23549896b8d7/S_check.m3u"
     print(f"Fetching S_check.m3u from {url}...", flush=True)
