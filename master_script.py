@@ -87,55 +87,68 @@ async def fetch_scheck_streams():
         lines = content.splitlines()
         output_lines = ["#EXTM3U"]
 
-        stream_block = []
-        keep_block = False
+        stream_info = None
+        stream_url = None
 
         for line in lines:
             line = line.strip()
             if not line:
                 continue
-
+            
             if line.startswith("#EXTINF:-1"):
-                if stream_block and keep_block:
-                    output_lines.extend(stream_block)
-
-                stream_block = [line]
-                keep_block = False
-
-                raw_name = line.split(",", 1)[-1].strip()
-                lower_name = raw_name.lower()
-
-                if (any(kw in lower_name for kw in [k.lower() for k in SPORTS_KEYWORDS])
+                if stream_info and stream_url:
+                    raw_name = stream_info.split(",", 1)[-1].strip()
+                    lower_name = raw_name.lower()
+                    
+                    if (any(kw in lower_name for kw in [k.lower() for k in SPORTS_KEYWORDS])
                         and "arena" not in lower_name):
-
-                    keep_block = True
-
-                    # clean tvg-name
-                    clean_name = re.sub(r"\(.*?\)", "", raw_name)  # remove (HD)/(FHD)
-                    clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE)
-                    clean_name = clean_name.strip()
-
-                    # replace tvg-id and tvg-name
-                    line = re.sub(r'tvg-id="[^"]*"\s*', '', line)
-                    line = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', line)
-
-                    # force group-title="SCHECK"
-                    if "group-title=" in line:
-                        line = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', line)
-                    else:
-                        line = line.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
-
-                    stream_block[0] = line
-
+                        
+                        clean_name = re.sub(r"\(.*?\)", "", raw_name)
+                        clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE)
+                        clean_name = clean_name.strip()
+                        
+                        stream_info = re.sub(r'tvg-id="[^"]*"\s*', '', stream_info)
+                        stream_info = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', stream_info)
+                        
+                        if "group-title=" not in stream_info:
+                            stream_info = stream_info.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
+                        else:
+                            stream_info = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', stream_info)
+                        
+                        output_lines.append(stream_info)
+                        output_lines.append(stream_url)
+                
+                stream_info = line
+                stream_url = None
+            
             elif not line.startswith("#"):
-                stream_block.append(line)
+                stream_url = line
 
-        if stream_block and keep_block:
-            output_lines.extend(stream_block)
+        if stream_info and stream_url:
+            raw_name = stream_info.split(",", 1)[-1].strip()
+            lower_name = raw_name.lower()
+            
+            if (any(kw in lower_name for kw in [k.lower() for k in SPORTS_KEYWORDS])
+                and "arena" not in lower_name):
+                
+                clean_name = re.sub(r"\(.*?\)", "", raw_name)
+                clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE)
+                clean_name = clean_name.strip()
+                
+                stream_info = re.sub(r'tvg-id="[^"]*"\s*', '', stream_info)
+                stream_info = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', stream_info)
+                
+                if "group-title=" not in stream_info:
+                    stream_info = stream_info.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
+                else:
+                    stream_info = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', stream_info)
+                
+                output_lines.append(stream_info)
+                output_lines.append(stream_url)
 
-        print(f"✅ S_check → {len(output_lines)} lines", flush=True)
+        print(f"✅ S_check → {len(output_lines) - 1} lines (filtered)", flush=True)
         return "\n".join(output_lines)
-
+        
     except Exception as e:
         print(f"❌ Error fetching S_check.m3u: {e}", flush=True)
         return ""
