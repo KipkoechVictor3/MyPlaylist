@@ -34,7 +34,13 @@ jobs:
             "https://www.dropbox.com/scl/fi/v2bh4oscn0ilfxgxh7mt8/PPV_playlist.m3u?rlkey=w41s9xas9xsk7468gb3ydf9pp&st=7n4lan2g&dl=1",
             "https://www.dropbox.com/scl/fi/d2w6aeaush914vrwck5n3/LiveMatches.m3u8?rlkey=41d7ygsieykokn9xvvt4wtqu0&st=z4enss1k&dl=1",
             "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=1r9sbzdi&dl=1",
-            "https://www.dropbox.com/scl/fi/58rie6njaoyw8t8a2cvep/FST.m3u8?rlkey=iata10a9jdsg73fog8z491kpu&st=gjevuem9&dl=1"
+            "https://www.dropbox.com/scl/fi/58rie6njaoyw8t8a2cvep/FST.m3u8?rlkey=iata10a9jdsg73fog8z491kpu&st=gjevuem9&dl=1",
+            "https://world-proxifier.xyz/tims/playlist.m3u8",
+            "https://world-proxifier.xyz/fstv/playlist.m3u8",
+            "https://world-proxifier.xyz/sp/playlist.m3u8",
+            "https://iptv-scraper-re.vercel.app/roxiestreams",
+            "https://iptv-scraper-re.vercel.app/streambtw",
+            "https://iptv-scraper-re.vercel.app/pixelsport"
           ]
           
           output_file = "Combined.m3u"
