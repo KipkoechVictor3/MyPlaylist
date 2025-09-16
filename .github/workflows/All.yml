@@ -49,27 +49,36 @@ jobs:
             outfile.write("#EXTM3U\n")
             
             for url in playlist_urls:
+              print(f"Attempting to retrieve playlist from {url}")
               try:
                 response = requests.get(url, timeout=10)
-                response.encoding = 'utf-8'
-                response.raise_for_status()
+                response.raise_for_status() # This will raise an HTTPError for bad responses (4xx or 5xx)
                 
                 content = response.text.strip()
-                if content:
-                  lines = content.splitlines()
-                  
-                  if lines and lines[0].strip() == "#EXTM3U":
-                    lines = lines[1:]
-                  
-                  for line in lines:
-                    if line.strip():
-                      outfile.write(line + "\n")
+                if not content:
+                  print(f"Playlist from {url} is empty, skipping.")
+                  continue
+                
+                # Process content, removing #EXTM3U header if present
+                lines = content.splitlines()
+                if lines and lines[0].strip() == "#EXTM3U":
+                  lines = lines[1:]
+                
+                for line in lines:
+                  if line.strip(): # Only write non-empty lines
+                    outfile.write(line + "\n")
+                
+                print(f"Successfully added content from {url}")
               except requests.exceptions.Timeout:
                 print(f"Timeout retrieving playlist from {url}")
+              except requests.exceptions.HTTPError as e:
+                # Specifically catch HTTP errors (like 403 Forbidden)
+                print(f"HTTP error for playlist {url}: {e}. Skipping this playlist.")
               except requests.exceptions.RequestException as e:
-                print(f"Error retrieving playlist from {url}: {e}")
+                # Catch other request-related errors
+                print(f"An error occurred retrieving playlist from {url}: {e}. Skipping this playlist.")
           
-          print(f"Successfully created combined playlist: {output_file}")
+          print(f"Finished creating combined playlist: {output_file}")
           
           EOF
           python combined_p_script.py
