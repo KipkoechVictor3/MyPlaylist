@@ -28,6 +28,11 @@ jobs:
           cat << 'EOF' > combined_p_script.py
           import requests
           
+          # Add a custom User-Agent header to mimic a web browser
+          headers = {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+          
           playlist_urls = [
             "https://www.dropbox.com/scl/fi/nu1fnl7fn2f2ltme1q9ic/WAC.m3u8?rlkey=4y95vkr12bc2ae42mf2n7naek&st=5uckw79j&dl=1",
             "https://www.dropbox.com/scl/fi/lcfb6miqcdsnmot02dw4e/Tim.m3u8?rlkey=lcbb6o7pnzfkuuh6p80qrymo4&st=aoscsvp9&dl=1",
@@ -51,7 +56,7 @@ jobs:
             for url in playlist_urls:
               print(f"Attempting to retrieve playlist from {url}")
               try:
-                response = requests.get(url, timeout=10)
+                response = requests.get(url, headers=headers, timeout=10)
                 response.encoding = 'utf-8'
                 response.raise_for_status()
                 
@@ -64,13 +69,11 @@ jobs:
                 if lines and lines[0].strip() == "#EXTM3U":
                   lines = lines[1:]
                 
-                # Check for content after removing header
                 if not lines:
                   print(f"Skipping empty playlist from {url}")
                   continue
 
                 print(f"Successfully added content from {url}")
-                # Print the first few lines of the content
                 for i, line in enumerate(lines[:5]):
                   print(f"  {line}")
 
