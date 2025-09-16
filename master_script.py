@@ -20,9 +20,10 @@ NEW_SCRAPERS = {
 
 # --- Keywords for filtering ---
 SPORTS_KEYWORDS = [
-    "skysports", "sky sports", "starhub", "tnt sports", "supersport",
-    "hubsport", "hub premier", "nz sky", "sky uk", "ss hd",
-    "uk sky sports", "tsn", "uk:", "usa network", "wwe"
+    "sky", "skysport", "sky sport", "sky sports", "skysports",
+    "sky uk", "sky action", "sky bundesliga", "skynet", "starhub",
+    "tnt sports", "supersport", "hubsport", "hub premier", "nz sky",
+    "ss hd", "uk sky sports", "tsn", "uk:", "usa network", "wwe"
 ]
 
 # --- Fetch remote M3U (generic) ---
@@ -78,6 +79,7 @@ async def fetch_bdc_streams():
 async def fetch_scheck_streams():
     url = "https://raw.githubusercontent.com/Love4vn/love4vn/fdac4154dc60f3c09cede6f0c5ec23549896b8d7/S_check.m3u"
     print(f"Fetching S_check.m3u from {url}...", flush=True)
+
     try:
         async with httpx.AsyncClient(timeout=40.0, follow_redirects=True) as client:
             r = await client.get(url)
@@ -87,68 +89,43 @@ async def fetch_scheck_streams():
         lines = content.splitlines()
         output_lines = ["#EXTM3U"]
 
-        stream_info = None
-        stream_url = None
+        def normalize(name):
+            return re.sub(r"[^a-z0-9]+", " ", name.lower())
 
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            
-            if line.startswith("#EXTINF:-1"):
-                if stream_info and stream_url:
-                    raw_name = stream_info.split(",", 1)[-1].strip()
-                    lower_name = raw_name.lower()
-                    
-                    if (any(kw in lower_name for kw in [k.lower() for k in SPORTS_KEYWORDS])
-                        and "arena" not in lower_name):
-                        
-                        clean_name = re.sub(r"\(.*?\)", "", raw_name)
-                        clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE)
-                        clean_name = clean_name.strip()
-                        
-                        stream_info = re.sub(r'tvg-id="[^"]*"\s*', '', stream_info)
-                        stream_info = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', stream_info)
-                        
-                        if "group-title=" not in stream_info:
-                            stream_info = stream_info.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
-                        else:
-                            stream_info = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', stream_info)
-                        
-                        output_lines.append(stream_info)
-                        output_lines.append(stream_url)
-                
-                stream_info = line
-                stream_url = None
-            
-            elif not line.startswith("#"):
-                stream_url = line
+        def is_match(name):
+            norm = normalize(name)
+            return any(kw in norm for kw in [k.lower() for k in SPORTS_KEYWORDS]) and "arena" not in norm
 
-        if stream_info and stream_url:
-            raw_name = stream_info.split(",", 1)[-1].strip()
-            lower_name = raw_name.lower()
-            
-            if (any(kw in lower_name for kw in [k.lower() for k in SPORTS_KEYWORDS])
-                and "arena" not in lower_name):
-                
-                clean_name = re.sub(r"\(.*?\)", "", raw_name)
-                clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE)
-                clean_name = clean_name.strip()
-                
-                stream_info = re.sub(r'tvg-id="[^"]*"\s*', '', stream_info)
-                stream_info = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', stream_info)
-                
-                if "group-title=" not in stream_info:
-                    stream_info = stream_info.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
-                else:
-                    stream_info = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', stream_info)
-                
-                output_lines.append(stream_info)
-                output_lines.append(stream_url)
+        for i in range(len(lines) - 1):
+            info = lines[i].strip()
+            url = lines[i + 1].strip()
+
+            if info.startswith("#EXTINF:-1") and not url.startswith("#"):
+                raw_name = info.split(",", 1)[-1].strip()
+
+                if is_match(raw_name):
+                    clean_name = re.sub(r"\(.*?\)", "", raw_name)
+                    clean_name = re.sub(r"uk:\s*", "", clean_name, flags=re.IGNORECASE).strip()
+
+                    info = re.sub(r'tvg-id="[^"]*"\s*', '', info)
+
+                    if 'tvg-name="' in info:
+                        info = re.sub(r'tvg-name="[^"]*"', f'tvg-name="{clean_name}"', info)
+                    else:
+                        info = info.replace("#EXTINF:-1", f'#EXTINF:-1 tvg-name="{clean_name}"', 1)
+
+                    if "group-title=" not in info:
+                        info = info.replace("#EXTINF:-1", '#EXTINF:-1 group-title="SCHECK"', 1)
+                    else:
+                        info = re.sub(r'group-title="[^"]+"', 'group-title="SCHECK"', info)
+
+                    output_lines.append(info)
+                    output_lines.append(url)
+                    print(f"[MATCH] {clean_name} → {url}", flush=True)
 
         print(f"✅ S_check → {len(output_lines) - 1} lines (filtered)", flush=True)
         return "\n".join(output_lines)
-        
+
     except Exception as e:
         print(f"❌ Error fetching S_check.m3u: {e}", flush=True)
         return ""
