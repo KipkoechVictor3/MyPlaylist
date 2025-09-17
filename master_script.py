@@ -14,7 +14,8 @@ NEW_SCRAPERS = {
     "LVN": "https://raw.githubusercontent.com/Love4vn/love4vn/df177668fda4e7dd5a7004b5987b0c304293aabe/output.m3u",
     "FSTVChannels": "https://www.dropbox.com/scl/fi/hw2qi1jqu3afzyhc6wb5f/FSTVChannels.m3u?rlkey=36nvv2u4ynuh6d9nrbj64zucv&st=6qttdhgs&dl=1",
     "A1X": "https://bit.ly/a1xstream",
-    "ZXIPTV": "https://raw.githubusercontent.com/ZXArkin/my-personal-iptv/0ca106073e1d7ec9fd9fe07d2467cdb8eed13b13/ZXIPTV.m3u"
+    "ZXIPTV": "https://raw.githubusercontent.com/ZXArkin/my-personal-iptv/0ca106073e1d7ec9fd9fe07d2467cdb8eed13b13/ZXIPTV.m3u",
+    "MyStreams": "https://raw.githubusercontent.com/Ridmika9/epg/f9f808aa333fd0919d6648067473c5ea73fb87f6/My%20Streams.m3u"
 }
 
 # --- Filter keywords ---
@@ -312,7 +313,7 @@ def combine_and_save_playlists(all_contents):
     print(f"Combining and saving to '{OUTPUT_FILE_PATH}'...", flush=True)
     full_content = "#EXTM3U\n"
     ordered_sources = [
-        "FSTVChannels", "LocalChannels", "A1X",
+        "FSTVChannels", "MyStreams", "LocalChannels", "A1X",
         "LVN", "DDL", "BuddyChewChew", "ZXIPTV", "S_check"
     ]
     for source_name in ordered_sources:
