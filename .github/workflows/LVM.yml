@@ -5,7 +5,7 @@ on:
   schedule:
     # Runs every 2 hours
     # - cron: '0 */2 * * *'
-    - cron: '*/40 * * * *'
+    - cron: '*/55 * * * *'
 
 jobs:
   update-playlist:
