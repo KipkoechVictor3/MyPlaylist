@@ -82,6 +82,20 @@ async def fetch_and_process_remote_m3u(url, source_name):
         print(f"❌ Error fetching or processing M3U for {source_name}: {e}", flush=True)
         return ""
 
+# --- New function to fetch MyStreams without processing ---
+async def fetch_mystreams_as_is(url):
+    print(f"Fetching MyStreams from {url} without processing...", flush=True)
+    try:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            print(f"✅ Finished fetching MyStreams.", flush=True)
+            return content
+    except Exception as e:
+        print(f"❌ Error fetching MyStreams: {e}", flush=True)
+        return ""
+
 # --- LVN with filtering ---
 async def fetch_lvn_streams(url):
     print(f"Fetching LVN streams from {url}...", flush=True)
@@ -294,6 +308,8 @@ async def run_all_scrapers():
             combined_results[source_name] = await fetch_lvn_streams(url)
         elif source_name == "ZXIPTV":
             combined_results[source_name] = await fetch_zxiptv_streams(url)
+        elif source_name == "MyStreams":
+            combined_results[source_name] = await fetch_mystreams_as_is(url)
         else:
             combined_results[source_name] = await fetch_and_process_remote_m3u(url, source_name)
 
