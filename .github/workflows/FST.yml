@@ -32,13 +32,12 @@ jobs:
           chmod +x FST_SCRIPT.py
           echo "Wrote FST_SCRIPT.py"
           
-      - name: Print script for recovery
-        env:
-          FST_SCRIPT: ${{ secrets.FST_SCRIPT }}
-        run: |
-          # This step will print the script content to the workflow log.
-          # You can copy it from there.
-          echo "$FST_SCRIPT"
+      - name: Upload script as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FST_Python_Script
+          path: FST_SCRIPT.py
+          retention-days: 1 # The script will be available for 1 day
           
       - name: Run FST_SCRIPT to generate playlist
         id: run_script
