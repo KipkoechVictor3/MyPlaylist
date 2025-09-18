@@ -32,13 +32,6 @@ jobs:
           chmod +x FST_SCRIPT.py
           echo "Wrote FST_SCRIPT.py"
           
-      - name: Upload script as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: FST_Python_Script
-          path: FST_SCRIPT.py
-          retention-days: 1 # The script will be available for 1 day
-          
       - name: Run FST_SCRIPT to generate playlist
         id: run_script
         run: |
