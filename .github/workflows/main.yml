@@ -3,7 +3,6 @@ name: Run Playwright Scripts MAIN
 on:
   workflow_dispatch:
   schedule:
-    #- cron: '0 */2 * * *'
     - cron: '*/5 * * * *'
 
 jobs:
@@ -15,7 +14,7 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-        
+      
       - name: List files in repository
         run: ls -al
 
@@ -46,3 +45,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuff/MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
+
+      - name: Signal success to Cronitor
+        run: curl --silent "https://cronitor.link/p/2a7e1594aaf843d0ab2a037849f79ec2/playwright-main"
