@@ -3,7 +3,7 @@ name: Combined Playlist Update
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/25 * * * *'
 
 jobs:
   update-playlist:
