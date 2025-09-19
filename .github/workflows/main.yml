@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
-      env:
-        HOME: /root  # Correctly set the HOME variable for all steps
+    env:
+      HOME: /root # This ensures all steps inside the container have the correct HOME path
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
