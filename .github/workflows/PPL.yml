@@ -34,9 +34,9 @@ jobs:
         run: |
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
 
-      # Upload the script as an artifact for troubleshooting
+      # Upload the script as artifact for troubleshooting
       - name: Upload PPL_SCRIPT.py as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: PPL_SCRIPT
           path: PPL_SCRIPT.py
