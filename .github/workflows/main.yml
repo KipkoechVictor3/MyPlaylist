@@ -3,7 +3,6 @@ name: Combined Playlist Update
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 30 minutes
     - cron: '*/30 * * * *'
 
 jobs:
@@ -12,26 +11,22 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
       env:
-        HOME: /root  # Fix Firefox/Chromium sandbox issues
-
+        HOME: /root  # Correctly set the HOME variable for all steps
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install python3-venv
+      - name: Install dependencies and set up Python virtual environment
         run: |
           apt-get update
           apt-get install -y python3-venv
-
-      - name: Set up Python virtual environment and install dependencies
-        run: |
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
-      - name: Create Python scripts from secrets
+      - name: Create and Run Python scripts, then combine outputs
         env:
           FSTV_SCRIPT: ${{ secrets.FSTVChannels }}
           FST_SCRIPT: ${{ secrets.FST_SCRIPT }}
@@ -39,58 +34,53 @@ jobs:
           TIMST: ${{ secrets.TIMST }}
           WAC_SCRIPT: ${{ secrets.WAC_SCRIPT }}
         run: |
+          # Create Python scripts from secrets
           echo "$FSTV_SCRIPT" > FSTV_Scraper.py
           echo "$FST_SCRIPT" > FST_Scraper.py
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
           echo "$TIMST" > TIM_Scraper.py
           echo "$WAC_SCRIPT" > WAC_Scraper.py
           chmod +x *.py
-        shell: bash
-
-      # Optional: upload scripts as artifacts for debugging
-      # - name: Upload Python scripts as artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: PlaylistScripts
-      #     path: |
-      #       FSTV_Scraper.py
-      #       FST_Scraper.py
-      #       PPL_SCRIPT.py
-      #       TIM_Scraper.py
-      #       WAC_Scraper.py
-
-      - name: Run all playlist scripts
-        id: run_scripts
-        run: |
-          export HOME=/root
+          
+          # Activate virtual environment to ensure all packages are found
           source venv/bin/activate
-
+          
           # Initialize combined playlist
           echo "#EXTM3U" > MyStuff.m3u
 
-          SCRIPTS=(FSTV_Scraper.py FST_Scraper.py PPL_SCRIPT.py TIM_Scraper.py WAC_Scraper.py)
-          for script in "${SCRIPTS[@]}"; do
+          # Map scripts to their output files
+          declare -A script_outputs
+          script_outputs=(
+            ["FSTV_Scraper.py"]="FSTVChannels.m3u"
+            ["FST_Scraper.py"]="FST.m3u8"
+            ["PPL_SCRIPT.py"]="PPV_playlist.m3u"
+            ["TIM_Scraper.py"]="Tim.m3u8"
+            ["WAC_Scraper.py"]="WAC.m3u8"
+          )
+
+          for script in "${!script_outputs[@]}"; do
               echo "Running $script..."
               python "$script" || echo "⚠️ $script failed but continuing..."
-              
-              # Append output if it exists
-              OUTPUT_FILE=$(python -c "import os; print(os.getenv('OUTPUT_FILE', ''))")
-              if [ -f "${OUTPUT_FILE}" ]; then
-                  cat "${OUTPUT_FILE}" >> MyStuff.m3u
+              output_file="${script_outputs[$script]}"
+              if [ -f "$output_file" ]; then
+                  echo "Appending $output_file to MyStuff.m3u"
+                  tail -n +2 "$output_file" >> MyStuff.m3u
+              else
+                  echo "⚠️ $output_file not found, skipping"
               fi
           done
 
           # Append remote playlists
           echo "Appending remote playlists..."
-          URLS=(
+          urls=(
             "https://www.dropbox.com/scl/fi/d2w6aeaush914vrwck5n3/LiveMatches.m3u8?rlkey=41d7ygsieykokn9xvvt4wtqu0&st=z4enss1k&dl=1"
             "https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u"
             "https://www.dropbox.com/scl/fi/04b4ezbk49kjl7js08yrl/Channels.m3u8?rlkey=tuw2enpzrxdn9qru5dhe0a6s7&st=z4bmdv9t&dl=1"
-            "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u"
+            "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
             "https://bit.ly/a1xstream"
             "https://raw.githubusercontent.com/Ridmika9/epg/f9f808aa333fd0919d6648067473c5ea73fb87f6/My%20Streams.m3u"
           )
-          for url in "${URLS[@]}"; do
+          for url in "${urls[@]}"; do
               echo "Downloading $url..."
               curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url"
           done
@@ -98,7 +88,6 @@ jobs:
 
       - name: Upload combined playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        if: always()
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
