@@ -3,37 +3,53 @@ name: Update FSTV Channels
 on:
   workflow_dispatch:
   schedule:
-    # Runs every day at 00:00 UTC
+    # Runs every hour
     - cron: '0 */1 * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      env:
+        HOME: /root   # Fix Firefox/Chromium sandbox issues
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
+      - name: Install python3-venv
         run: |
+          apt-get update
+          apt-get install -y python3-venv
+
+      - name: Set up Python virtual environment and install deps
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install playwright
-          playwright install --with-deps firefox
+          pip install playwright==1.55.0
+        shell: bash
 
       - name: Create Python script from secret
         env:
           FSTV_SCRIPT: ${{ secrets.FSTVChannels }}
         run: |
           echo "$FSTV_SCRIPT" > FSTV_Scraper.py
-          
-      - name: Run Python script to generate playlist
+
+      # Upload the script as artifact (can comment out later)
+      - name: Upload FSTV_Scraper.py as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FSTV_Scraper
+          path: FSTV_Scraper.py
+
+      - name: Run FSTV_Scraper to generate playlist
         run: |
+          export HOME=/root
+          source venv/bin/activate
           python FSTV_Scraper.py
-          
+        shell: bash
+
       - name: Upload file to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
