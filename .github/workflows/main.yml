@@ -3,7 +3,7 @@ name: Combined Playlist Update
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 35 minutes
+    # Runs every 30 minutes
     - cron: '*/30 * * * *'
 
 jobs:
@@ -13,6 +13,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
       env:
         HOME: /root  # Fix Firefox/Chromium sandbox issues
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +23,7 @@ jobs:
           apt-get update
           apt-get install -y python3-venv
 
-      - name: Set up Python virtual environment and install deps
+      - name: Set up Python virtual environment and install dependencies
         run: |
           python3 -m venv venv
           source venv/bin/activate
@@ -43,8 +44,10 @@ jobs:
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
           echo "$TIMST" > TIM_Scraper.py
           echo "$WAC_SCRIPT" > WAC_Scraper.py
+          chmod +x *.py
+        shell: bash
 
-      # Optional: Upload scripts as artifacts (commented out by default)
+      # Optional: upload scripts as artifacts for debugging
       # - name: Upload Python scripts as artifacts
       #   uses: actions/upload-artifact@v4
       #   with:
@@ -56,57 +59,52 @@ jobs:
       #       TIM_Scraper.py
       #       WAC_Scraper.py
 
-      - name: Run all playlist scripts safely
+      - name: Run all playlist scripts
+        id: run_scripts
         run: |
           export HOME=/root
           source venv/bin/activate
 
-          # Clear combined playlist
-          > MyStuff.m3u
+          # Initialize combined playlist
+          echo "#EXTM3U" > MyStuff.m3u
 
-          # Run scripts in order; continue even if a script fails
-          for script in FSTV_Scraper.py FST_Scraper.py PPL_SCRIPT.py TIM_Scraper.py WAC_Scraper.py; do
+          SCRIPTS=(FSTV_Scraper.py FST_Scraper.py PPL_SCRIPT.py TIM_Scraper.py WAC_Scraper.py)
+          for script in "${SCRIPTS[@]}"; do
               echo "Running $script..."
-              python "$script" || echo "⚠️ $script failed, skipping..."
+              python "$script" || echo "⚠️ $script failed but continuing..."
               
-              # Append generated playlist if exists
-              playlist_file="${script%.py}.m3u8"
-              if [ -f "$playlist_file" ]; then
-                  cat "$playlist_file" >> MyStuff.m3u
-              else
-                  echo "⚠️ $playlist_file not found, skipping..."
+              # Append output if it exists
+              OUTPUT_FILE=$(python -c "import os; print(os.getenv('OUTPUT_FILE', ''))")
+              if [ -f "${OUTPUT_FILE}" ]; then
+                  cat "${OUTPUT_FILE}" >> MyStuff.m3u
               fi
           done
 
-          # Append remote playlists safely
+          # Append remote playlists
           echo "Appending remote playlists..."
-          urls=(
+          URLS=(
             "https://www.dropbox.com/scl/fi/d2w6aeaush914vrwck5n3/LiveMatches.m3u8?rlkey=41d7ygsieykokn9xvvt4wtqu0&st=z4enss1k&dl=1"
             "https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u"
             "https://www.dropbox.com/scl/fi/04b4ezbk49kjl7js08yrl/Channels.m3u8?rlkey=tuw2enpzrxdn9qru5dhe0a6s7&st=z4bmdv9t&dl=1"
-            "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
+            "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u"
             "https://bit.ly/a1xstream"
             "https://raw.githubusercontent.com/Ridmika9/epg/f9f808aa333fd0919d6648067473c5ea73fb87f6/My%20Streams.m3u"
           )
-          for url in "${urls[@]}"; do
+          for url in "${URLS[@]}"; do
               echo "Downloading $url..."
-              curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url, skipping..."
+              curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url"
           done
         shell: bash
 
       - name: Upload combined playlist to Dropbox
-        run: |
-          if [ -f "MyStuff.m3u" ]; then
-              echo "Uploading MyStuff.m3u to Dropbox..."
-              gh-actions-dropbox-upload \
-                --app-key ${{ secrets.DROPBOX_APP_KEY }} \
-                --app-secret ${{ secrets.DROPBOX_APP_SECRET }} \
-                --refresh-token ${{ secrets.DROPBOX_REFRESH_TOKEN }} \
-                --source-path MyStuff.m3u \
-                --dest-path /MyStuff/MyStuff.m3u
-          else
-              echo "⚠️ MyStuff.m3u not found, skipping Dropbox upload"
-          fi
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        if: always()
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: MyStuff.m3u
+          DEST_PATH: /MyStuff/MyStuff.m3u
 
       - name: Signal success to Cronitor
         run: curl --silent "https://cronitor.link/p/2a7e1594aaf843d0ab2a037849f79ec2/playwright-main"
