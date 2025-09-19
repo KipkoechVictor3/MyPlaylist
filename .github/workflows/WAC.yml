@@ -3,27 +3,32 @@ name: Update WAC
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 2 hours
-    #- cron: '0 */2 * * *'
+    # Runs every 20 minutes
     - cron: '*/20 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      env:
+        HOME: /root   # Fix Firefox/Chromium sandbox issues
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
+      - name: Install python3-venv
         run: |
+          apt-get update
+          apt-get install -y python3-venv
+
+      - name: Set up Python virtual environment and install deps
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install playwright aiohttp dropbox httpx
-          playwright install --with-deps firefox
+          pip install playwright==1.55.0 aiohttp dropbox httpx
+        shell: bash
 
       - name: Create Python script from secret
         env:
@@ -31,9 +36,18 @@ jobs:
         run: |
           echo "$WAC_SCRIPT" > WAC_SCRIPT.py
 
+      # Upload the script as artifact (can comment out later)
+      - name: Upload WAC_SCRIPT.py as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WAC_SCRIPT
+          path: WAC_SCRIPT.py
+
       - name: Run WAC_SCRIPT to generate playlist
         id: run_script
         run: |
+          export HOME=/root
+          source venv/bin/activate
           python WAC_SCRIPT.py
           # Check if the playlist file was created
           if [ -f "WAC.m3u8" ]; then
