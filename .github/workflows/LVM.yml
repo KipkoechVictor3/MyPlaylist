@@ -1,4 +1,4 @@
-name: Update L M P
+name: Update STBTW
 
 on:
   workflow_dispatch:
@@ -32,25 +32,25 @@ jobs:
 
       - name: Create Python script from secret
         env:
-          LIVEM_SCRIPT: ${{ secrets.LIVEM_SCRIPT }}
+          LIVEM_SCRIPT: ${{ secrets.STREAMBTW_SCRIPT }}
         run: |
-          echo "$LIVEM_SCRIPT" > Live_Channels_Scraper.py
+          echo "$LIVEM_SCRIPT" > StreamBTW.py
 
       # Upload the script as artifact (can comment out later)
-      - name: Upload Live_Channels_Scraper.py as artifact
+      - name: Upload StreamBTW.py as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Live_Channels_Scraper
-          path: Live_Channels_Scraper.py
+          name: StreamBTW
+          path: StreamBTW.py
 
       - name: Run Python script to generate playlist
         id: run_script
         run: |
           export HOME=/root
           source venv/bin/activate
-          python Live_Channels_Scraper.py
+          python StreamBTW.py
           # Check if the playlist file was created
-          if [ -f "LiveMatches.m3u8" ]; then
+          if [ -f "StreamBTW.m3u8" ]; then
             echo "Playlist file generated."
             echo "playlist_generated=true" >> $GITHUB_OUTPUT
           else
@@ -66,5 +66,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: LiveMatches.m3u8
-          DEST_PATH: /MyStuff/LiveMatches.m3u8
+          source_path: StreamBTW.m3u8
+          DEST_PATH: /MyStuff/StreamBTW.m3u8
