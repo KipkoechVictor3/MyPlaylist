@@ -69,7 +69,7 @@ jobs:
               if [ -f "$output_file" ]; then
                   echo "Appending $output_file to MyStuff.m3u"
                   cat "$output_file" >> MyStuff.m3u
-                  echo -e "\n" >> MyStuff.m3u  # Add a newline
+                  printf "\n" >> MyStuff.m3u  # Add a newline
               else
                   echo "⚠️ $output_file not found, skipping"
               fi
