@@ -37,11 +37,11 @@ jobs:
           echo "$TIM_SCRIPT" > TIM_Scraper.py
 
       # Upload the script as artifact (commented out for now)
-      - name: Upload TIM_Scraper.py as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: TIM_Scraper
-          path: TIM_Scraper.py
+      #- name: Upload TIM_Scraper.py as artifact
+       # uses: actions/upload-artifact@v4
+        #with:
+         # name: TIM_Scraper
+          #path: TIM_Scraper.py
 
       - name: Run Python script to generate playlist
         run: |
