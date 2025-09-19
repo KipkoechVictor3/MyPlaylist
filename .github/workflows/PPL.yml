@@ -9,7 +9,9 @@ jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble  # Includes Playwright + browsers
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      env:
+        HOME: /root   # Fix Firefox sandbox issue
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,7 +36,6 @@ jobs:
         run: |
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
 
-      # Upload the script as artifact for troubleshooting
       - name: Upload PPL_SCRIPT.py as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -44,6 +45,7 @@ jobs:
       - name: Run PPL_SCRIPT to generate playlist
         id: run_script
         run: |
+          export HOME=/root
           source venv/bin/activate
           python PPL_SCRIPT.py
           if [ -f "PPV_playlist.m3u" ]; then
