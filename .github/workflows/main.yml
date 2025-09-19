@@ -3,7 +3,6 @@ name: Combined Playlist Update
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 30 minutes
     - cron: '*/30 * * * *'
 
 jobs:
@@ -12,8 +11,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
       env:
-        HOME: /root  # Fix Firefox/Chromium sandbox issues
-
+        HOME: /root # Fix Firefox/Chromium sandbox issues
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,7 +21,7 @@ jobs:
           apt-get update
           apt-get install -y python3-venv
 
-      - name: Set up Python virtual environment and install deps
+      - name: Set up Python virtual environment and install dependencies
         run: |
           python3 -m venv venv
           source venv/bin/activate
@@ -44,19 +42,7 @@ jobs:
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
           echo "$TIMST" > TIM_Scraper.py
           echo "$WAC_SCRIPT" > WAC_Scraper.py
-          chmod +x FSTV_Scraper.py FST_Scraper.py PPL_SCRIPT.py TIM_Scraper.py WAC_Scraper.py
-
-      # Optional: Upload scripts as artifacts (commented out)
-      # - name: Upload Python scripts as artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: PlaylistScripts
-      #     path: |
-      #       FSTV_Scraper.py
-      #       FST_Scraper.py
-      #       PPL_SCRIPT.py
-      #       TIM_Scraper.py
-      #       WAC_Scraper.py
+          chmod +x *.py
 
       - name: Run all playlist scripts and combine outputs
         run: |
@@ -73,7 +59,7 @@ jobs:
             ["FST_Scraper.py"]="FST.m3u8"
             ["PPL_SCRIPT.py"]="PPV_playlist.m3u"
             ["TIM_Scraper.py"]="Tim.m3u8"
-            ["WAC_Scraper.py"]="WAC.m3u"
+            ["WAC_SCRIPT.py"]="WAC.m3u8"
           )
 
           for script in "${!script_outputs[@]}"; do
@@ -82,9 +68,8 @@ jobs:
               output_file="${script_outputs[$script]}"
               if [ -f "$output_file" ]; then
                   echo "Appending $output_file to MyStuff.m3u"
-                  # Remove any #EXTM3U lines from scraper outputs
-                  grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u
-                  echo "" >> MyStuff.m3u  # Ensure newline
+                  cat "$output_file" >> MyStuff.m3u
+                  echo -e "\n" >> MyStuff.m3u  # Add a newline
               else
                   echo "⚠️ $output_file not found, skipping"
               fi
@@ -103,7 +88,6 @@ jobs:
           for url in "${urls[@]}"; do
               echo "Downloading $url..."
               curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url"
-              echo "" >> MyStuff.m3u
           done
         shell: bash
 
