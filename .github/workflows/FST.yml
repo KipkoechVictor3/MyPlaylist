@@ -3,26 +3,32 @@ name: Update FST Playlist
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 15 minutes
+    # Runs every 20 minutes
     - cron: '*/20 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      env:
+        HOME: /root  # Fix Firefox/Chromium sandbox issues
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
+      - name: Install python3-venv
         run: |
+          apt-get update
+          apt-get install -y python3-venv
+
+      - name: Set up Python virtual environment and install deps
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install playwright aiohttp dropbox
-          playwright install --with-deps firefox
+          pip install playwright==1.55.0 aiohttp dropbox
+        shell: bash
 
       - name: Create FST Python script from secret
         env:
@@ -31,11 +37,21 @@ jobs:
           echo "$FST_SCRIPT" > FST_SCRIPT.py
           chmod +x FST_SCRIPT.py
           echo "Wrote FST_SCRIPT.py"
-          
+
+      # Optional: Upload FST_SCRIPT.py as artifact
+      # - name: Upload FST_SCRIPT.py as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: FST_SCRIPT
+      #     path: FST_SCRIPT.py
+
       - name: Run FST_SCRIPT to generate playlist
         id: run_script
         run: |
+          export HOME=/root
+          source venv/bin/activate
           python FST_SCRIPT.py
+
           # Check if the playlist file was created
           if [ -f "FST.m3u8" ]; then
             echo "Playlist file generated."
