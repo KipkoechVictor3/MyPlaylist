@@ -68,8 +68,10 @@ jobs:
               output_file="${script_outputs[$script]}"
               if [ -f "$output_file" ]; then
                   echo "Appending $output_file to MyStuff.m3u"
+                  # Add a newline and a comment before appending the file
+                  echo "" >> MyStuff.m3u
+                  echo "# Appended from $output_file" >> MyStuff.m3u
                   cat "$output_file" >> MyStuff.m3u
-                  printf "\n" >> MyStuff.m3u  # Add a newline
               else
                   echo "⚠️ $output_file not found, skipping"
               fi
@@ -87,6 +89,9 @@ jobs:
           )
           for url in "${urls[@]}"; do
               echo "Downloading $url..."
+              # Add a newline and a comment before appending the remote playlist
+              echo "" >> MyStuff.m3u
+              echo "# Appended from $url" >> MyStuff.m3u
               curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url"
           done
         shell: bash
