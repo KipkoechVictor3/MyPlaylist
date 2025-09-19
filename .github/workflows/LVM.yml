@@ -50,7 +50,7 @@ jobs:
           source venv/bin/activate
           python StreamBTW.py
           # Check if the playlist file was created
-          if [ -f "StreamBTW.m3u8" ]; then
+          if [ -f "LiveMatches.m3u8" ]; then
             echo "Playlist file generated."
             echo "playlist_generated=true" >> $GITHUB_OUTPUT
           else
@@ -66,5 +66,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: StreamBTW.m3u8
-          DEST_PATH: /MyStuff/StreamBTW.m3u8
+          source_path: LiveMatches.m3u8
+          DEST_PATH: /MyStuff/LiveMatches.m3u8
