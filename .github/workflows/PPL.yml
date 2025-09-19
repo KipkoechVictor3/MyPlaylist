@@ -36,11 +36,11 @@ jobs:
         run: |
           echo "$PPL_SCRIPT" > PPL_SCRIPT.py
 
-      - name: Upload PPL_SCRIPT.py as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PPL_SCRIPT
-          path: PPL_SCRIPT.py
+      #- name: Upload PPL_SCRIPT.py as artifact
+       # uses: actions/upload-artifact@v4
+        #with:
+         # name: PPL_SCRIPT
+          #path: PPL_SCRIPT.py
 
       - name: Run PPL_SCRIPT to generate playlist
         id: run_script
