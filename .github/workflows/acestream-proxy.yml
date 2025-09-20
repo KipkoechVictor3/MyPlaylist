@@ -23,10 +23,6 @@ jobs:
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
 
-      - name: Verify AceStream directory structure
-        run: |
-          ls -R acestream
-
       - name: Install ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
@@ -35,12 +31,12 @@ jobs:
 
       - name: Start AceStream + ngrok
         run: |
-          # find the AceStream engine binary inside nested folders
-          ENGINE_PATH=$(find acestream -type f -name "acestream-engine" | head -n1)
+          # find the AceStream engine binary by name
+          ENGINE_PATH=$(find acestream -type f -name "acestreamengine" | head -n1)
           echo "Using AceStream launcher: $ENGINE_PATH"
 
           if [ -z "$ENGINE_PATH" ]; then
-            echo "Error: AceStream engine not found! Check the 'Verify AceStream directory structure' step output for the correct path."
+            echo "Error: AceStream engine not found!"
             exit 1
           fi
 
