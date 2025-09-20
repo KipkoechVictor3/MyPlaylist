@@ -25,9 +25,8 @@ jobs:
 
       - name: Generate and upload file list
         run: |
-          # Use 'ls -R' to list all files and directories recursively and save to a text file
           ls -R acestream > acestream-file-list.txt
-
+      
       - name: Upload file list artifact
         uses: actions/upload-artifact@v4
         with:
