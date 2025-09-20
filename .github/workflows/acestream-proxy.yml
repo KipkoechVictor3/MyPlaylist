@@ -31,9 +31,14 @@ jobs:
 
       - name: Start AceStream + ngrok
         run: |
-          # find the AceStream engine binary
-          ENGINE_PATH=$(find acestream -type f -name "acestream-engine" | head -n1)
+          # find the AceStream engine binary inside nested folders
+          ENGINE_PATH=$(find acestream -type f -path "*/bin/acestream-engine" | head -n1)
           echo "Using AceStream launcher: $ENGINE_PATH"
+
+          if [ -z "$ENGINE_PATH" ]; then
+            echo "Error: AceStream engine not found!"
+            exit 1
+          fi
 
           mkdir -p /tmp/acestream-profile
           chmod +x "$ENGINE_PATH"
