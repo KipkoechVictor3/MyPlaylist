@@ -51,6 +51,9 @@ jobs:
 
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           
+          # Add a short delay here to allow ngrok to write any immediate errors
+          sleep 5
+          
           # Wait for the ngrok API to be available and get the tunnel URL
           echo "Waiting for ngrok tunnel to be ready..."
           RETRY_COUNT=0
