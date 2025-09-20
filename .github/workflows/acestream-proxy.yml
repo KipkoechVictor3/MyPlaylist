@@ -7,69 +7,29 @@ on:
 
 jobs:
   run-proxy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Start AceStream with Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-pip build-essential libsodium-dev python3-nacl python3-apsw python3-lxml python3-setuptools
-          pip3 install aiohttp aiosignal async-timeout attrs certifi chardet charset-normalizer click dnspython expiringdict frozenlist html5lib idna MarkupSafe multidict pycountry pycurl psutil requests six soupsieve versioningit yarl pycryptodomex
-
-
-
-      - name: Download AceStream tarball
-        run: |
-          wget https://download.acestream.media/linux/acestream_3.2.3_ubuntu_22.04_x86_64_py3.10.tar.gz -O acestream.tar.gz
-          mkdir -p acestream
-          tar -xzf acestream.tar.gz -C acestream
+          # Use a pre-built Docker image to run the acestream server
+          docker run -d --name acestream-server -p 6878:6878 magnetikonline/acestream-server:3.1.49_debian_8.11
+          echo "AceStream container started."
+          
+          # Add a delay to ensure the container is fully initialized and listening on the port
+          sleep 30
 
       - name: Install ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+          echo "deb https://ngrok-agent.s3.s3-accelerate.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install -y ngrok
 
-      - name: Start AceStream + ngrok
+      - name: Start ngrok tunnel
         run: |
-          # find the AceStream engine binary by name
-          ENGINE_PATH=$(find acestream -type f -name "acestreamengine" | head -n1)
-          echo "Using AceStream launcher: $ENGINE_PATH"
-
-          if [ -z "$ENGINE_PATH" ]; then
-            echo "Error: AceStream engine not found!"
-            exit 1
-          fi
-
-          mkdir -p /tmp/acestream-profile
-          chmod +x "$ENGINE_PATH"
-
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup "$ENGINE_PATH" --bind-port=6878 --player-id=ghactions --data-dir=/tmp/acestream-profile >engine.log 2>&1 &
-
-          # Wait for AceStream to start and listen on port 6878
-          echo "Waiting for AceStream to start listening on port 6878..."
-          RETRY_COUNT=0
-          MAX_RETRIES=10
-          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            # Check for a TCP listener on port 6878
-            if ss -tln | grep -q ':6878'; then
-              echo "AceStream is listening on port 6878. Proceeding."
-              break
-            else
-              echo "Port 6878 not open, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
-              sleep 5
-              RETRY_COUNT=$((RETRY_COUNT+1))
-            fi
-            if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-              echo "Error: AceStream failed to start after multiple retries. Check engine.log."
-              cat engine.log
-              exit 1
-            fi
-          done
-          
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           
           # Wait for the ngrok API to be available and get the tunnel URL
