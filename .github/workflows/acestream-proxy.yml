@@ -23,6 +23,17 @@ jobs:
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
 
+      - name: Generate and upload file list
+        run: |
+          # Use 'ls -R' to list all files and directories recursively and save to a text file
+          ls -R acestream > acestream-file-list.txt
+
+      - name: Upload file list artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acestream-file-list
+          path: acestream-file-list.txt
+
       - name: Install ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
