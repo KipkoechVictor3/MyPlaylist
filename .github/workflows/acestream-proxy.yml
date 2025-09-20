@@ -15,7 +15,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget tar jq curl
+          # This installs the Python 3.10 shared library
+          sudo apt-get install -y wget tar jq curl libpython3.10-dev
 
       - name: Download AceStream tarball
         run: |
@@ -128,4 +129,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: output/Acestreams.m3u
-          DEST_PATH: /Acestreams/Acestreams.m3m
+          DEST_PATH: /Acestreams/Acestreams.m3u
