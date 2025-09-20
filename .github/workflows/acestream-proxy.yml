@@ -23,13 +23,6 @@ jobs:
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
 
-      - name: Find AceStream engine launcher
-        id: find_engine
-        run: |
-          ENGINE=$(find acestream -type f -name "acestream-engine")
-          echo "ENGINE_PATH=$ENGINE" >> $GITHUB_ENV
-          echo "Found AceStream launcher at: $ENGINE"
-
       - name: Install ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
@@ -38,6 +31,7 @@ jobs:
 
       - name: Start AceStream + ngrok
         run: |
+          ENGINE_PATH="acestream/bin/acestream-engine"
           mkdir -p /tmp/acestream-profile
           chmod +x $ENGINE_PATH
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
@@ -59,7 +53,6 @@ jobs:
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
-            # Replace local 127.0.0.1:6878 with public ngrok IP:PORT
             echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
           } > output/Acestreams.m3u
 
