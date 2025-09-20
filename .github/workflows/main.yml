@@ -74,7 +74,7 @@ jobs:
           echo "Appending remote playlists..."
           urls=(
             "https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u"
-            "https://www.dropbox.com/scl/fi/04b4ezbk49kjl7js08yrl/Channels.m3u8?rlkey=tuw2enpzrxdn9qru5dhe0a6s7&st=z4bmdv9t&dl=1"
+            "https://world-proxifier.xyz/tims/playlist.m3u8"
             "https://raw.githubusercontent.com/pigzillaaa/daddylive/refs/heads/main/daddylive-channels.m3u8"
             "https://bit.ly/a1xstream"
             "https://raw.githubusercontent.com/Ridmika9/epg/f9f808aa333fd0919d6648067473c5ea73fb87f6/My%20Streams.m3u"
