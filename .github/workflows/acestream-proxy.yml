@@ -17,12 +17,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget tar jq curl
 
-      - name: Download and setup AceStream
+      - name: Download AceStream tarball
         run: |
           wget https://download.acestream.media/linux/acestream_3.2.3_ubuntu_22.04_x86_64_py3.10.tar.gz -O acestream.tar.gz
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
-          chmod +x acestream/bin/acestreamengine
+
+      - name: Find AceStream engine binary
+        id: find_engine
+        run: |
+          ENGINE=$(find acestream -type f -name "acestreamengine")
+          echo "ENGINE_PATH=$ENGINE" >> $GITHUB_ENV
+          echo "Found AceStream engine at: $ENGINE"
 
       - name: Install ngrok
         run: |
@@ -34,8 +40,9 @@ jobs:
 
       - name: Start Engine + ngrok
         run: |
+          chmod +x $ENGINE_PATH
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup ./acestream/bin/acestreamengine --client-console >engine.log 2>&1 &
+          nohup $ENGINE_PATH --client-console >engine.log 2>&1 &
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           sleep 20
           curl -s http://127.0.0.1:4040/api/tunnels | jq . > tunnels.json
