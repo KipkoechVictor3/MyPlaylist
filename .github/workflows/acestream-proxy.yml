@@ -45,6 +45,10 @@ jobs:
 
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
           nohup "$ENGINE_PATH" --bind-port=6878 --player-id=ghactions --data-dir=/tmp/acestream-profile >engine.log 2>&1 &
+          
+          # Add a delay to ensure AceStream has time to start
+          sleep 5
+
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           
           # Wait for the ngrok API to be available and get the tunnel URL
