@@ -43,7 +43,7 @@ jobs:
           mkdir -p /tmp/acestream-profile
           chmod +x $ENGINE_PATH
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup $ENGINE_PATH --client-console --log-file=/tmp/acestream-profile/engine.log --player-id=ghactions --bind-port=6878 --data-dir=/tmp/acestream-profile >engine.log 2>&1 &
+          nohup $ENGINE_PATH /tmp/acestream-profile --bind-port=6878 --player-id=ghactions --log-file=/tmp/acestream-profile/engine.log >engine.log 2>&1 &
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           sleep 20
           curl -s http://127.0.0.1:4040/api/tunnels | jq . > tunnels.json
@@ -61,6 +61,7 @@ jobs:
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
+            # Replace local 127.0.0.1:6878 with public ngrok address
             echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
           } > output/Acestreams.m3u
 
