@@ -70,7 +70,10 @@ jobs:
 
           # Check if tunnels.json was created successfully
           if [ ! -s tunnels.json ]; then
-            echo "Error: Failed to get ngrok tunnel information after multiple retries. Check ngrok.log for details."
+            echo "Error: Failed to get ngrok tunnel information after multiple retries."
+            echo "--- ngrok.log ---"
+            cat ngrok.log
+            echo "--- end of ngrok.log ---"
             exit 1
           fi
 
