@@ -16,13 +16,13 @@ jobs:
         run: |
           docker run -d --name acestream-server -p 6878:6878 magnetikonline/acestream-server:3.1.49_debian_8.11
           echo "AceStream container started."
-          # A short delay to allow the container to start before the port check begins
           sleep 10
 
       - name: Install ngrok and netcat
         run: |
           sudo apt-get update
-          sudo apt-get install -y netcat
+          sudo apt-get install -y netcat-openbsd
+          
           # Download the ngrok v3 binary for Linux
           wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O ngrok.tgz
           
