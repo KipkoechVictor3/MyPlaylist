@@ -23,16 +23,6 @@ jobs:
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
 
-      - name: Generate and upload file list
-        run: |
-          ls -R acestream > acestream-file-list.txt
-      
-      - name: Upload file list artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: acestream-file-list
-          path: acestream-file-list.txt
-
       - name: Install ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
@@ -56,8 +46,30 @@ jobs:
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
           nohup "$ENGINE_PATH" --bind-port=6878 --player-id=ghactions --data-dir=/tmp/acestream-profile >engine.log 2>&1 &
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
-          sleep 20
-          curl -s http://127.0.0.1:4040/api/tunnels | jq . > tunnels.json
+          
+          # Wait for the ngrok API to be available and get the tunnel URL
+          echo "Waiting for ngrok tunnel to be ready..."
+          RETRY_COUNT=0
+          MAX_RETRIES=10
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            TUNNELS=$(curl -s http://127.0.0.1:4040/api/tunnels)
+            if echo "$TUNNELS" | jq -e '.tunnels | length > 0' >/dev/null; then
+              echo "ngrok tunnel is ready."
+              echo "$TUNNELS" | jq . > tunnels.json
+              break
+            else
+              echo "ngrok API not ready, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
+              sleep 5
+              RETRY_COUNT=$((RETRY_COUNT+1))
+            fi
+          done
+
+          # Check if tunnels.json was created successfully
+          if [ ! -s tunnels.json ]; then
+            echo "Error: Failed to get ngrok tunnel information after multiple retries. Check ngrok.log for details."
+            exit 1
+          fi
+
           cat tunnels.json
 
       - name: Generate Playlist
@@ -70,7 +82,7 @@ jobs:
 
           mkdir -p output
           {
-            echo '#EXTM3U'
+            echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
             echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
           } > output/Acestreams.m3u
