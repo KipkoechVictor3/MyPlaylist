@@ -16,10 +16,13 @@ jobs:
         run: |
           docker run -d --name acestream-server -p 6878:6878 magnetikonline/acestream-server:3.1.49_debian_8.11
           echo "AceStream container started."
-          sleep 30
+          # A short delay to allow the container to start before the port check begins
+          sleep 10
 
-      - name: Install ngrok
+      - name: Install ngrok and netcat
         run: |
+          sudo apt-get update
+          sudo apt-get install -y netcat
           # Download the ngrok v3 binary for Linux
           wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O ngrok.tgz
           
@@ -29,10 +32,29 @@ jobs:
           # Move it to a directory in your PATH, making it globally accessible
           sudo mv ngrok /usr/local/bin/ngrok
           
-          echo "ngrok is now installed in /usr/local/bin/"
+          echo "ngrok and netcat are now installed."
 
       - name: Start ngrok tunnel
         run: |
+          # Wait for the AceStream service inside the Docker container to be ready
+          echo "Waiting for AceStream to start listening on port 6878..."
+          RETRY_COUNT=0
+          MAX_RETRIES=10
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if nc -z -w5 localhost 6878; then
+              echo "AceStream is listening on port 6878. Proceeding."
+              break
+            else
+              echo "Port 6878 not open, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
+              sleep 5
+              RETRY_COUNT=$((RETRY_COUNT+1))
+            fi
+            if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+              echo "Error: AceStream service in Docker container failed to start after multiple retries."
+              exit 1
+            fi
+          done
+
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
           nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           
