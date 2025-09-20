@@ -45,14 +45,29 @@ jobs:
 
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
           nohup "$ENGINE_PATH" --bind-port=6878 --player-id=ghactions --data-dir=/tmp/acestream-profile >engine.log 2>&1 &
-          
-          # Add a longer delay to ensure AceStream has time to start
-          sleep 20
 
-          nohup ngrok tcp 6878 >ngrok.log 2>&1 &
+          # Wait for AceStream to start and listen on port 6878
+          echo "Waiting for AceStream to start listening on port 6878..."
+          RETRY_COUNT=0
+          MAX_RETRIES=10
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            # Check for a TCP listener on port 6878
+            if ss -tln | grep -q ':6878'; then
+              echo "AceStream is listening on port 6878. Proceeding."
+              break
+            else
+              echo "Port 6878 not open, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
+              sleep 5
+              RETRY_COUNT=$((RETRY_COUNT+1))
+            fi
+            if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+              echo "Error: AceStream failed to start after multiple retries. Check engine.log."
+              cat engine.log
+              exit 1
+            fi
+          done
           
-          # Add a short delay here to allow ngrok to write any immediate errors
-          sleep 5
+          nohup ngrok tcp 6878 >ngrok.log 2>&1 &
           
           # Wait for the ngrok API to be available and get the tunnel URL
           echo "Waiting for ngrok tunnel to be ready..."
@@ -113,4 +128,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: output/Acestreams.m3u
-          DEST_PATH: /Acestreams/Acestreams.m3u
+          DEST_PATH: /Acestreams/Acestreams.m3m
