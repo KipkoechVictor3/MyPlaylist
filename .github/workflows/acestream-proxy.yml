@@ -31,8 +31,8 @@ jobs:
 
       - name: Start AceStream + ngrok
         run: |
-          TAR_DIR=$(ls -d acestream/*/)
-          ENGINE_PATH="$TAR_DIR/bin/acestream-engine"
+          # find the AceStream engine binary
+          ENGINE_PATH=$(find acestream -type f -name "acestream-engine" | head -n1)
           echo "Using AceStream launcher: $ENGINE_PATH"
 
           mkdir -p /tmp/acestream-profile
