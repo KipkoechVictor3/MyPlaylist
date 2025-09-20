@@ -14,18 +14,22 @@ jobs:
 
       - name: Start AceStream with Docker
         run: |
-          # Use a pre-built Docker image to run the acestream server
           docker run -d --name acestream-server -p 6878:6878 magnetikonline/acestream-server:3.1.49_debian_8.11
           echo "AceStream container started."
-          
-          # Add a delay to ensure the container is fully initialized and listening on the port
           sleep 30
 
       - name: Install ngrok
         run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-          echo "deb https://ngrok-agent.s3.s3-accelerate.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-          sudo apt update && sudo apt install -y ngrok
+          # Download the ngrok binary for Linux
+          wget https://bin.equinox.io/c/4VmD1QD5w/ngrok-stable-linux-amd64.tgz -O ngrok.tgz
+          
+          # Extract the binary
+          tar -xvzf ngrok.tgz
+          
+          # Move it to a directory in your PATH, making it globally accessible
+          sudo mv ngrok /usr/local/bin/ngrok
+          
+          echo "ngrok is now installed in /usr/local/bin/"
 
       - name: Start ngrok tunnel
         run: |
@@ -49,7 +53,6 @@ jobs:
             fi
           done
 
-          # Check if tunnels.json was created successfully
           if [ ! -s tunnels.json ]; then
             echo "Error: Failed to get ngrok tunnel information after multiple retries."
             echo "--- ngrok.log ---"
@@ -92,3 +95,4 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: output/Acestreams.m3u
           DEST_PATH: /Acestreams/Acestreams.m3u
+  
