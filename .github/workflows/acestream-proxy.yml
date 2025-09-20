@@ -16,8 +16,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-pip build-essential libsodium-dev
-          pip3 install aiohttp aiosignal async-timeout attrs certifi chardet charset-normalizer click dnspython expiringdict frozenlist html5lib idna lxml MarkupSafe multidict nacl pycountry pycurl psutil requests six soupsieve versioningit yarl
-      
+          pip3 install aiohttp aiosignal async-timeout attrs certifi chardet charset-normalizer click dnspython expiringdict frozenlist html5lib idna lxml MarkupSafe multidict nacl pycountry pycurl psutil requests six soupsieve versioningit yarl     
       
       - name: Download AceStream tarball
         run: |
