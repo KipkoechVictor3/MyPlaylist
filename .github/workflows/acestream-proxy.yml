@@ -22,7 +22,8 @@ jobs:
           wget https://download.acestream.media/linux/acestream_3.1.74_debian_10.5_x86_64.tar.gz -O acestream.tar.gz
           mkdir -p acestream
           tar -xzf acestream.tar.gz -C acestream
-          sudo ./acestream/install.sh
+          cd acestream
+          sudo ./install.sh
 
       - name: Install ngrok
         run: |
@@ -53,6 +54,7 @@ jobs:
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
+            # Replace local 127.0.0.1:6878 with public ngrok address
             echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
           } > output/Acestreams.m3u
 
