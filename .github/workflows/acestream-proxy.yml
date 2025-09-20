@@ -15,8 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          # This installs the Python 3.10 shared library
-          sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-apsw
+          sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-apsw python3-lxml python3-setuptools python3-m2crypto python3-pycurl python3-psutil
 
       - name: Download AceStream tarball
         run: |
