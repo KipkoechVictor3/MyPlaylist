@@ -15,9 +15,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-pip build-essential libsodium-dev python3-nacl python3-apsw python3-crypto
-          pip3 install aiohttp aiosignal async-timeout attrs certifi chardet charset-normalizer click dnspython expiringdict frozenlist html5lib idna lxml MarkupSafe multidict pycountry pycurl psutil requests six soupsieve versioningit yarl
-
+          sudo apt-get install -y wget tar jq curl libpython3.10-dev python3-pip build-essential libsodium-dev python3-nacl python3-apsw python3-lxml python3-setuptools
+          pip3 install aiohttp aiosignal async-timeout attrs certifi chardet charset-normalizer click dnspython expiringdict frozenlist html5lib idna MarkupSafe multidict pycountry pycurl psutil requests six soupsieve versioningit yarl pycryptodomex
 
 
 
