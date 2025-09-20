@@ -20,8 +20,8 @@ jobs:
 
       - name: Install ngrok
         run: |
-          # Download the ngrok binary for Linux
-          wget https://bin.equinox.io/c/4VmD1QD5w/ngrok-stable-linux-amd64.tgz -O ngrok.tgz
+          # Download the ngrok v3 binary for Linux
+          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O ngrok.tgz
           
           # Extract the binary
           tar -xvzf ngrok.tgz
@@ -95,4 +95,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: output/Acestreams.m3u
           DEST_PATH: /Acestreams/Acestreams.m3u
-  
