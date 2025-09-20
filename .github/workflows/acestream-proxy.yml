@@ -29,14 +29,13 @@ jobs:
           # Extract the binary
           tar -xvzf ngrok.tgz
           
-          # Move it to a directory in your PATH, making it globally accessible
+          # Move it to a directory in your PATH
           sudo mv ngrok /usr/local/bin/ngrok
           
           echo "ngrok and netcat are now installed."
 
       - name: Start ngrok tunnel
         run: |
-          # Wait for the AceStream service inside the Docker container to be ready
           echo "Waiting for AceStream to start listening on port 6878..."
           RETRY_COUNT=0
           MAX_RETRIES=10
@@ -56,15 +55,14 @@ jobs:
           done
 
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup ngrok tcp 6878 >ngrok.log 2>&1 &
-          
-          # Wait for the ngrok API to be available and get the tunnel URL
+          nohup ngrok tcp 6878 --web-addr=127.0.0.1:4040 >ngrok.log 2>&1 &
+
           echo "Waiting for ngrok tunnel to be ready..."
           RETRY_COUNT=0
           MAX_RETRIES=10
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            TUNNELS=$(curl -s http://127.0.0.1:4040/api/tunnels)
-            if echo "$TUNNELS" | jq -e '.tunnels | length > 0' >/dev/null; then
+            TUNNELS=$(curl -s http://127.0.0.1:4040/api/tunnels || true)
+            if echo "$TUNNELS" | jq -e '.tunnels | length > 0' >/dev/null 2>&1; then
               echo "ngrok tunnel is ready."
               echo "$TUNNELS" | jq . > tunnels.json
               break
