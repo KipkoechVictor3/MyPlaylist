@@ -1,10 +1,9 @@
-name: Acestream Playlist Proxy
+name: Acestream Proxy Playlist
 
 on:
   workflow_dispatch:
   schedule:
-    # Every 6h 30m
-    - cron: '30 */6 * * *'
+    - cron: '0 */6 * * *'  # every 6 hours
 
 jobs:
   run-proxy:
@@ -37,56 +36,29 @@ jobs:
           cat tunnels.json
 
       - name: Generate Playlist
+        env:
+          ACESTREAMS: ${{ secrets.ACESTREAMS }}
         run: |
           HOST=$(jq -r '.tunnels[0].public_url' tunnels.json | sed 's|tcp://||')
           IP=$(echo $HOST | cut -d: -f1)
           PORT=$(echo $HOST | cut -d: -f2)
 
-          cat > Acestreams.m3u <<EOF
-#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"
+          mkdir -p output
+          {
+            echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
+            echo
+            # replace 127.0.0.1:6878 with $IP:$PORT in secret content
+            echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
+          } > output/Acestreams.m3u
 
-#EXTINF:-1 tvg-id="SkySpMainEv.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/sky-sports-main-event-uk.png" group-title="MY CHANNELS",Sky Sports Main Event
-http://$IP:$PORT/ace/getstream?infohash=78266c15035d0ad8cbc58f821733931e1de434ab&pid=19
+          echo "Generated playlist:"
+          cat output/Acestreams.m3u
 
-#EXTINF:-1 tvg-id="TNT.Sports.2.HD.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/tnt-sports-2-uk.png" group-title="MY CHANNELS",TNT Sports 2 UK
-http://$IP:$PORT/ace/getstream?infohash=01dcc1ea3387c2b73953efe3f52286a770737d7c&pid=87
-
-#EXTINF:-1 tvg-id="TNT.Sports.1.HD.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/tnt-sports-1-uk.png" group-title="MY CHANNELS",TNT Sports 1 UK
-http://$IP:$PORT/ace/getstream?infohash=19c5c13a8e7273d78d53fdaea3deaf1b80e938fa&pid=99
-
-#EXTINF:-1 tvg-id="TNT.Sports.3.HD.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/tnt-sports-3-uk.png" group-title="MY CHANNELS",TNT Sports 3 UK
-http://$IP:$PORT/ace/getstream?infohash=d57ebd44296b0c92c0661cc964e737a54b852cec&pid=100
-
-#EXTINF:-1 tvg-id="SkySportsPremierLeague.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/sky-sports-premier-league-uk.png" group-title="MY CHANNELS",Sky Sports Premier League
-http://$IP:$PORT/ace/getstream?infohash=e33fb63ba12cf45bcee7757c8520f561ad27a39f&pid=104
-
-#EXTINF:-1 tvg-id="Premier.Sports.1.HD.ie" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/premier-sports-ireland-1.png" group-title="MY CHANNELS",Premier Sports Ireland 1
-http://$IP:$PORT/ace/getstream?infohash=13ddaf59c0f2d760fd3775acc254e13825206eac&pid=124
-
-#EXTINF:-1 tvg-id="Premier.Sports.1.HD.ie" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/premier-sports-ireland-2.png" group-title="MY CHANNELS",Premier Sports Ireland 2
-http://$IP:$PORT/ace/getstream?infohash=086e4c7ccc0b80e2960a553d04dac1024c7787b9&pid=221
-
-#EXTINF:-1 tvg-id="SkySp.Fball.uk" tvg-logo="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/logos/sky-sports-football-uk.png" group-title="MY CHANNELS",Sky Sports Football UK
-http://$IP:$PORT/ace/getstream?infohash=54de746f7823812312b4000422618465f7d58f87&pid=126
-
-#EXTINF:0, F1TV 1080P
-http://$IP:$PORT/ace/getstream?id=7da08fcda6fa43a39aca9be65dabf054164eaac1&hlc=1&transcode_audio=0&transcode_mp3=0&transcode_ac3=0&preferred_audio_language=eng&_idx=-1
-
-#EXTINF:0, F1TV 720P
-http://$IP:$PORT/ace/getstream?id=ae5158ae8f60dd2aa1dda912959238c190d6bc1f&hlc=1&transcode_audio=0&transcode_mp3=0&transcode_ac3=0&preferred_audio_language=eng&_idx=-1
-
-#EXTINF:-1,Sky Sports Arena [UK]
-http://$IP:$PORT/ace/getstream?infohash=37796ca47026bc190c7dc26827c0dfb6b61d137b&pid=167
-
-#EXTINF:-1,FOX Sports 2 HD [US]
-http://$IP:$PORT/ace/getstream?infohash=e765303108614af0f9a42da7b45a147195982796&pid=123
-
-#EXTINF:-1,FOX Sports 1 HD [US]
-http://$IP:$PORT/ace/getstream?infohash=df23d9ca9275b354e23156d59b8bc1122441fa47&pid=62
-EOF
-
-          echo "===== GENERATED PLAYLIST ====="
-          cat Acestreams.m3u
+      - name: Upload playlist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acestream-playlist
+          path: output/Acestreams.m3u
 
       - name: Upload Acestream playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -94,10 +66,5 @@ EOF
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: Acestreams.m3u
+          source_path: output/Acestreams.m3u
           DEST_PATH: /Acestreams/Acestreams.m3u
-
-      - name: Keep Alive
-        run: |
-          echo "Proxy running for 6h max. Next run will restart automatically."
-          sleep 21600   # 6 hours
