@@ -23,7 +23,7 @@ jobs:
         run: |
           # Update package list and install unzip and python3-venv.
           apt-get update
-          apt-get install -y python3-venv unzip
+          apt-get install -y python3-venv
           
           # Create and activate a Python virtual environment.
           python3 -m venv venv
@@ -34,14 +34,14 @@ jobs:
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
-      - name: Download and extract scripts from Dropbox
+      - name: Download scripts
         run: |
-          # Use curl to download the zipped folder and save it.
-          # The -L flag handles redirects from the tinyurl link.
-          curl -L -o scripts.zip "https://tinyurl.com/mpsmzkhs"
-          
-          # Unzip the file, junking paths (-j) to avoid directory issues and save to a new folder.
-          unzip -j scripts.zip -d scripts_folder
+          # Use curl to download each script from its unique tinyurl link.
+          curl -L -o FSTV_Scraper.py "https://tinyurl.com/m4evvh4v"
+          curl -L -o FST_Scraper.py "https://tinyurl.com/mv5ew6m5"
+          curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
+          curl -L -o TIM_Scraper.py "https://tinyurl.com/mrmtxffk"
+          curl -L -o WAC_Scraper.py "https://tinyurl.com/35jt8wtm"
         shell: bash
 
       - name: Run Python scripts and combine outputs
@@ -65,8 +65,8 @@ jobs:
           # Loop through each script, run it, and append its output to the main playlist.
           for script in "${!script_outputs[@]}"; do
             echo "Running $script..."
-            # Run the script from the downloaded folder. Use || to continue if a script fails.
-            python scripts_folder/"$script" || echo "⚠️ $script failed but continuing..."
+            # Run the script from the current directory. Use || to continue if a script fails.
+            python "$script" || echo "⚠️ $script failed but continuing..."
             
             output_file="${script_outputs[$script]}"
             if [ -f "$output_file" ]; then
