@@ -30,11 +30,10 @@ jobs:
           pip install playwright==1.55.0
         shell: bash
 
-      - name: Create Python script from secret
-        env:
-          FSTV_SCRIPT: ${{ secrets.FSTVChannels }}
+      - name: Download Python script from Dropbox
         run: |
-          echo "$FSTV_SCRIPT" > FSTV_Scraper.py
+          curl -L -o FSTV_Scraper.py "https://www.dropbox.com/scl/fi/ib43qfg98l90qav4o0j30/fstvchannels.py?rlkey=3otbpfjtibho24guti8l5szsq&st=q0w05kiu&dl=1"
+        shell: bash
 
       # Upload the script as artifact (can comment out later)
       - name: Upload FSTV_Scraper.py as artifact
