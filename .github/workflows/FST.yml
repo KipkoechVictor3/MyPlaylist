@@ -1,0 +1,72 @@
+name: Update FST Playlist
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs every 20 minutes
+    - cron: '*/20 * * * *'
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      env:
+        HOME: /root  # Fix Firefox/Chromium sandbox issues
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install python3-venv
+        run: |
+          apt-get update
+          apt-get install -y python3-venv
+
+      - name: Set up Python virtual environment and install deps
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install playwright==1.55.0 aiohttp dropbox
+        shell: bash
+
+      - name: Create FST Python script from secret
+        env:
+          FST_SCRIPT: ${{ secrets.FST_SCRIPT }}
+        run: |
+          echo "$FST_SCRIPT" > FST_SCRIPT.py
+          chmod +x FST_SCRIPT.py
+          echo "Wrote FST_SCRIPT.py"
+
+      # Upload FST_SCRIPT.py as artifact
+      - name: Upload FST_SCRIPT.py as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FST_SCRIPT
+          path: FST_SCRIPT.py
+
+      - name: Run FST_SCRIPT to generate playlist
+        id: run_script
+        run: |
+          export HOME=/root
+          source venv/bin/activate
+          python FST_SCRIPT.py
+
+          # Check if the playlist file was created
+          if [ -f "FST.m3u8" ]; then
+            echo "Playlist file generated."
+          else
+            echo "Playlist file not found. Skipping Dropbox upload."
+            echo "playlist_generated=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Upload file to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        if: steps.run_script.outputs.playlist_generated != 'false'
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: FST.m3u8
+          DEST_PATH: /MyStuff/FST.m3u8
