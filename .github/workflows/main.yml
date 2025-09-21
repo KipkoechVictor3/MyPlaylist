@@ -19,30 +19,22 @@ jobs:
       - name: Install dependencies and set up Python virtual environment
         run: |
           apt-get update
-          apt-get install -y python3-venv
+          apt-get install -y python3-venv unzip # Add unzip
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
-      - name: Create and Run Python scripts, then combine outputs
-        env:
-          FSTV_SCRIPT: ${{ secrets.FSTVChannels }}
-          FST_SCRIPT: ${{ secrets.FST_SCRIPT }}
-          PPL_SCRIPT: ${{ secrets.PPL_SCRIPT }}
-          TIMST: ${{ secrets.TIMST }}
-          WAC_SCRIPT: ${{ secrets.WAC_SCRIPT }}
+      - name: Download and extract scripts
         run: |
-          # Create Python scripts from secrets
-          echo "$FSTV_SCRIPT" > FSTV_Scraper.py
-          echo "$FST_SCRIPT" > FST_Scraper.py
-          echo "$PPL_SCRIPT" > PPL_SCRIPT.py
-          echo "$TIMST" > TIM_Scraper.py
-          echo "$WAC_SCRIPT" > WAC_Scraper.py
-          chmod +x *.py
-          
-          # Activate virtual environment to ensure all packages are found
+          curl -L -o scripts.zip "https://tinyurl.com/mpsmzkhs"
+          unzip scripts.zip -d scripts_folder
+        shell: bash
+
+      - name: Run Python scripts, then combine outputs
+        run: |
+          # Activate virtual environment
           source venv/bin/activate
           
           # Initialize combined playlist
@@ -59,15 +51,15 @@ jobs:
           )
 
           for script in "${!script_outputs[@]}"; do
-              echo "Running $script..."
-              python "$script" || echo "⚠️ $script failed but continuing..."
-              output_file="${script_outputs[$script]}"
-              if [ -f "$output_file" ]; then
-                  echo "Appending $output_file to MyStuff.m3u"
-                  tail -n +2 "$output_file" >> MyStuff.m3u
-              else
-                  echo "⚠️ $output_file not found, skipping"
-              fi
+            echo "Running $script..."
+            python scripts_folder/"$script" || echo "⚠️ $script failed but continuing..."
+            output_file="${script_outputs[$script]}"
+            if [ -f "$output_file" ]; then
+                echo "Appending $output_file to MyStuff.m3u"
+                tail -n +2 "$output_file" >> MyStuff.m3u
+            else
+                echo "⚠️ $output_file not found, skipping"
+            fi
           done
 
           # Append remote playlists
