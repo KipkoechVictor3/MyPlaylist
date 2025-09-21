@@ -3,44 +3,56 @@ name: Combined Playlist Update
 on:
   workflow_dispatch:
   schedule:
+    # Runs every 40 minutes past the hour.
     - cron: '*/40 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
+      # Use a Playwright container with all necessary dependencies.
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      HOME: /root # This ensures all steps inside the container have the correct HOME path
+      HOME: /root # This is crucial to fix permissions and sandbox issues inside the container.
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies and set up Python virtual environment
         run: |
+          # Update package list and install unzip and python3-venv.
           apt-get update
-          apt-get install -y python3-venv unzip # Add unzip
+          apt-get install -y python3-venv unzip
+          
+          # Create and activate a Python virtual environment.
           python3 -m venv venv
           source venv/bin/activate
+          
+          # Upgrade pip and install all required Python packages.
           python -m pip install --upgrade pip
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
-      - name: Download and extract scripts
+      - name: Download and extract scripts from Dropbox
         run: |
+          # Use curl to download the zipped folder and save it.
+          # The -L flag handles redirects from the tinyurl link.
           curl -L -o scripts.zip "https://tinyurl.com/mpsmzkhs"
-          unzip scripts.zip -d scripts_folder
+          
+          # Unzip the file, junking paths (-j) to avoid directory issues and save to a new folder.
+          unzip -j scripts.zip -d scripts_folder
         shell: bash
 
-      - name: Run Python scripts, then combine outputs
+      - name: Run Python scripts and combine outputs
         run: |
-          # Activate virtual environment
+          # Activate the virtual environment to ensure all installed packages are available.
           source venv/bin/activate
           
-          # Initialize combined playlist
+          # Start the main playlist file with the #EXTM3U header.
           echo "#EXTM3U" > MyStuff.m3u
 
-          # Map scripts to their output files
+          # Define an associative array to map each script to its expected output filename.
           declare -A script_outputs
           script_outputs=(
             ["FSTV_Scraper.py"]="FSTVChannels.m3u"
@@ -50,19 +62,23 @@ jobs:
             ["WAC_Scraper.py"]="WAC.m3u8"
           )
 
+          # Loop through each script, run it, and append its output to the main playlist.
           for script in "${!script_outputs[@]}"; do
             echo "Running $script..."
+            # Run the script from the downloaded folder. Use || to continue if a script fails.
             python scripts_folder/"$script" || echo "⚠️ $script failed but continuing..."
+            
             output_file="${script_outputs[$script]}"
             if [ -f "$output_file" ]; then
                 echo "Appending $output_file to MyStuff.m3u"
+                # Use tail -n +2 to skip the #EXTM3U header of each individual playlist.
                 tail -n +2 "$output_file" >> MyStuff.m3u
             else
                 echo "⚠️ $output_file not found, skipping"
             fi
           done
 
-          # Append remote playlists
+          # Append additional remote playlists directly to the main file.
           echo "Appending remote playlists..."
           urls=(
             "https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u"
@@ -73,16 +89,20 @@ jobs:
           )
           for url in "${urls[@]}"; do
               echo "Downloading $url..."
+              # Use curl with -sL to download silently and follow redirects.
               curl -sL "$url" >> MyStuff.m3u || echo "⚠️ Failed to download $url"
           done
         shell: bash
 
       - name: Upload combined playlist to Dropbox
+        # Use a third-party action to securely upload the final playlist.
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
+          # Use GitHub secrets to authenticate with Dropbox.
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          # Specify the source file to upload and the destination path in Dropbox.
           source_path: MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
 
