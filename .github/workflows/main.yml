@@ -88,8 +88,13 @@ jobs:
               # Ensure the line is not empty and doesn't start with a # (a comment).
               if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
                 echo "Downloading $url..."
-                # Use curl to download and tail to skip the first 10 lines before appending.
-                curl -sL "$url" | tail -n +11 >> MyStuff.m3u || echo "⚠️ Failed to download $url"
+                # Download to a temporary file, then process it.
+                if curl -sL "$url" -o temp_playlist.m3u; then
+                  tail -n +11 temp_playlist.m3u >> MyStuff.m3u
+                  rm temp_playlist.m3u # Clean up the temporary file
+                else
+                  echo "⚠️ Failed to download $url"
+                fi
               fi
             done < "channels.txt"
           else
@@ -109,5 +114,5 @@ jobs:
           source_path: MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
 
-     # - name: Signal success to Cronitor
+      # - name: Signal success to Cronitor
       #  run: curl --silent "https://cronitor.link/p/2a7e1594aaf843d0ab2a037849f79ec2/playwright-main"
