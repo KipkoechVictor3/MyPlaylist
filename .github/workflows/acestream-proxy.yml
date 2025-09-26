@@ -50,7 +50,7 @@ jobs:
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
-            echo "$ACESTREAMS" | sed "s|127.0.0.1:8000|$HOST|g"
+            echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$HOST|g"
           } > output/Acestreams.m3u
 
           FILE_SIZE=$(stat -c%s output/Acestreams.m3u)
