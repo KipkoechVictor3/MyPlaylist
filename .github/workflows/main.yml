@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies and set up Python virtual environment
         run: |
-          # Update package list and install unzip and python3-venv.
+          # Update package list and install python3-venv.
           apt-get update
           apt-get install -y python3-venv
           
@@ -47,6 +47,40 @@ jobs:
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
         shell: bash
 
+      - name: Download remote playlists from channels.txt 📥
+        # This new step downloads all remote content before scripts run.
+        # It names the files based on their line number for easy tracking.
+        run: |
+          echo "Starting download of remote playlists from channels.txt..."
+          if [ -f "channels.txt" ]; then
+            line_number=0
+            # Read channels.txt line by line.
+            while read -r url; do
+              # Increment line number for unique file naming.
+              line_number=$((line_number + 1))
+              # Ensure the line is not empty and doesn't start with a # (a comment).
+              if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
+                temp_file="remote_playlist_${line_number}.m3u"
+                echo "Downloading line ${line_number}: $url to $temp_file"
+                
+                # Use curl with -f (fail fast) for better error handling and 
+                # a short connect timeout. We keep -L for redirects.
+                if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
+                  echo "✅ Successfully downloaded: $url"
+                else
+                  echo "❌ Failed to download: $url"
+                  # Create an empty file or a file with a failure message 
+                  # so we can detect and skip it later.
+                  echo "#EXTM3U" > "$temp_file"
+                  echo "#ERROR_DOWNLOAD_FAILED $url" >> "$temp_file"
+                fi
+              fi
+            done < "channels.txt"
+          else
+            echo "⚠️ channels.txt not found, skipping remote playlist download."
+          fi
+        shell: bash # Use bash for the `while read` loop logic.
+
       - name: Run Python scripts and combine outputs
         run: |
           # Activate the virtual environment to ensure all installed packages are available.
@@ -65,7 +99,8 @@ jobs:
             ["WC.py"]="S5.m3u8"
           )
 
-          # Loop through each script, run it, and append its output to the main playlist.
+          ## 1. APPEND OUTPUTS FROM PYTHON SCRIPTS
+          echo "--- Combining content from Python scripts ---"
           for script in "${!script_outputs[@]}"; do
             echo "Running $script..."
             # Run the script from the current directory. Use || to continue if a script fails.
@@ -81,24 +116,26 @@ jobs:
             fi
           done
 
-          # Fetch and append remote playlists from channels.txt
-          echo "Fetching remote playlists from channels.txt..."
-          if [ -f "channels.txt" ]; then
-            while read -r url; do
-              # Ensure the line is not empty and doesn't start with a # (a comment).
-              if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
-                echo "Downloading $url..."
-                # Download to a temporary file, then process it.
-                if curl -sL "$url" -o temp_playlist.m3u; then
-                  tail -n +11 temp_playlist.m3u >> MyStuff.m3u
-                  rm temp_playlist.m3u # Clean up the temporary file
-                else
-                  echo "⚠️ Failed to download $url"
-                fi
+          ## 2. APPEND CONTENTS FROM REMOTE PLAYLISTS (ALREADY DOWNLOADED)
+          echo "--- Appending pre-downloaded remote playlists ---"
+          # Find all the pre-downloaded remote playlist files.
+          downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
+          
+          if [ -n "$downloaded_files" ]; then
+            for temp_file in $downloaded_files; do
+              # Check if the file contains the failure error marker
+              if grep -q "#ERROR_DOWNLOAD_FAILED" "$temp_file"; then
+                echo "⚠️ Skipping failed download: $(basename "$temp_file")"
+              else
+                echo "Appending content from: $(basename "$temp_file"), skipping first 10 lines"
+                # Append the content, skipping the first 10 lines
+                tail -n +11 "$temp_file" >> MyStuff.m3u
               fi
-            done < "channels.txt"
+              # Clean up the temporary file
+              rm "$temp_file"
+            done
           else
-            echo "⚠️ channels.txt not found, skipping remote playlist download."
+            echo "No remote playlist files found to append."
           fi
         shell: bash
 
