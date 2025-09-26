@@ -34,7 +34,7 @@ jobs:
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
-      - name: Download scripts and channels.txt
+      - name: Download scripts and channels.txt and clean line endings 🧹
         run: |
           # Use curl to download each script from its unique tinyurl link.
           curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
@@ -45,11 +45,19 @@ jobs:
           
           # Download the channels.txt file from the specified URL.
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
+          
+          # FIX: Clean Windows-style (CRLF) line endings from channels.txt. 
+          # This resolves the "curl: (3) URL rejected: Malformed input..." error.
+          if [ -f "channels.txt" ]; then
+            mv channels.txt channels.txt.tmp
+            tr -d '\r' < channels.txt.tmp > channels.txt
+            rm channels.txt.tmp
+            echo "✅ Cleaned channels.txt for invisible line-ending characters."
+          fi
         shell: bash
 
-      - name: Download remote playlists from channels.txt 📥
+      - name: Download remote playlists from channels.txt 📥 (For Troubleshooting)
         # This new step downloads all remote content before scripts run.
-        # It names the files based on their line number for easy tracking.
         run: |
           echo "Starting download of remote playlists from channels.txt..."
           if [ -f "channels.txt" ]; then
@@ -63,14 +71,12 @@ jobs:
                 temp_file="remote_playlist_${line_number}.m3u"
                 echo "Downloading line ${line_number}: $url to $temp_file"
                 
-                # Use curl with -f (fail fast) for better error handling and 
-                # a short connect timeout. We keep -L for redirects.
+                # Use curl with -f (fail fast) for better error handling and a short connect timeout.
                 if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
                   echo "✅ Successfully downloaded: $url"
                 else
                   echo "❌ Failed to download: $url"
-                  # Create an empty file or a file with a failure message 
-                  # so we can detect and skip it later.
+                  # Create a file with a failure marker for detection later.
                   echo "#EXTM3U" > "$temp_file"
                   echo "#ERROR_DOWNLOAD_FAILED $url" >> "$temp_file"
                 fi
@@ -79,7 +85,7 @@ jobs:
           else
             echo "⚠️ channels.txt not found, skipping remote playlist download."
           fi
-        shell: bash # Use bash for the `while read` loop logic.
+        shell: bash
 
       - name: Run Python scripts and combine outputs
         run: |
@@ -123,7 +129,7 @@ jobs:
           
           if [ -n "$downloaded_files" ]; then
             for temp_file in $downloaded_files; do
-              # Check if the file contains the failure error marker
+              # Check if the file for the failure error marker
               if grep -q "#ERROR_DOWNLOAD_FAILED" "$temp_file"; then
                 echo "⚠️ Skipping failed download: $(basename "$temp_file")"
               else
