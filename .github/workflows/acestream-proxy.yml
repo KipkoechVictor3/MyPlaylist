@@ -18,21 +18,13 @@ jobs:
           echo "AceStream container started."
           sleep 10
 
-      - name: Install ngrok and netcat
+      - name: Install netcat and jq
         run: |
           sudo apt-get update
           sudo apt-get install -y netcat-openbsd jq curl
-          
-          # Download ngrok v3 binary
-          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O ngrok.tgz
-          tar -xvzf ngrok.tgz
-          sudo mv ngrok /usr/local/bin/ngrok
-          
-          # Confirm ngrok version
-          ngrok version
-          echo "ngrok and netcat are now installed."
+          echo "Netcat and jq are now installed."
 
-      - name: Start ngrok tunnel
+      - name: Wait for AceStream to be ready
         run: |
           echo "Waiting for AceStream to start listening on port 6878..."
           RETRY_COUNT=0
@@ -52,48 +44,18 @@ jobs:
             fi
           done
 
-          ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup ngrok tcp 6878 >ngrok.log 2>&1 &
-
-          echo "Waiting for ngrok tunnel to be ready..."
-          RETRY_COUNT=0
-          MAX_RETRIES=10
-          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            TUNNELS=$(curl -s http://127.0.0.1:4040/api/tunnels || true)
-            if echo "$TUNNELS" | jq -e '.tunnels | length > 0' >/dev/null 2>&1; then
-              echo "ngrok tunnel is ready."
-              echo "$TUNNELS" | jq . > tunnels.json
-              break
-            else
-              echo "ngrok API not ready, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
-              sleep 5
-              RETRY_COUNT=$((RETRY_COUNT+1))
-            fi
-          done
-
-          if [ ! -s tunnels.json ]; then
-            echo "Error: Failed to get ngrok tunnel information after multiple retries."
-            echo "--- ngrok.log ---"
-            cat ngrok.log
-            echo "--- end of ngrok.log ---"
-            exit 1
-          fi
-
-          cat tunnels.json
-
-      - name: Generate Playlist
+      - name: Generate Playlist using Remote.it endpoint
         env:
           ACESTREAMS: ${{ secrets.ACESTREAMS }}
         run: |
-          HOST=$(jq -r '.tunnels[0].public_url' tunnels.json | sed 's|tcp://||')
-          IP=$(echo $HOST | cut -d: -f1)
-          PORT=$(echo $HOST | cut -d: -f2)
+          REMOTEIT_HOST="proxy5001.remoteit.com"
+          REMOTEIT_PORT="32444"
 
           mkdir -p output
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
-            echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$IP:$PORT|g"
+            echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$REMOTEIT_HOST:$REMOTEIT_PORT|g"
           } > output/Acestreams.m3u
 
           echo "Generated playlist:"
