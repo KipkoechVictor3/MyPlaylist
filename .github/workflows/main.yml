@@ -98,10 +98,15 @@ jobs:
 
             if [ -s "$output_file" ]; then
               FILE_SIZE=$(stat -c%s "$output_file")
-              LINE_COUNT=$(tail -n +11 "$output_file" | wc -l)
+              LINE_COUNT=$(wc -l < "$output_file")
               echo "📏 $output_file size: $FILE_SIZE bytes"
-              echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u (skipping first 10 lines)"
-              tail -n +11 "$output_file" >> MyStuff.m3u
+              echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u with 10-line separator"
+
+              # Add 10 empty lines as separator
+              for i in {1..10}; do echo >> MyStuff.m3u; done
+
+              # Append full content
+              cat "$output_file" >> MyStuff.m3u
               rm -f "$output_file"
             else
               echo "⚠️ $output_file is still empty after waiting, skipping"
@@ -116,10 +121,15 @@ jobs:
                 echo "⚠️ Skipping failed download: $(basename "$temp_file")"
               else
                 FILE_SIZE=$(stat -c%s "$temp_file")
-                LINE_COUNT=$(tail -n +11 "$temp_file" | wc -l)
+                LINE_COUNT=$(wc -l < "$temp_file")
                 echo "📏 $(basename "$temp_file") size: $FILE_SIZE bytes"
-                echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u (skipping first 10 lines)"
-                tail -n +11 "$temp_file" >> MyStuff.m3u
+                echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u with 10-line separator"
+
+                # Add 10 empty lines as separator
+                for i in {1..10}; do echo >> MyStuff.m3u; done
+
+                # Append full content
+                cat "$temp_file" >> MyStuff.m3u
               fi
               rm -f "$temp_file"
             done
