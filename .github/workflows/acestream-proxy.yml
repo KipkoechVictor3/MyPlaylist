@@ -53,8 +53,11 @@ jobs:
             echo "$ACESTREAMS" | sed "s|127.0.0.1:8000|$HOST|g"
           } > output/Acestreams.m3u
 
-          echo "Generated playlist:"
-          cat output/Acestreams.m3u
+          FILE_SIZE=$(stat -c%s output/Acestreams.m3u)
+          LINE_COUNT=$(wc -l < output/Acestreams.m3u)
+          echo "📏 Acestreams.m3u size: $FILE_SIZE bytes"
+          echo "📄 Acestreams.m3u contains $LINE_COUNT lines"
+          echo "✅ Playlist generated with public URLs using tunnel: $HOST"
 
       - name: Upload playlist artifact
         uses: actions/upload-artifact@v4
