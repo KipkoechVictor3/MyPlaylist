@@ -3,7 +3,7 @@ name: Acestream Proxy Playlist
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */24 * * *'  # every 6 hours
+    - cron: '0 */24 * * *'  # every 24 hours
 
 jobs:
   run-proxy:
@@ -21,17 +21,15 @@ jobs:
       - name: Install ngrok and netcat
         run: |
           sudo apt-get update
-          sudo apt-get install -y netcat-openbsd
+          sudo apt-get install -y netcat-openbsd jq curl
           
-          # Download the ngrok v3 binary for Linux
+          # Download ngrok v3 binary
           wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O ngrok.tgz
-          
-          # Extract the binary
           tar -xvzf ngrok.tgz
-          
-          # Move it to a directory in your PATH
           sudo mv ngrok /usr/local/bin/ngrok
           
+          # Confirm ngrok version
+          ngrok version
           echo "ngrok and netcat are now installed."
 
       - name: Start ngrok tunnel
@@ -55,7 +53,7 @@ jobs:
           done
 
           ngrok authtoken ${{ secrets.NGROK_AUTH }}
-          nohup ngrok tcp 6878 --web-addr=127.0.0.1:4040 >ngrok.log 2>&1 &
+          nohup ngrok tcp 6878 >ngrok.log 2>&1 &
 
           echo "Waiting for ngrok tunnel to be ready..."
           RETRY_COUNT=0
