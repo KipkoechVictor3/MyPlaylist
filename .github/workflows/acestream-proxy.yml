@@ -12,50 +12,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Start AceStream with Docker
+      - name: Start AceStream Proxy with Docker
         run: |
-          docker run -d --name acestream-server -p 6878:6878 magnetikonline/acestream-server:3.1.49_debian_8.11
-          echo "AceStream container started."
+          docker run -d --name acestream-proxy -p 8000:8000 rusanter/acestream-proxy
+          echo "AceStream Proxy container started."
           sleep 10
 
-      - name: Install netcat and jq
+      - name: Install LocalTunnel and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y netcat-openbsd jq curl
-          echo "Netcat and jq are now installed."
+          sudo apt-get install -y nodejs npm jq curl
+          sudo npm install -g localtunnel
+          echo "LocalTunnel installed."
 
-      - name: Wait for AceStream to be ready
+      - name: Start LocalTunnel for port 8000
         run: |
-          echo "Waiting for AceStream to start listening on port 6878..."
-          RETRY_COUNT=0
-          MAX_RETRIES=10
-          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            if nc -z -w5 localhost 6878; then
-              echo "AceStream is listening on port 6878. Proceeding."
-              break
-            else
-              echo "Port 6878 not open, retrying... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
-              sleep 5
-              RETRY_COUNT=$((RETRY_COUNT+1))
-            fi
-            if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-              echo "Error: AceStream service in Docker container failed to start after multiple retries."
-              exit 1
-            fi
-          done
+          nohup lt --port 8000 --print-requests > lt.log 2>&1 &
+          sleep 10
 
-      - name: Generate Playlist using Remote.it endpoint
+          TUNNEL_URL=$(grep -m 1 'your url is:' lt.log | awk '{print $NF}')
+          if [ -z "$TUNNEL_URL" ]; then
+            echo "Error: LocalTunnel URL not found."
+            cat lt.log
+            exit 1
+          fi
+
+          echo "Tunnel URL: $TUNNEL_URL"
+          echo "$TUNNEL_URL" > tunnel.txt
+
+      - name: Generate Playlist
         env:
           ACESTREAMS: ${{ secrets.ACESTREAMS }}
         run: |
-          REMOTEIT_HOST="proxy5001.remoteit.com"
-          REMOTEIT_PORT="32444"
-
+          HOST=$(cat tunnel.txt | sed 's|https://||')
           mkdir -p output
+
           {
             echo '#EXTM3U url-tvg="https://raw.githubusercontent.com/pigzillaaaaa/iptv-scraper/refs/heads/main/epgs/daddylive-channels-epg.xml"'
             echo
-            echo "$ACESTREAMS" | sed "s|127.0.0.1:6878|$REMOTEIT_HOST:$REMOTEIT_PORT|g"
+            echo "$ACESTREAMS" | sed "s|127.0.0.1:8000|$HOST|g"
           } > output/Acestreams.m3u
 
           echo "Generated playlist:"
