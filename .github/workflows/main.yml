@@ -1,17 +1,20 @@
 name: Combined Playlist Update
 
 on:
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Runs on a schedule (every 40 minutes)
   schedule:
-    - cron: '*/40 * * * *'  # Runs every 40 minutes
+    - cron: '*/40 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
+    # Use a container image that includes Playwright dependencies
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      HOME: /root
+      HOME: /root # Set HOME to /root for consistent path handling
 
     steps:
       - name: Checkout repository
@@ -24,18 +27,26 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
+          # Install Python libraries needed for scraping and file handling
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
       - name: Download scripts and channels.txt and clean line endings 🧹
         run: |
+          # Downloading existing scripts
           curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
+          
+          # Downloading the new Ace Stream update script (ACEE.py)
+          curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
+          
+          # Downloading channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
 
+          # Clean line endings for channels.txt (important for Unix environments)
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
             tr -d '\r' < channels.txt.tmp > channels.txt
@@ -54,10 +65,12 @@ jobs:
               if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
                 temp_file="remote_playlist_${line_number}.m3u"
                 echo "Downloading line ${line_number}: $url to $temp_file"
+                # Use curl with failure option and timeout
                 if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
                   echo "✅ Successfully downloaded: $url"
                 else
                   echo "❌ Failed to download: $url"
+                  # Create a placeholder file to prevent pipeline failure
                   echo "#EXTM3U" > "$temp_file"
                   echo "#ERROR_DOWNLOAD_FAILED $url" >> "$temp_file"
                 fi
@@ -71,6 +84,7 @@ jobs:
       - name: Run Python scripts and combine outputs
         run: |
           source venv/bin/activate
+          # Start the final combined file with the M3U header
           echo "#EXTM3U" > MyStuff.m3u
 
           declare -A script_outputs
@@ -80,16 +94,24 @@ jobs:
             ["PP.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
+            ["ACEE.py"]="ACEE.m3u8" # Your Ace Stream updater output
           )
 
           echo "--- Combining content from Python scripts ---"
           for script in "${!script_outputs[@]}"; do
             echo "▶️ Running $script..."
+            
+            # Since ACEE.py uses Playwright, install browser binaries just before running
+            if [ "$script" == "ACEE.py" ]; then
+              playwright install
+            fi
+            
             python "$script" || echo "⚠️ $script failed but continuing..."
 
             output_file="${script_outputs[$script]}"
             RETRY=0
             MAX_RETRY=10
+            # Wait for the output file to be created and written to
             while [ ! -s "$output_file" ] && [ $RETRY -lt $MAX_RETRY ]; do
               echo "⏳ Waiting for $output_file to be non-empty... ($RETRY/$MAX_RETRY)"
               sleep 1
@@ -105,7 +127,7 @@ jobs:
               # Add 10 empty lines as separator
               for i in {1..10}; do echo >> MyStuff.m3u; done
 
-              # Append full content
+              # Append full content and remove the temporary script output
               cat "$output_file" >> MyStuff.m3u
               rm -f "$output_file"
             else
@@ -114,6 +136,7 @@ jobs:
           done
 
           echo "--- Appending pre-downloaded remote playlists ---"
+          # Find and sort downloaded remote playlist files
           downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
           if [ -n "$downloaded_files" ]; then
             for temp_file in $downloaded_files; do
@@ -139,6 +162,7 @@ jobs:
         shell: bash
 
       - name: Upload combined playlist to Dropbox
+        # Use the Dropbox action to upload the final combined playlist
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
