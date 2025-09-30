@@ -3,15 +3,16 @@ name: Combined Playlist Update
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs on a schedule (every 40 minutes)
+  # Runs on a schedule (every 30 minutes)
   schedule:
-    - cron: '*/40 * * * *'
+    - cron: '*/35 * * * *' # CHANGED to run every 30 minutes
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
     # Use a container image that includes Playwright dependencies
     container:
+      # Using a modern image for robust Python environment
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
@@ -40,8 +41,11 @@ jobs:
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
           
-          # Downloading the new Ace Stream update script (ACEE.py)
+          # Downloading the Ace Stream update script
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
+          
+          # 🆕 DOWNLOADING YOUR NEW FILTER SCRIPT
+          curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy" 
           
           # Downloading channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
@@ -56,6 +60,7 @@ jobs:
         shell: bash
 
       - name: Download remote playlists from channels.txt 📥
+        # This step remains the same
         run: |
           echo "Starting download of remote playlists from channels.txt..."
           if [ -f "channels.txt" ]; then
@@ -95,15 +100,16 @@ jobs:
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
             ["ACEE.py"]="ACEE.m3u8" # Your Ace Stream updater output
+            ["FILTER.py"]="S_FILTER.m3u" # 🆕 YOUR NEW FILTER SCRIPT OUTPUT
           )
 
           echo "--- Combining content from Python scripts ---"
           for script in "${!script_outputs[@]}"; do
             echo "▶️ Running $script..."
             
-            # Since ACEE.py uses Playwright, install browser binaries just before running
+            # Use Firefox for Playwright, respecting your preference.
             if [ "$script" == "ACEE.py" ]; then
-              playwright install
+              playwright install firefox # Use Firefox for Playwright
             fi
             
             python "$script" || echo "⚠️ $script failed but continuing..."
@@ -162,7 +168,7 @@ jobs:
         shell: bash
 
       - name: Upload combined playlist to Dropbox
-        # Use the Dropbox action to upload the final combined playlist
+        # This step remains the same, uploading MyStuff.m3u to /MyStuff/MyStuff.m3u
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
