@@ -27,7 +27,6 @@ jobs:
         cdn.welovestroll.store/
         jdx3.org/
         embedsports.top/
-        raw.githubusercontent.com/Drewski2423/DrewLive/main/StreamedSU.m3u8
 
     steps:
       - name: Checkout repository
@@ -81,12 +80,10 @@ jobs:
               if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
                 temp_file="remote_playlist_${line_number}.m3u"
                 echo "Downloading line ${line_number}: $url to $temp_file"
-                # Use curl with failure option and timeout
                 if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
                   echo "✅ Successfully downloaded: $url"
                 else
                   echo "❌ Failed to download: $url"
-                  # Create a placeholder file to prevent pipeline failure
                   echo "#EXTM3U" > "$temp_file"
                   echo "#ERROR_DOWNLOAD_FAILED $url" >> "$temp_file"
                 fi
@@ -100,7 +97,7 @@ jobs:
       - name: Run Python scripts and combine outputs into MyStuff.m3u
         run: |
           source venv/bin/activate
-          # Start the final combined file with the M3U header
+          # Start the final combined file with the ONE AND ONLY M3U header
           echo "#EXTM3U" > MyStuff.m3u
 
           declare -A script_outputs
@@ -136,15 +133,14 @@ jobs:
 
             if [ -s "$output_file" ]; then
               FILE_SIZE=$(stat -c%s "$output_file")
-              LINE_COUNT=$(wc -l < "$output_file")
-              echo "📏 $output_file size: $FILE_SIZE bytes"
-              echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u"
+              echo "📄 Appending from $output_file to MyStuff.m3u"
 
               # Add 10 empty lines as separator
               for i in {1..10}; do echo >> MyStuff.m3u; done
 
-              # Append full content and remove the temporary script output
-              cat "$output_file" >> MyStuff.m3u
+              # Append content, but use 'grep -v' to exclude the #EXTM3U line
+              grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u
+              
               rm -f "$output_file"
             else
               echo "⚠️ $output_file is still empty after waiting, skipping"
@@ -158,16 +154,13 @@ jobs:
               if grep -q "#ERROR_DOWNLOAD_FAILED" "$temp_file"; then
                 echo "⚠️ Skipping failed download: $(basename "$temp_file")"
               else
-                FILE_SIZE=$(stat -c%s "$temp_file")
-                LINE_COUNT=$(wc -l < "$temp_file")
-                echo "📏 $(basename "$temp_file") size: $FILE_SIZE bytes"
-                echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u"
+                echo "📄 Appending from $(basename "$temp_file") to MyStuff.m3u"
 
                 # Add 10 empty lines as separator
                 for i in {1..10}; do echo >> MyStuff.m3u; done
 
-                # Append full content
-                cat "$temp_file" >> MyStuff.m3u
+                # Append content, but use 'grep -v' to exclude the #EXTM3U line
+                grep -v '^#EXTM3U' "$temp_file" >> MyStuff.m3u
               fi
               rm -f "$temp_file"
             done
@@ -179,47 +172,50 @@ jobs:
       - name: Process and Create CLW Playlist 🛠️ (Header Removal & Worker Prefixing)
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
-          
-          # 1. Create the new playlist (MyStuffCLW.m3u) as a copy of the original
           cp MyStuff.m3u MyStuffCLW.m3u
           
-          # 2. Get the list of target domains/URLs to be modified safely (Bash readarray)
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
           
           CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
-          # Remove any trailing slash from the worker URL for controlled re-addition
           CLW_URL=$(echo "$CLW_URL" | sed 's/\/$//')
           
           # 3. Remove all #EXTVLCOPT headers globally in the new file
           echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
-          # *** FIXED: Using sed -i.bak for robust in-place editing (GNU standard) ***
+          # FIX: Using sed -i.bak for robust in-place editing
           sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
-          rm -f MyStuffCLW.m3u.bak # Cleanup backup file
+          rm -f MyStuffCLW.m3u.bak
           
           # 4. Loop through each target domain and prefix the corresponding URLs
           echo "b) Starting URL Prefixing..."
           for TARGET in "${TARGET_LIST[@]}"; do
-              # Trim whitespace and check if the target is non-empty
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
                   echo "   -> Prefixing URLs matching: ${TARGET}"
-
-                  # 1. Escape forward slashes and dots for the regex pattern
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   
-                  # 2. Use 'sed' with pipe '|' as delimiter and -i.bak
-                  # Pattern: Find a line starting with 'http' and containing the target
-                  # Replacement: Prepend the CLW_URL + / to the entire matched line (&)
+                  # Use 'sed' with pipe '|' as delimiter and -i.bak
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
-                  rm -f MyStuffCLW.m3u.bak # Cleanup backup file
+                  rm -f MyStuffCLW.m3u.bak 
               fi
           done
           
           echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and headers removed."
         shell: bash
 
+      - name: M3U Formatting Correction 🧹 (Remove extra blank lines)
+        run: |
+          echo "Cleaning up MyStuffCLW.m3u: Removing empty lines and consolidating stream blocks..."
+          
+          # This sequence removes all blank lines (including those created by extra newlines)
+          # 1. Use 'tr -s' to squeeze multiple newlines into one.
+          # 2. Use 'grep -v' to remove any remaining single blank lines.
+          cat MyStuffCLW.m3u | tr -s '\n' | grep -v '^$' > MyStuffCLW_TEMP.m3u
+          mv MyStuffCLW_TEMP.m3u MyStuffCLW.m3u
+
+          echo "✅ MyStuffCLW.m3u now consolidated (blank lines removed)."
+        shell: bash
+
       - name: Upload original combined playlist (MyStuff.m3u) to Dropbox
-        # This step uploads the original, untouched M3U
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -229,7 +225,6 @@ jobs:
           DEST_PATH: /MyStuff/MyStuff.m3u
 
       - name: Upload Cloudflare Worker playlist (MyStuffCLW.m3u) to Dropbox ☁️
-        # This step uploads the processed, CLW-ready M3U
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
