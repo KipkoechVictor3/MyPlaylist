@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   # Runs on a schedule (every 30 minutes)
   schedule:
-    - cron: '*/35 * * * *' # CHANGED to run every 30 minutes
+    - cron: '*/35 * * * *'
 
 jobs:
   update-playlist:
@@ -16,6 +16,17 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
+      # --- NEW CONFIGURATION ---
+      # This is the domain of your Cloudflare Worker that applies the static headers
+      CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev/"
+      # The base URLs from the 5 scripts plus the single remote URL that need CLW prefixing
+      CLW_TARGET_DOMAINS: |
+        gg.poocloud.in/
+        sundaytueday.store/
+        cdn.welovestroll.store/
+        jdx3.org/
+        embedsports.top/
+        raw.githubusercontent.com/Drewski2423/DrewLive/main/StreamedSU.m3u8
 
     steps:
       - name: Checkout repository
@@ -34,19 +45,20 @@ jobs:
 
       - name: Download scripts and channels.txt and clean line endings 🧹
         run: |
+          # ... (Scripts download section remains the same) ...
           # Downloading existing scripts
           curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
-          
+           
           # Downloading the Ace Stream update script
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
-          
+           
           # 🆕 DOWNLOADING YOUR NEW FILTER SCRIPT
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy" 
-          
+           
           # Downloading channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
 
@@ -87,11 +99,11 @@ jobs:
         shell: bash
 
       - name: Run Python scripts and combine outputs
+        # This step builds the original MyStuff.m3u
         run: |
           source venv/bin/activate
-          # Start the final combined file with the M3U header
           echo "#EXTM3U" > MyStuff.m3u
-
+          # ... (The rest of the script running and combining logic remains the same) ...
           declare -A script_outputs
           script_outputs=(
             ["FSC.py"]="S1.m3u"
@@ -117,7 +129,6 @@ jobs:
             output_file="${script_outputs[$script]}"
             RETRY=0
             MAX_RETRY=10
-            # Wait for the output file to be created and written to
             while [ ! -s "$output_file" ] && [ $RETRY -lt $MAX_RETRY ]; do
               echo "⏳ Waiting for $output_file to be non-empty... ($RETRY/$MAX_RETRY)"
               sleep 1
@@ -130,10 +141,7 @@ jobs:
               echo "📏 $output_file size: $FILE_SIZE bytes"
               echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u with 10-line separator"
 
-              # Add 10 empty lines as separator
               for i in {1..10}; do echo >> MyStuff.m3u; done
-
-              # Append full content and remove the temporary script output
               cat "$output_file" >> MyStuff.m3u
               rm -f "$output_file"
             else
@@ -142,7 +150,6 @@ jobs:
           done
 
           echo "--- Appending pre-downloaded remote playlists ---"
-          # Find and sort downloaded remote playlist files
           downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
           if [ -n "$downloaded_files" ]; then
             for temp_file in $downloaded_files; do
@@ -154,10 +161,7 @@ jobs:
                 echo "📏 $(basename "$temp_file") size: $FILE_SIZE bytes"
                 echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u with 10-line separator"
 
-                # Add 10 empty lines as separator
                 for i in {1..10}; do echo >> MyStuff.m3u; done
-
-                # Append full content
                 cat "$temp_file" >> MyStuff.m3u
               fi
               rm -f "$temp_file"
@@ -167,8 +171,53 @@ jobs:
           fi
         shell: bash
 
-      - name: Upload combined playlist to Dropbox
-        # This step remains the same, uploading MyStuff.m3u to /MyStuff/MyStuff.m3u
+      - name: Process and Create CLW Playlist 🛠️
+        run: |
+          echo "Starting creation and processing of MyStuffCLW.m3u..."
+          
+          # 1. Create the new playlist (MyStuffCLW.m3u) as a copy of the original
+          cp MyStuff.m3u MyStuffCLW.m3u
+          
+          # 2. Get the list of target domains/URLs to be modified
+          IFS=$'\n' read -d '' -r -a TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
+          
+          CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
+          
+          # 3. Remove all #EXTVLCOPT headers globally in the new file
+          # We remove them first to simplify the subsequent URL replacement
+          echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
+          # -i (in-place) /d (delete lines matching pattern)
+          # Note: We are using extended regex (-E) to match lines starting with #EXTVLCOPT
+          sed -i -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
+          
+          # 4. Loop through each target domain and prefix the corresponding URLs
+          for TARGET in "${TARGET_LIST[@]}"; do
+              if [[ -n "$TARGET" ]]; then
+                  echo "b) Prefixing URLs matching: ${TARGET}"
+                  
+                  # Create a safe sed pattern: escape forward slashes
+                  # The TARGET is the string we look for in the URL line
+                  SAFE_TARGET=$(echo "${TARGET}" | sed 's/\//\\\//g')
+                  
+                  # The replacement is the CLW_URL followed by the original URL (http/https://TARGET...)
+                  # We use a pattern match to prefix the full URL line
+                  # Find a line starting with 'http' and containing the target domain
+                  # Replace the line with CLW_URL + original line
+                  # We only want to apply this to lines that are actual URLs and contain the target domain
+                  
+                  # Search for lines that start with 'http' and contain the TARGET, then prefix them.
+                  # The '&' in the replacement string holds the entire matched pattern (the full original URL line)
+                  # This is safer than a simple substitution.
+                  # It finds a line starting with 'http' that contains the domain, then prepends the CLW_URL.
+                  sed -i "/^http.*${SAFE_TARGET}/s/^/${CLW_URL}/" MyStuffCLW.m3u
+              fi
+          done
+          
+          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and headers removed."
+        shell: bash
+
+      - name: Upload original combined playlist (MyStuff.m3u) to Dropbox
+        # This step uploads the original, untouched M3U
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -176,3 +225,13 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
+
+      - name: Upload Cloudflare Worker playlist (MyStuffCLW.m3u) to Dropbox ☁️
+        # This is the new step for the processed playlist
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: MyStuffCLW.m3u
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u
