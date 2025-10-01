@@ -16,10 +16,11 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
-      # --- NEW CONFIGURATION ---
-      # This is the domain of your Cloudflare Worker that applies the static headers
-      CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev/"
-      # The base URLs from the 5 scripts plus the single remote URL that need CLW prefixing
+      # --- CLOUDFLARE WORKER CONFIGURATION ---
+      # 1. The domain of your Cloudflare Worker that applies the static headers
+      CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
+      # 2. The base URLs/paths that need the CLW prefix and header stripping
+      # Use full hostnames (or the specific path for remote files)
       CLW_TARGET_DOMAINS: |
         gg.poocloud.in/
         sundaytueday.store/
@@ -45,7 +46,6 @@ jobs:
 
       - name: Download scripts and channels.txt and clean line endings 🧹
         run: |
-          # ... (Scripts download section remains the same) ...
           # Downloading existing scripts
           curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
@@ -72,7 +72,6 @@ jobs:
         shell: bash
 
       - name: Download remote playlists from channels.txt 📥
-        # This step remains the same
         run: |
           echo "Starting download of remote playlists from channels.txt..."
           if [ -f "channels.txt" ]; then
@@ -98,12 +97,12 @@ jobs:
           fi
         shell: bash
 
-      - name: Run Python scripts and combine outputs
-        # This step builds the original MyStuff.m3u
+      - name: Run Python scripts and combine outputs into MyStuff.m3u
         run: |
           source venv/bin/activate
+          # Start the final combined file with the M3U header
           echo "#EXTM3U" > MyStuff.m3u
-          # ... (The rest of the script running and combining logic remains the same) ...
+
           declare -A script_outputs
           script_outputs=(
             ["FSC.py"]="S1.m3u"
@@ -111,17 +110,17 @@ jobs:
             ["PP.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
-            ["ACEE.py"]="ACEE.m3u8" # Your Ace Stream updater output
-            ["FILTER.py"]="S_FILTER.m3u" # 🆕 YOUR NEW FILTER SCRIPT OUTPUT
+            ["ACEE.py"]="ACEE.m3u8"
+            ["FILTER.py"]="S_FILTER.m3u"
           )
 
           echo "--- Combining content from Python scripts ---"
           for script in "${!script_outputs[@]}"; do
             echo "▶️ Running $script..."
             
-            # Use Firefox for Playwright, respecting your preference.
+            # Use Firefox for Playwright, respecting user preference.
             if [ "$script" == "ACEE.py" ]; then
-              playwright install firefox # Use Firefox for Playwright
+              playwright install firefox 
             fi
             
             python "$script" || echo "⚠️ $script failed but continuing..."
@@ -139,9 +138,12 @@ jobs:
               FILE_SIZE=$(stat -c%s "$output_file")
               LINE_COUNT=$(wc -l < "$output_file")
               echo "📏 $output_file size: $FILE_SIZE bytes"
-              echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u with 10-line separator"
+              echo "📄 Appending $LINE_COUNT lines from $output_file to MyStuff.m3u"
 
+              # Add 10 empty lines as separator
               for i in {1..10}; do echo >> MyStuff.m3u; done
+
+              # Append full content and remove the temporary script output
               cat "$output_file" >> MyStuff.m3u
               rm -f "$output_file"
             else
@@ -159,9 +161,12 @@ jobs:
                 FILE_SIZE=$(stat -c%s "$temp_file")
                 LINE_COUNT=$(wc -l < "$temp_file")
                 echo "📏 $(basename "$temp_file") size: $FILE_SIZE bytes"
-                echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u with 10-line separator"
+                echo "📄 Appending $LINE_COUNT lines from $(basename "$temp_file") to MyStuff.m3u"
 
+                # Add 10 empty lines as separator
                 for i in {1..10}; do echo >> MyStuff.m3u; done
+
+                # Append full content
                 cat "$temp_file" >> MyStuff.m3u
               fi
               rm -f "$temp_file"
@@ -171,45 +176,41 @@ jobs:
           fi
         shell: bash
 
-      - name: Process and Create CLW Playlist 🛠️
+      - name: Process and Create CLW Playlist 🛠️ (Header Removal & Worker Prefixing)
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
           
           # 1. Create the new playlist (MyStuffCLW.m3u) as a copy of the original
           cp MyStuff.m3u MyStuffCLW.m3u
           
-          # 2. Get the list of target domains/URLs to be modified
-          IFS=$'\n' read -d '' -r -a TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
+          # 2. Get the list of target domains/URLs to be modified safely (Bash readarray)
+          # This correctly handles the multi-line env variable
+          readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
           
           CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
+          # Remove any trailing slash from the worker URL for controlled re-addition
+          CLW_URL=$(echo "$CLW_URL" | sed 's/\/$//')
           
           # 3. Remove all #EXTVLCOPT headers globally in the new file
-          # We remove them first to simplify the subsequent URL replacement
           echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
-          # -i (in-place) /d (delete lines matching pattern)
-          # Note: We are using extended regex (-E) to match lines starting with #EXTVLCOPT
-          sed -i -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
+          # Using sed -i '' -E for cross-platform compatibility (BSD/GNU sed)
+          sed -i '' -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
           
           # 4. Loop through each target domain and prefix the corresponding URLs
+          echo "b) Starting URL Prefixing..."
           for TARGET in "${TARGET_LIST[@]}"; do
+              # Trim whitespace and check if the target is non-empty
+              TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
-                  echo "b) Prefixing URLs matching: ${TARGET}"
+                  echo "   -> Prefixing URLs matching: ${TARGET}"
+
+                  # 1. Escape forward slashes and dots for the regex pattern
+                  SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   
-                  # Create a safe sed pattern: escape forward slashes
-                  # The TARGET is the string we look for in the URL line
-                  SAFE_TARGET=$(echo "${TARGET}" | sed 's/\//\\\//g')
-                  
-                  # The replacement is the CLW_URL followed by the original URL (http/https://TARGET...)
-                  # We use a pattern match to prefix the full URL line
-                  # Find a line starting with 'http' and containing the target domain
-                  # Replace the line with CLW_URL + original line
-                  # We only want to apply this to lines that are actual URLs and contain the target domain
-                  
-                  # Search for lines that start with 'http' and contain the TARGET, then prefix them.
-                  # The '&' in the replacement string holds the entire matched pattern (the full original URL line)
-                  # This is safer than a simple substitution.
-                  # It finds a line starting with 'http' that contains the domain, then prepends the CLW_URL.
-                  sed -i "/^http.*${SAFE_TARGET}/s/^/${CLW_URL}/" MyStuffCLW.m3u
+                  # 2. Use 'sed' with pipe '|' as delimiter for safer URL manipulation.
+                  # Pattern: Find a line starting with 'http' and containing the target
+                  # Replacement: Prepend the CLW_URL + / to the entire matched line (&)
+                  sed -i '' -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
               fi
           done
           
@@ -227,7 +228,7 @@ jobs:
           DEST_PATH: /MyStuff/MyStuff.m3u
 
       - name: Upload Cloudflare Worker playlist (MyStuffCLW.m3u) to Dropbox ☁️
-        # This is the new step for the processed playlist
+        # This step uploads the processed, CLW-ready M3U
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
