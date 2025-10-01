@@ -202,17 +202,24 @@ jobs:
           echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and headers removed."
         shell: bash
 
-      - name: M3U Formatting Correction 🧹 (Remove extra blank lines)
+      - name: M3U Formatting Correction 🧹 (Fix Title/URL Concatenation)
         run: |
-          echo "Cleaning up MyStuffCLW.m3u: Removing empty lines and consolidating stream blocks..."
+          echo "Fixing Title/URL concatenation issue by aggressively cleaning line breaks..."
           
-          # This sequence removes all blank lines (including those created by extra newlines)
-          # 1. Use 'tr -s' to squeeze multiple newlines into one.
-          # 2. Use 'grep -v' to remove any remaining single blank lines.
-          cat MyStuffCLW.m3u | tr -s '\n' | grep -v '^$' > MyStuffCLW_TEMP.m3u
-          mv MyStuffCLW_TEMP.m3u MyStuffCLW.m3u
-
-          echo "✅ MyStuffCLW.m3u now consolidated (blank lines removed)."
+          # 1. Remove all Windows-style carriage return characters (\r)
+          tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
+          
+          # 2. Remove all trailing whitespace (spaces/tabs) from the end of every line.
+          # This ensures the channel title line ends cleanly right before the newline.
+          sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
+          
+          # 3. Remove all blank lines, ensuring the URL line immediately follows the EXTINF line.
+          grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
+          
+          # Cleanup temporary files
+          rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m32
+          
+          echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
 
       - name: Upload original combined playlist (MyStuff.m3u) to Dropbox
