@@ -12,22 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     # Use a container image that includes Playwright dependencies
     container:
-      # Using a modern image for robust Python environment
+      # Using a modern image for robust Python environment with pre-installed browsers
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
       # --- CLOUDFLARE WORKER CONFIGURATION ---
-      # 1. The domain of your Cloudflare Worker that applies the static headers
       CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
-      # 2. The base URLs/paths that need the CLW prefix and header stripping
-      # Use full hostnames (or the specific path for remote files)
       CLW_TARGET_DOMAINS: |
         gg.poocloud.in/
         sundaytueday.store/
         cdn.welovestroll.store/
         jdx3.org/
         embedsports.top/
-      # 3. EPG URL TO ADD TO THE M3U HEADER
       EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
 
     steps:
@@ -36,14 +32,15 @@ jobs:
 
       - name: Install dependencies and set up Python virtual environment
         run: |
+          # The container already has Playwright binaries and dependencies.
           apt-get update
           apt-get install -y python3-venv
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          # Install Python libraries needed for scraping and file handling
-          # NOTE: Playwright browser installation will use Firefox as per your preference.
+          # Install Python libraries needed for scraping, I/O, and file handling
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
+          # NOTE: playwright install is not needed as binaries are in the container.
         shell: bash
 
       - name: Download scripts and channels.txt and clean line endings 🧹
@@ -54,14 +51,11 @@ jobs:
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
-            
-          # Downloading the Ace Stream update script
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
-            
-          # DOWNLOADING YOUR NEW FILTER SCRIPT
-          curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy" 
-            
-          # Downloading channels list
+          curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
+          # Using the modified PPL_SCRIPT.py
+          curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
+          # Download channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
 
           # Clean line endings for channels.txt (important for Unix environments)
@@ -97,19 +91,17 @@ jobs:
           fi
         shell: bash
 
-      - name: Run Python scripts and combine outputs into MyStuff.m3u
+      - name: Run Python scripts SEQUENTIALLY and combine outputs into MyStuff.m3u
         run: |
           source venv/bin/activate
           
-          # 💡 MODIFICATION HERE: Start the final combined file with the M3U header
-          # and include the EPG URL using the url-tvg attribute.
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
 
           declare -A script_outputs
           script_outputs=(
             ["FSC.py"]="S1.m3u"
             ["FS.py"]="S2.m3u8"
-            ["PP.py"]="S3.m3u"
+            ["PPL_SCRIPT.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
             ["ACEE.py"]="ACEE.m3u8"
@@ -120,36 +112,21 @@ jobs:
           for script in "${!script_outputs[@]}"; do
             echo "▶️ Running $script..."
             
-            # Use Firefox for Playwright, respecting user preference.
-            if [ "$script" == "ACEE.py" ]; then
-              playwright install firefox 
-            fi
-            
-            python "$script" || echo "⚠️ $script failed but continuing..."
+            # The '|| echo' allows the workflow to proceed even if a script fails (exit 1)
+            python "$script" || echo "⚠️ $script failed but continuing with the next script..."
 
             output_file="${script_outputs[$script]}"
-            RETRY=0
-            MAX_RETRY=10
-            while [ ! -s "$output_file" ] && [ $RETRY -lt $MAX_RETRY ]; do
-              echo "⏳ Waiting for $output_file to be non-empty... ($RETRY/$MAX_RETRY)"
-              sleep 1
-              RETRY=$((RETRY + 1))
-            done
-
+            
+            # Simplified wait/check for output file
             if [ -s "$output_file" ]; then
-              FILE_SIZE=$(stat -c%s "$output_file")
               echo "📄 Appending from $output_file to MyStuff.m3u"
-
-              # Add 10 empty lines as separator
+              
               for i in {1..10}; do echo >> MyStuff.m3u; done
-
-              # Append content, but use 'grep -v' to exclude the #EXTM3U line
-              # This prevents multiple #EXTM3U tags in the final file.
               grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u
               
               rm -f "$output_file"
             else
-              echo "⚠️ $output_file is still empty after waiting, skipping"
+              echo "⚠️ $output_file is still empty, skipping append."
             fi
           done
 
@@ -162,10 +139,7 @@ jobs:
               else
                 echo "📄 Appending from $(basename "$temp_file") to MyStuff.m3u"
 
-                # Add 10 empty lines as separator
                 for i in {1..10}; do echo >> MyStuff.m3u; done
-
-                # Append content, but use 'grep -v' to exclude the #EXTM3U line
                 grep -v '^#EXTM3U' "$temp_file" >> MyStuff.m3u
               fi
               rm -f "$temp_file"
@@ -185,23 +159,18 @@ jobs:
           CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
           CLW_URL=$(echo "$CLW_URL" | sed 's/\/$//')
           
-          # 3. Remove all #EXTVLCOPT headers globally in the new file
           echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
-          # FIX: Using sed -i.bak for robust in-place editing
           sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
           rm -f MyStuffCLW.m3u.bak
           
-          # 4. Loop through each target domain and prefix the corresponding URLs
           echo "b) Starting URL Prefixing..."
           for TARGET in "${TARGET_LIST[@]}"; do
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
                   echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
-                  
-                  # Use 'sed' with pipe '|' as delimiter and -i.bak
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
-                  rm -f MyStuffCLW.m3u.bak 
+                  rm -f MyStuffCLW.m3u.bak
               fi
           done
           
@@ -211,20 +180,10 @@ jobs:
       - name: M3U Formatting Correction 🧹 (Fix Title/URL Concatenation)
         run: |
           echo "Fixing Title/URL concatenation issue by aggressively cleaning line breaks..."
-          
-          # 1. Remove all Windows-style carriage return characters (\r)
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
-          
-          # 2. Remove all trailing whitespace (spaces/tabs) from the end of every line.
-          # This ensures the channel title line ends cleanly right before the newline.
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
-          
-          # 3. Remove all blank lines, ensuring the URL line immediately follows the EXTINF line.
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
-          
-          # Cleanup temporary files
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m32
-          
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
 
