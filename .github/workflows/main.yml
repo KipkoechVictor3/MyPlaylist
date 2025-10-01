@@ -3,7 +3,7 @@ name: Combined Playlist Update
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs on a schedule (every 30 minutes)
+  # Runs on a schedule (every 35 minutes)
   schedule:
     - cron: '*/35 * * * *'
 
@@ -56,7 +56,7 @@ jobs:
           # Downloading the Ace Stream update script
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
            
-          # 🆕 DOWNLOADING YOUR NEW FILTER SCRIPT
+          # DOWNLOADING YOUR NEW FILTER SCRIPT
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy" 
            
           # Downloading channels list
@@ -184,7 +184,6 @@ jobs:
           cp MyStuff.m3u MyStuffCLW.m3u
           
           # 2. Get the list of target domains/URLs to be modified safely (Bash readarray)
-          # This correctly handles the multi-line env variable
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
           
           CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
@@ -193,8 +192,9 @@ jobs:
           
           # 3. Remove all #EXTVLCOPT headers globally in the new file
           echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
-          # Using sed -i '' -E for cross-platform compatibility (BSD/GNU sed)
-          sed -i '' -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
+          # *** FIXED: Using sed -i.bak for robust in-place editing (GNU standard) ***
+          sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
+          rm -f MyStuffCLW.m3u.bak # Cleanup backup file
           
           # 4. Loop through each target domain and prefix the corresponding URLs
           echo "b) Starting URL Prefixing..."
@@ -207,10 +207,11 @@ jobs:
                   # 1. Escape forward slashes and dots for the regex pattern
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   
-                  # 2. Use 'sed' with pipe '|' as delimiter for safer URL manipulation.
+                  # 2. Use 'sed' with pipe '|' as delimiter and -i.bak
                   # Pattern: Find a line starting with 'http' and containing the target
                   # Replacement: Prepend the CLW_URL + / to the entire matched line (&)
-                  sed -i '' -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
+                  sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
+                  rm -f MyStuffCLW.m3u.bak # Cleanup backup file
               fi
           done
           
