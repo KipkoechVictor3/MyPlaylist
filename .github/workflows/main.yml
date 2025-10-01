@@ -27,6 +27,8 @@ jobs:
         cdn.welovestroll.store/
         jdx3.org/
         embedsports.top/
+      # 3. EPG URL TO ADD TO THE M3U HEADER
+      EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
 
     steps:
       - name: Checkout repository
@@ -40,6 +42,7 @@ jobs:
           source venv/bin/activate
           python -m pip install --upgrade pip
           # Install Python libraries needed for scraping and file handling
+          # NOTE: Playwright browser installation will use Firefox as per your preference.
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
@@ -51,13 +54,13 @@ jobs:
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
-           
+            
           # Downloading the Ace Stream update script
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
-           
+            
           # DOWNLOADING YOUR NEW FILTER SCRIPT
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy" 
-           
+            
           # Downloading channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
 
@@ -97,8 +100,10 @@ jobs:
       - name: Run Python scripts and combine outputs into MyStuff.m3u
         run: |
           source venv/bin/activate
-          # Start the final combined file with the ONE AND ONLY M3U header
-          echo "#EXTM3U" > MyStuff.m3u
+          
+          # 💡 MODIFICATION HERE: Start the final combined file with the M3U header
+          # and include the EPG URL using the url-tvg attribute.
+          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
 
           declare -A script_outputs
           script_outputs=(
@@ -139,6 +144,7 @@ jobs:
               for i in {1..10}; do echo >> MyStuff.m3u; done
 
               # Append content, but use 'grep -v' to exclude the #EXTM3U line
+              # This prevents multiple #EXTM3U tags in the final file.
               grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u
               
               rm -f "$output_file"
@@ -190,7 +196,7 @@ jobs:
           for TARGET in "${TARGET_LIST[@]}"; do
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
-                  echo "   -> Prefixing URLs matching: ${TARGET}"
+                  echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   
                   # Use 'sed' with pipe '|' as delimiter and -i.bak
