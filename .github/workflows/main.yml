@@ -91,12 +91,12 @@ jobs:
           fi
         shell: bash
 
-      - name: Run Python scripts
+      - name: Run Python scripts and Measure Time ⏱️
         run: |
           source venv/bin/activate
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
-
+          
           declare -A script_outputs
           script_outputs=(
             ["FSC.py"]="S1.m3u"
@@ -107,17 +107,38 @@ jobs:
             ["ACEE.py"]="ACEE.m3u8"
             ["FILTER.py"]="S_FILTER.m3u"
           )
-
+          
+          TOTAL_SCRIPTS=${#script_outputs[@]}
+          SCRIPTS_COMPLETED=0
+          
           echo "--- Combining content from Python scripts ---"
           for script in "${!script_outputs[@]}"; do
-            echo "▶️ Running $script..."
+            SCRIPTS_COMPLETED=$((SCRIPTS_COMPLETED + 1))
             
+            # Use ANSI escape codes for large/bold/color output (like a progress bar)
+            echo -e "\n\n\033[1;44m --- SCRIPT PROGRESS: ${SCRIPTS_COMPLETED} of ${TOTAL_SCRIPTS} --- \033[0m"
+            
+            # Start timer
+            START_TIME=$(date +%s)
+            
+            # Create a collapsible group for script output
+            echo "::group::▶️ Running $script..."
+
             # The '|| echo' allows the workflow to proceed even if a script fails (exit 1)
             python "$script" || echo "⚠️ $script failed but continuing with the next script..."
 
+            # End collapsible group
+            echo "::endgroup::"
+            
+            # End timer and calculate duration
+            END_TIME=$(date +%s)
+            DURATION=$((END_TIME - START_TIME))
+            
+            # Print total time taken using a GitHub Actions notice for high visibility and bold text
+            echo "::notice title=Script Time Complete::**✅ $script FINISHED!** Time Taken: **${DURATION} seconds**"
+            
             output_file="${script_outputs[$script]}"
             
-            # Simplified wait/check for output file
             if [ -s "$output_file" ]; then
               echo "📄 Appending from $output_file to MyStuff.m3u"
               
@@ -167,7 +188,7 @@ jobs:
           for TARGET in "${TARGET_LIST[@]}"; do
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
-                  echo "    -> Prefixing URLs matching: ${TARGET}"
+                  echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
                   rm -f MyStuffCLW.m3u.bak
@@ -183,7 +204,8 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
-          rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m32
+          # Corrected the typo from m32 to m3u for proper cleanup
+          rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
 
@@ -203,4 +225,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u"
