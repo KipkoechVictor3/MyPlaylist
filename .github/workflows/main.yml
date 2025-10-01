@@ -88,7 +88,7 @@ jobs:
 
       - name: Download Remote FSC.m3u with Backup Links
         run: |
-          FSC_MAIN_URL="https://bit.ly/FSCm3u"
+          FSC_MAIN_URL="https://bit.ly/FSCChannelsm3u"
           FSC_BACKUP_URL="https://bit.ly/3Wmleuo"
           OUTPUT_FILE="remote_FSC.m3u"
           
