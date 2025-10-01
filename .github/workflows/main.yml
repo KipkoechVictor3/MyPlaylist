@@ -1,4 +1,4 @@
-name: Combined
+name: Combined Workflow
 
 on:
   # Allows you to run this workflow manually from the Actions tab
