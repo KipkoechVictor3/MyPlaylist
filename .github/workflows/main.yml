@@ -1,11 +1,11 @@
-name: Combined Playlist Update
+name: Combined
 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # Runs on a schedule (every 35 minutes)
   schedule:
-    - cron: '*/35 * * * *'
+    - cron: '*/40 * * * *'
 
 jobs:
   update-playlist:
