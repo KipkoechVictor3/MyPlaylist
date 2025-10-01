@@ -3,16 +3,14 @@ name: Combined
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs on a schedule (every 35 minutes)
+  # Runs on a schedule (every 40 minutes)
   schedule:
     - cron: '*/40 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
-    # Use a container image that includes Playwright dependencies
     container:
-      # Using a modern image for robust Python environment with pre-installed browsers
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
@@ -32,21 +30,18 @@ jobs:
 
       - name: Install dependencies and set up Python virtual environment
         run: |
-          # The container already has Playwright binaries and dependencies.
           apt-get update
           apt-get install -y python3-venv
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          # Install Python libraries needed for scraping, I/O, and file handling
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
-          # NOTE: playwright install is not needed as binaries are in the container.
         shell: bash
 
       - name: Download scripts and clean line endings
         run: |
           # Downloading existing scripts
-          curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
+          # curl -L -o FSC.py "https://tinyurl.com/m4evvh4v" # COMMENTED OUT: Now run in FSC_Only.yaml
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
@@ -91,6 +86,27 @@ jobs:
           fi
         shell: bash
 
+      - name: Download Remote FSC.m3u with Backup Links
+        run: |
+          FSC_MAIN_URL="https://bit.ly/FSCm3u"
+          FSC_BACKUP_URL="https://bit.ly/3Wmleuo"
+          OUTPUT_FILE="remote_FSC.m3u"
+          
+          echo "Attempting to download FSC.m3u from main link..."
+          if curl -L -f --connect-timeout 15 "$FSC_MAIN_URL" -o "$OUTPUT_FILE"; then
+              echo "✅ Successfully downloaded FSC.m3u from main link."
+          else
+              echo "❌ Main link failed. Attempting backup link..."
+              if curl -L -f --connect-timeout 15 "$FSC_BACKUP_URL" -o "$OUTPUT_FILE"; then
+                  echo "✅ Successfully downloaded FSC.m3u from backup link."
+              else
+                  echo "❌ Both FSC links failed. Creating empty placeholder file."
+                  echo "#EXTM3U" > "$OUTPUT_FILE"
+                  echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
+              fi
+          fi
+        shell: bash
+        
       - name: Run Python scripts and Measure Time ⏱️
         run: |
           source venv/bin/activate
@@ -99,7 +115,7 @@ jobs:
           
           declare -A script_outputs
           script_outputs=(
-            ["FSC.py"]="S1.m3u"
+            # ["FSC.py"]="S1.m3u" # COMMENTED OUT: Now downloaded remotely
             ["FS.py"]="S2.m3u8"
             ["PPL_SCRIPT.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
@@ -115,26 +131,17 @@ jobs:
           for script in "${!script_outputs[@]}"; do
             SCRIPTS_COMPLETED=$((SCRIPTS_COMPLETED + 1))
             
-            # Use ANSI escape codes for large/bold/color output (like a progress bar)
             echo -e "\n\n\033[1;44m --- SCRIPT PROGRESS: ${SCRIPTS_COMPLETED} of ${TOTAL_SCRIPTS} --- \033[0m"
             
-            # Start timer
             START_TIME=$(date +%s)
             
-            # Create a collapsible group for script output
             echo "::group::▶️ Running $script..."
-
-            # The '|| echo' allows the workflow to proceed even if a script fails (exit 1)
             python "$script" || echo "⚠️ $script failed but continuing with the next script..."
-
-            # End collapsible group
             echo "::endgroup::"
             
-            # End timer and calculate duration
             END_TIME=$(date +%s)
             DURATION=$((END_TIME - START_TIME))
             
-            # Print total time taken using a GitHub Actions notice for high visibility and bold text
             echo "::notice title=Script Time Complete::**✅ $script FINISHED!** Time Taken: **${DURATION} seconds**"
             
             output_file="${script_outputs[$script]}"
@@ -152,6 +159,20 @@ jobs:
           done
 
           echo "--- Appending pre-downloaded remote playlists ---"
+          
+          # 1. Append the pre-downloaded FSC.m3u content
+          FSC_FILE="remote_FSC.m3u"
+          if [ -s "$FSC_FILE" ] && ! grep -q "#ERROR_FSC_DOWNLOAD_FAILED" "$FSC_FILE"; then
+              echo "📄 Appending content from remote FSC.m3u"
+              for i in {1..10}; do echo >> MyStuff.m3u; done
+              grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u
+              rm -f "$FSC_FILE"
+          else
+              echo "⚠️ FSC.m3u download failed or was empty, skipping append."
+              rm -f "$FSC_FILE"
+          fi
+          
+          # 2. Append all other remote playlists
           downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
           if [ -n "$downloaded_files" ]; then
             for temp_file in $downloaded_files; do
@@ -204,7 +225,7 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
-          # Corrected the typo from m32 to m3u for proper cleanup
+          # CORRECTED TYPO: .m32 changed to .m3u
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
