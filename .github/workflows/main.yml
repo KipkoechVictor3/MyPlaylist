@@ -225,4 +225,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u"
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u
