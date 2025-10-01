@@ -1,0 +1,67 @@
+name: FSC Only Script
+
+on:
+  # Runs on the same schedule as the main workflow (every 40 minutes)
+  # Adjust this schedule if you want the FSC content updated less frequently.
+  schedule:
+    - cron: '*/40 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-fsc-script:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install playwright==1.55.0 aiohttp httpx requests
+        shell: bash
+
+      - name: Download FSC Script
+        run: |
+          curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
+        shell: bash
+
+      - name: Run FSC.py and Measure Time ⏱️
+        run: |
+          source venv/bin/activate
+          
+          echo "::group::▶️ Running FSC.py..."
+          START_TIME=$(date +%s)
+          
+          # Run the script to generate FSC.m3u
+          python FSC.py
+          
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+
+          echo "::notice title=Script Time Complete::**✅ FSC.py FINISHED!** Time Taken: **${DURATION} seconds**"
+          
+          # Rename output file to match upload destination if necessary, or just use FSC.m3u
+          if [ ! -f "FSC.m3u" ]; then
+              # Assuming FSC.py outputs S1.m3u based on your previous config
+              mv S1.m3u FSC.m3u || echo "⚠️ Could not find expected output file (S1.m3u or FSC.m3u)."
+          fi
+        shell: bash
+
+      - name: Upload FSC.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: FSC.m3u
+          DEST_PATH: /MyStuff/FSC.m3u
