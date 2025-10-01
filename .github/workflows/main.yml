@@ -43,7 +43,7 @@ jobs:
           # NOTE: playwright install is not needed as binaries are in the container.
         shell: bash
 
-      - name: Download scripts and channels.txt and clean line endings 🧹
+      - name: Download scripts and clean line endings
         run: |
           # Downloading existing scripts
           curl -L -o FSC.py "https://tinyurl.com/m4evvh4v"
@@ -67,7 +67,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Download remote playlists from channels.txt 📥
+      - name: Download remote pl
         run: |
           echo "Starting download of remote playlists from channels.txt..."
           if [ -f "channels.txt" ]; then
@@ -91,7 +91,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Run Python scripts SEQUENTIALLY and combine outputs into MyStuff.m3u
+      - name: Run Python scripts
         run: |
           source venv/bin/activate
           
@@ -149,7 +149,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Process and Create CLW Playlist 🛠️ (Header Removal & Worker Prefixing)
+      - name: Process and Create CLW
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
           cp MyStuff.m3u MyStuffCLW.m3u
@@ -177,7 +177,7 @@ jobs:
           echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and headers removed."
         shell: bash
 
-      - name: M3U Formatting Correction 🧹 (Fix Title/URL Concatenation)
+      - name: Formatting
         run: |
           echo "Fixing Title/URL concatenation issue by aggressively cleaning line breaks..."
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
@@ -187,7 +187,7 @@ jobs:
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
 
-      - name: Upload original combined playlist (MyStuff.m3u) to Dropbox
+      - name: Upload original
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -196,7 +196,7 @@ jobs:
           source_path: MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
 
-      - name: Upload Cloudflare Worker playlist (MyStuffCLW.m3u) to Dropbox ☁️
+      - name: Upload Changed
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
