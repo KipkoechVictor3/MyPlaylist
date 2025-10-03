@@ -22,6 +22,8 @@ jobs:
         cdn.welovestroll.store/
         jdx3.org/
         embedsports.top/
+        streameast247.com/
+        storage.googleapis.com/
       EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
 
     steps:
