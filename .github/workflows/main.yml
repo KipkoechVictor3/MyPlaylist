@@ -11,12 +11,14 @@ jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
+      # Using Firefox for consistency, as specified in your saved instructions.
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
       # --- CLOUDFLARE WORKER CONFIGURATION ---
       CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
       CLW_TARGET_DOMAINS: |
+        gg.poocloud.in/
         sundaytueday.store/
         cdn.welovestroll.store/
         jdx3.org/
@@ -42,7 +44,6 @@ jobs:
       - name: Download scripts and clean line endings
         run: |
           # Downloading existing scripts
-          # curl -L -o FSC.py "https://tinyurl.com/m4evvh4v" # COMMENTED OUT: Now run in FSC_Only.yaml
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
@@ -114,11 +115,15 @@ jobs:
         run: |
           source venv/bin/activate
           
+          # Initialize MyStuff.m3u (this will be the base for CLW processing)
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
+          
+          # Initialize the temporary file for 100% untouched S3.m3u content
+          # This file will be appended *after* all processing is done.
+          S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
           
           declare -A script_outputs
           script_outputs=(
-            # ["FSC.py"]="S1.m3u" # COMMENTED OUT: Now downloaded remotely
             ["FS.py"]="S2.m3u8"
             ["PPL_SCRIPT.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
@@ -152,16 +157,17 @@ jobs:
             output_file="${script_outputs[$script]}"
             
             if [ -s "$output_file" ]; then
-              echo "📄 Appending from $output_file to MyStuff.m3u"
               
-              for i in {1..10}; do echo >> MyStuff.m3u; done
-              
-              # --- MODIFICATION: Only remove #EXTM3U for non-PPL scripts ---
+              # --- MODIFICATION: ISOLATE S3.m3u CONTENT ---
               if [ "$script" == "PPL_SCRIPT.py" ]; then
-                echo "  -> Retaining all headers for PPL_SCRIPT.py (S3.m3u)."
-                cat "$output_file" >> MyStuff.m3u # Keep all content, including #EXTM3U
+                echo "📄 Saving content from PPL_SCRIPT.py (S3.m3u) untouched to $S3_TEMP_FILE"
+                # Use cat to copy all content, headers included, to the temporary file
+                cat "$output_file" > $S3_TEMP_FILE 
               else
-                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u # Remove #EXTM3U header
+                echo "📄 Appending from $output_file to MyStuff.m3u (removing #EXTM3U)"
+                for i in {1..10}; do echo >> MyStuff.m3u; done
+                # Remove #EXTM3U header for all other scripts
+                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u 
               fi
               # -----------------------------------------------------------
               
@@ -170,6 +176,7 @@ jobs:
               echo "⚠️ $output_file is still empty, skipping append."
             fi
           done
+          # The MyStuff.m3u file now contains ALL content EXCEPT for S3.m3u.
 
           echo "--- Appending pre-downloaded remote playlists ---"
           
@@ -202,12 +209,15 @@ jobs:
           else
             echo "⚠️ No remote playlist files found to append."
           fi
+          
+          # MyStuff.m3u is now complete, but without S3.m3u content.
+          
         shell: bash
 
       - name: Process and Create CLW
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
-          # The MyStuff.m3u now contains headers from S3.m3u (PPL_SCRIPT.py)
+          # MyStuff.m3u currently contains ONLY the streams that should be prefixed and stripped of headers.
           cp MyStuff.m3u MyStuffCLW.m3u
           
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
@@ -225,13 +235,12 @@ jobs:
               if [[ -n "$TARGET" ]]; then
                   echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
-                  # Apply the CLW URL only to lines containing the target domain (http/https line)
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
                   rm -f MyStuffCLW.m3u.bak
               fi
           done
           
-          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and #EXTVLCOPT headers removed."
+          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix applied."
         shell: bash
 
       - name: Formatting
@@ -242,6 +251,29 @@ jobs:
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
+        shell: bash
+        
+      - name: Final Append S3.m3u (Unchanged) 🌟
+        run: |
+          S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
+          
+          if [ -s "$S3_TEMP_FILE" ]; then
+              echo "--- Appending 100% UNCHANGED S3.m3u content to BOTH playlists. ---"
+              
+              # Append to MyStuff.m3u (The original playlist)
+              for i in {1..10}; do echo >> MyStuff.m3u; done
+              cat "$S3_TEMP_FILE" >> MyStuff.m3u
+              echo "✅ Appended to MyStuff.m3u."
+              
+              # Append to MyStuffCLW.m3u (The processed CLW playlist)
+              for i in {1..10}; do echo >> MyStuffCLW.m3u; done
+              cat "$S3_TEMP_FILE" >> MyStuffCLW.m3u
+              echo "✅ Appended to MyStuffCLW.m3u."
+              
+              rm -f "$S3_TEMP_FILE"
+          else
+              echo "⚠️ S3_UNTOUCHED_TEMP.m3u not found or empty, skipping final append."
+          fi
         shell: bash
 
       - name: Upload original
