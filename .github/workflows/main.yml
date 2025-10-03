@@ -46,6 +46,8 @@ jobs:
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
+          curl -L -o STB.py "https://tinyurl.com/37yajm8v"
+          curl -L -o OVG.py "https://tinyurl.com/r5re7n5t"
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
           # Using the modified PPL_SCRIPT.py
@@ -120,6 +122,8 @@ jobs:
             ["PPL_SCRIPT.py"]="S3.m3u"
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
+            ["STB.py"]="S6.m3u8"
+            ["OVG.py"]="S7.m3u8"
             ["ACEE.py"]="ACEE.m3u8"
             ["FILTER.py"]="S_FILTER.m3u"
           )
