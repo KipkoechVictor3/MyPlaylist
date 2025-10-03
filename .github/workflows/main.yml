@@ -100,14 +100,14 @@ jobs:
           if curl -L -f --connect-timeout 15 "$FSC_MAIN_URL" -o "$OUTPUT_FILE"; then
               echo "✅ Successfully downloaded FSC.m3u from main link."
           else
-              echo "❌ Main link failed. Attempting backup link..."
-              if curl -L -f --connect-timeout 15 "$FSC_BACKUP_URL" -o "$OUTPUT_FILE"; then
-                  echo "✅ Successfully downloaded FSC.m3u from backup link."
-              else
-                  echo "❌ Both FSC links failed. Creating empty placeholder file."
-                  echo "#EXTM3U" > "$OUTPUT_FILE"
-                  echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
-              fi
+            echo "❌ Main link failed. Attempting backup link..."
+            if curl -L -f --connect-timeout 15 "$FSC_BACKUP_URL" -o "$OUTPUT_FILE"; then
+                echo "✅ Successfully downloaded FSC.m3u from backup link."
+            else
+                echo "❌ Both FSC links failed. Creating empty placeholder file."
+                echo "#EXTM3U" > "$OUTPUT_FILE"
+                echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
+            fi
           fi
         shell: bash
         
@@ -156,7 +156,15 @@ jobs:
               echo "📄 Appending from $output_file to MyStuff.m3u"
               
               for i in {1..10}; do echo >> MyStuff.m3u; done
-              grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u
+              
+              # --- MODIFICATION: Only remove #EXTM3U for non-PPL scripts ---
+              if [ "$script" == "PPL_SCRIPT.py" ]; then
+                echo "  -> Retaining all headers for PPL_SCRIPT.py (S3.m3u)."
+                cat "$output_file" >> MyStuff.m3u # Keep all content, including #EXTM3U
+              else
+                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u # Remove #EXTM3U header
+              fi
+              # -----------------------------------------------------------
               
               rm -f "$output_file"
             else
@@ -174,8 +182,8 @@ jobs:
               grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u
               rm -f "$FSC_FILE"
           else
-              echo "⚠️ FSC.m3u download failed or was empty, skipping append."
-              rm -f "$FSC_FILE"
+            echo "⚠️ FSC.m3u download failed or was empty, skipping append."
+            rm -f "$FSC_FILE"
           fi
           
           # 2. Append all other remote playlists
@@ -200,6 +208,7 @@ jobs:
       - name: Process and Create CLW
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
+          # The MyStuff.m3u now contains headers from S3.m3u (PPL_SCRIPT.py)
           cp MyStuff.m3u MyStuffCLW.m3u
           
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
@@ -217,12 +226,13 @@ jobs:
               if [[ -n "$TARGET" ]]; then
                   echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
+                  # Apply the CLW URL only to lines containing the target domain (http/https line)
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
                   rm -f MyStuffCLW.m3u.bak
               fi
           done
           
-          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and headers removed."
+          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix and #EXTVLCOPT headers removed."
         shell: bash
 
       - name: Formatting
@@ -231,7 +241,6 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
-          # CORRECTED TYPO: .m32 changed to .m3u
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
         shell: bash
