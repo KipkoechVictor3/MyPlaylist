@@ -17,7 +17,6 @@ jobs:
       # --- CLOUDFLARE WORKER CONFIGURATION ---
       CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
       CLW_TARGET_DOMAINS: |
-        #gg.poocloud.in/
         sundaytueday.store/
         cdn.welovestroll.store/
         jdx3.org/
