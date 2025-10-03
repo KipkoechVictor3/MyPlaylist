@@ -11,7 +11,7 @@ jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
-      # Using Firefox for consistency, as specified in your saved instructions.
+      # Using Playwright container which includes Python and necessary dependencies
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root # Set HOME to /root for consistent path handling
@@ -115,12 +115,13 @@ jobs:
         run: |
           source venv/bin/activate
           
-          # Initialize MyStuff.m3u (this will be the base for CLW processing)
+          # Initialize MyStuff.m3u (base for CLW processing, excludes S3.m3u content)
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
           
-          # Initialize the temporary file for 100% untouched S3.m3u content
-          # This file will be appended *after* all processing is done.
+          # Temporary file for 100% untouched S3.m3u content
           S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
+          # Initialize temporary file just in case the script fails
+          echo "" > $S3_TEMP_FILE
           
           declare -A script_outputs
           script_outputs=(
@@ -146,6 +147,7 @@ jobs:
             START_TIME=$(date +%s)
             
             echo "::group::▶️ Running $script..."
+            # Execute script, and continue the step even if the python script exits non-zero
             python "$script" || echo "⚠️ $script failed but continuing with the next script..."
             echo "::endgroup::"
             
@@ -156,27 +158,25 @@ jobs:
             
             output_file="${script_outputs[$script]}"
             
-            if [ -s "$output_file" ]; then
+            # --- Robust Appending Logic ---
+            if [ -s "$output_file" ]; then # Check if the file exists AND has content
               
-              # --- MODIFICATION: ISOLATE S3.m3u CONTENT ---
               if [ "$script" == "PPL_SCRIPT.py" ]; then
                 echo "📄 Saving content from PPL_SCRIPT.py (S3.m3u) untouched to $S3_TEMP_FILE"
-                # Use cat to copy all content, headers included, to the temporary file
-                cat "$output_file" > $S3_TEMP_FILE 
+                cat "$output_file" > $S3_TEMP_FILE # Overwrite the temporary file
               else
                 echo "📄 Appending from $output_file to MyStuff.m3u (removing #EXTM3U)"
                 for i in {1..10}; do echo >> MyStuff.m3u; done
-                # Remove #EXTM3U header for all other scripts
-                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u 
+                # Use || true to prevent grep's exit code 1 from halting the workflow
+                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u || true
               fi
-              # -----------------------------------------------------------
               
               rm -f "$output_file"
             else
-              echo "⚠️ $output_file is still empty, skipping append."
+              echo "⚠️ $output_file is empty or not found, skipping append."
             fi
+            # ----------------------------------
           done
-          # The MyStuff.m3u file now contains ALL content EXCEPT for S3.m3u.
 
           echo "--- Appending pre-downloaded remote playlists ---"
           
@@ -185,7 +185,7 @@ jobs:
           if [ -s "$FSC_FILE" ] && ! grep -q "#ERROR_FSC_DOWNLOAD_FAILED" "$FSC_FILE"; then
               echo "📄 Appending content from remote FSC.m3u"
               for i in {1..10}; do echo >> MyStuff.m3u; done
-              grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u
+              grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u || true
               rm -f "$FSC_FILE"
           else
             echo "⚠️ FSC.m3u download failed or was empty, skipping append."
@@ -202,7 +202,7 @@ jobs:
                 echo "📄 Appending from $(basename "$temp_file") to MyStuff.m3u"
 
                 for i in {1..10}; do echo >> MyStuff.m3u; done
-                grep -v '^#EXTM3U' "$temp_file" >> MyStuff.m3u
+                grep -v '^#EXTM3U' "$temp_file" >> MyStuff.m3u || true
               fi
               rm -f "$temp_file"
             done
@@ -210,14 +210,12 @@ jobs:
             echo "⚠️ No remote playlist files found to append."
           fi
           
-          # MyStuff.m3u is now complete, but without S3.m3u content.
-          
         shell: bash
 
       - name: Process and Create CLW
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
-          # MyStuff.m3u currently contains ONLY the streams that should be prefixed and stripped of headers.
+          # MyStuff.m3u now contains only the content that should be prefixed/processed.
           cp MyStuff.m3u MyStuffCLW.m3u
           
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
@@ -229,7 +227,7 @@ jobs:
           sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
           rm -f MyStuffCLW.m3u.bak
           
-          echo "b) Starting URL Prefixing..."
+          echo "b) Starting URL Prefixing (WILL ONLY AFFECT TARGET DOMAINS)..."
           for TARGET in "${TARGET_LIST[@]}"; do
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
@@ -260,19 +258,19 @@ jobs:
           if [ -s "$S3_TEMP_FILE" ]; then
               echo "--- Appending 100% UNCHANGED S3.m3u content to BOTH playlists. ---"
               
-              # Append to MyStuff.m3u (The original playlist)
+              # Append to MyStuff.m3u (Original Playlist)
               for i in {1..10}; do echo >> MyStuff.m3u; done
               cat "$S3_TEMP_FILE" >> MyStuff.m3u
               echo "✅ Appended to MyStuff.m3u."
               
-              # Append to MyStuffCLW.m3u (The processed CLW playlist)
+              # Append to MyStuffCLW.m3u (Processed CLW Playlist)
               for i in {1..10}; do echo >> MyStuffCLW.m3u; done
               cat "$S3_TEMP_FILE" >> MyStuffCLW.m3u
               echo "✅ Appended to MyStuffCLW.m3u."
               
               rm -f "$S3_TEMP_FILE"
           else
-              echo "⚠️ S3_UNTOUCHED_TEMP.m3u not found or empty, skipping final append."
+              echo "⚠️ S3_UNTOUCHED_TEMP.m3u not found or empty, skipping final append. Process continues."
           fi
         shell: bash
 
