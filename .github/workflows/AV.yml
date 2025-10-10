@@ -1,0 +1,88 @@
+name: AV Auto Update
+
+on:
+  schedule:
+    - cron: '*/40 * * * *'   # Runs every 40 minutes
+  workflow_dispatch:
+
+jobs:
+  run-ava-scripts:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install playwright==1.55.0 aiohttp httpx requests beautifulsoup4
+        shell: bash
+
+      - name: Download AV-Live.py and AV.py
+        run: |
+          curl -L -o AV-Live.py "https://www.dropbox.com/scl/fi/3e567wfc3puwdbocnxpb4/AV-Live.py?rlkey=bihm17pkfj5xhjlh46jqek25l&st=hg6bi2ql&dl=1"
+          curl -L -o AV.py "https://www.dropbox.com/scl/fi/2wsmvnpj9zwdx9hwnj0kc/AV.py?rlkey=yvhbbl2kb9uja1helxu2m2jnr&st=n5p5rtkg&dl=1"
+        shell: bash
+
+      - name: Run AV-Live.py ⏱️
+        run: |
+          source venv/bin/activate
+          echo "::group::▶️ Running AV-Live.py..."
+          START_TIME=$(date +%s)
+          
+          python AV-Live.py
+          
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ AV-Live.py FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          if [ ! -f "AV1.m3u" ]; then
+              echo "⚠️ Expected output AV1.m3u not found!"
+          fi
+        shell: bash
+
+      - name: Run AV.py ⏱️
+        run: |
+          source venv/bin/activate
+          echo "::group::▶️ Running AV.py..."
+          START_TIME=$(date +%s)
+          
+          python AV.py
+          
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ AV-2.py FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          if [ ! -f "AV.m3u" ]; then
+              echo "⚠️ Expected output AV.m3u not found!"
+          fi
+        shell: bash
+
+      - name: Upload AV1.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: AV1.m3u
+          DEST_PATH: /MyStuff/AV1.m3u
+
+      - name: Upload AV.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: AV.m3u
+          DEST_PATH: /MyStuff/AV.m3u
