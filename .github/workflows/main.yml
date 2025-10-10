@@ -1,9 +1,7 @@
 name: Combined Workflow
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Runs on a schedule (every 40 minutes)
   schedule:
     - cron: '*/40 * * * *'
 
@@ -11,11 +9,9 @@ jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
-      # Using Playwright container which includes Python and necessary dependencies
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      HOME: /root # Set HOME to /root for consistent path handling
-      # --- CLOUDFLARE WORKER CONFIGURATION ---
+      HOME: /root
       CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
       CLW_TARGET_DOMAINS: |
         gg.poocloud.in/
@@ -43,7 +39,6 @@ jobs:
 
       - name: Download scripts and clean line endings
         run: |
-          # Downloading existing scripts
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
@@ -52,12 +47,9 @@ jobs:
           curl -L -o OVG.py "https://tinyurl.com/r5re7n5t"
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
-          # Using the modified PPL_SCRIPT.py
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
-          # Download channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
 
-          # Clean line endings for channels.txt (important for Unix environments)
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
             tr -d '\r' < channels.txt.tmp > channels.txt
@@ -115,13 +107,12 @@ jobs:
         run: |
           source venv/bin/activate
           
-          # Initialize MyStuff.m3u (base for CLW processing, excludes S3.m3u content)
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
           
-          # Temporary file for 100% untouched S3.m3u content
           S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
-          # Initialize temporary file just in case the script fails
-          echo "" > $S3_TEMP_FILE
+          REMOTE_UNTOUCHED_TEMP="REMOTE_UNTOUCHED_TEMP.m3u"
+          echo "" > "$S3_TEMP_FILE"
+          echo "" > "$REMOTE_UNTOUCHED_TEMP"
           
           declare -A script_outputs
           script_outputs=(
@@ -145,132 +136,122 @@ jobs:
             echo -e "\n\n\033[1;44m --- SCRIPT PROGRESS: ${SCRIPTS_COMPLETED} of ${TOTAL_SCRIPTS} --- \033[0m"
             
             START_TIME=$(date +%s)
-            
             echo "::group::▶️ Running $script..."
-            # Execute script, and continue the step even if the python script exits non-zero
-            python "$script" || echo "⚠️ $script failed but continuing with the next script..."
+            python "$script" || echo "⚠️ $script failed but continuing..."
             echo "::endgroup::"
-            
             END_TIME=$(date +%s)
             DURATION=$((END_TIME - START_TIME))
             
-            echo "::notice title=Script Time Complete::**✅ $script FINISHED!** Time Taken: **${DURATION} seconds**"
+            echo "::notice title=Script Complete::**✅ $script FINISHED!** Time Taken: **${DURATION}s**"
             
             output_file="${script_outputs[$script]}"
             
-            # --- Robust Appending Logic ---
-            if [ -s "$output_file" ]; then # Check if the file exists AND has content
-              
+            if [ -s "$output_file" ]; then
               if [ "$script" == "PPL_SCRIPT.py" ]; then
-                echo "📄 Saving content from PPL_SCRIPT.py (S3.m3u) untouched to $S3_TEMP_FILE"
-                cat "$output_file" > $S3_TEMP_FILE # Overwrite the temporary file
+                echo "📄 Storing untouched S3.m3u content..."
+                cat "$output_file" > "$S3_TEMP_FILE"
               else
-                echo "📄 Appending from $output_file to MyStuff.m3u (removing #EXTM3U)"
+                echo "📄 Appending from $output_file to MyStuff.m3u"
                 for i in {1..10}; do echo >> MyStuff.m3u; done
-                # Use || true to prevent grep's exit code 1 from halting the workflow
                 grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u || true
               fi
-              
               rm -f "$output_file"
             else
-              echo "⚠️ $output_file is empty or not found, skipping append."
+              echo "⚠️ $output_file empty or missing, skipping."
             fi
-            # ----------------------------------
           done
 
-          echo "--- Appending pre-downloaded remote playlists ---"
-          
-          # 1. Append the pre-downloaded FSC.m3u content
+          echo "--- Appending FSC.m3u (normal append with cleanup) ---"
           FSC_FILE="remote_FSC.m3u"
           if [ -s "$FSC_FILE" ] && ! grep -q "#ERROR_FSC_DOWNLOAD_FAILED" "$FSC_FILE"; then
-              echo "📄 Appending content from remote FSC.m3u"
+              echo "📄 Appending FSC.m3u to MyStuff.m3u"
               for i in {1..10}; do echo >> MyStuff.m3u; done
               grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u || true
-              rm -f "$FSC_FILE"
           else
-            echo "⚠️ FSC.m3u download failed or was empty, skipping append."
-            rm -f "$FSC_FILE"
+            echo "⚠️ FSC.m3u download failed or empty."
           fi
-          
-          # 2. Append all other remote playlists
+
+          echo "--- Collecting untouched remote playlists from channels.txt ---"
           downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
           if [ -n "$downloaded_files" ]; then
             for temp_file in $downloaded_files; do
               if grep -q "#ERROR_DOWNLOAD_FAILED" "$temp_file"; then
-                echo "⚠️ Skipping failed download: $(basename "$temp_file")"
+                echo "⚠️ Skipping failed: $(basename "$temp_file")"
               else
-                echo "📄 Appending from $(basename "$temp_file") to MyStuff.m3u"
-
-                for i in {1..10}; do echo >> MyStuff.m3u; done
-                grep -v '^#EXTM3U' "$temp_file" >> MyStuff.m3u || true
+                echo "📄 Storing $(basename "$temp_file") untouched..."
+                for i in {1..5}; do echo >> "$REMOTE_UNTOUCHED_TEMP"; done
+                cat "$temp_file" >> "$REMOTE_UNTOUCHED_TEMP"
               fi
               rm -f "$temp_file"
             done
           else
-            echo "⚠️ No remote playlist files found to append."
+            echo "⚠️ No remote playlists found."
           fi
-          
         shell: bash
 
       - name: Process and Create CLW
         run: |
           echo "Starting creation and processing of MyStuffCLW.m3u..."
-          # MyStuff.m3u now contains only the content that should be prefixed/processed.
           cp MyStuff.m3u MyStuffCLW.m3u
           
           readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
-          
           CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
           CLW_URL=$(echo "$CLW_URL" | sed 's/\/$//')
           
-          echo "a) Removing all #EXTVLCOPT headers from MyStuffCLW.m3u"
+          echo "a) Removing all #EXTVLCOPT headers"
           sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
           rm -f MyStuffCLW.m3u.bak
           
-          echo "b) Starting URL Prefixing (WILL ONLY AFFECT TARGET DOMAINS)..."
+          echo "b) Prefixing URLs matching CLW_TARGET_DOMAINS..."
           for TARGET in "${TARGET_LIST[@]}"; do
               TARGET=$(echo "$TARGET" | xargs)
               if [[ -n "$TARGET" ]]; then
-                  echo "    -> Prefixing URLs matching: ${TARGET}"
                   SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
                   sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
                   rm -f MyStuffCLW.m3u.bak
               fi
           done
           
-          echo "✅ MyStuffCLW.m3u successfully created with CLW prefix applied."
+          echo "✅ MyStuffCLW.m3u created."
         shell: bash
 
       - name: Formatting
         run: |
-          echo "Fixing Title/URL concatenation issue by aggressively cleaning line breaks..."
+          echo "Cleaning trailing spaces and empty lines..."
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
           grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
-          echo "✅ Title/URL concatenation issue addressed in MyStuffCLW.m3u."
+          echo "✅ Formatting done."
         shell: bash
         
       - name: Final Append S3.m3u (Unchanged) 🌟
         run: |
           S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
-          
           if [ -s "$S3_TEMP_FILE" ]; then
               echo "--- Appending 100% UNCHANGED S3.m3u content to BOTH playlists. ---"
-              
-              # Append to MyStuff.m3u (Original Playlist)
               for i in {1..10}; do echo >> MyStuff.m3u; done
               cat "$S3_TEMP_FILE" >> MyStuff.m3u
-              echo "✅ Appended to MyStuff.m3u."
-              
-              # Append to MyStuffCLW.m3u (Processed CLW Playlist)
               for i in {1..10}; do echo >> MyStuffCLW.m3u; done
               cat "$S3_TEMP_FILE" >> MyStuffCLW.m3u
-              echo "✅ Appended to MyStuffCLW.m3u."
-              
               rm -f "$S3_TEMP_FILE"
           else
-              echo "⚠️ S3_UNTOUCHED_TEMP.m3u not found or empty, skipping final append. Process continues."
+              echo "⚠️ S3_UNTOUCHED_TEMP.m3u missing or empty."
+          fi
+        shell: bash
+
+      - name: Append Unchanged Remote URLs 🌍
+        run: |
+          REMOTE_UNTOUCHED_TEMP="REMOTE_UNTOUCHED_TEMP.m3u"
+          if [ -s "$REMOTE_UNTOUCHED_TEMP" ]; then
+              echo "--- Appending 100% UNCHANGED remote URLs to BOTH playlists. ---"
+              for i in {1..10}; do echo >> MyStuff.m3u; done
+              cat "$REMOTE_UNTOUCHED_TEMP" >> MyStuff.m3u
+              for i in {1..10}; do echo >> MyStuffCLW.m3u; done
+              cat "$REMOTE_UNTOUCHED_TEMP" >> MyStuffCLW.m3u
+              rm -f "$REMOTE_UNTOUCHED_TEMP"
+          else
+              echo "⚠️ No untouched remote URLs found."
           fi
         shell: bash
 
