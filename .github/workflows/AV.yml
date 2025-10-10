@@ -39,7 +39,8 @@ jobs:
           echo "::group::▶️ Running AV-Live.py..."
           START_TIME=$(date +%s)
           
-          python AV-Live.py
+          # Unbuffered mode for real-time logs
+          python -u AV-Live.py
           
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
@@ -57,12 +58,13 @@ jobs:
           echo "::group::▶️ Running AV.py..."
           START_TIME=$(date +%s)
           
-          python AV.py
+          # Unbuffered mode for real-time logs
+          python -u AV.py
           
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
           echo "::endgroup::"
-          echo "::notice title=Script Time Complete::**✅ AV-2.py FINISHED!** Time Taken: **${DURATION} seconds**"
+          echo "::notice title=Script Time Complete::**✅ AV.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
           if [ ! -f "AV.m3u" ]; then
               echo "⚠️ Expected output AV.m3u not found!"
