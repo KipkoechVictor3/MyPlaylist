@@ -3,24 +3,18 @@ name: Combined Workflow
 on:
   workflow_dispatch:
   schedule:
+    # Runs every 40 minutes
     - cron: '*/40 * * * *'
 
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
+      # Using Playwright container, though we'll use Firefox for any potential browser automation based on your preference
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
-      CLOUDFLARE_WORKER_DOMAIN: "https://mychannels.kipkoechvictor3.workers.dev"
-      CLW_TARGET_DOMAINS: |
-        gg.poocloud.in/
-        sundaytueday.store/
-        cdn.welovestroll.store/
-        jdx3.org/
-        embedsports.top/
-        streameast247.com/
-        storage.googleapis.com/
+      # CLOUDFLARE_WORKER_DOMAIN and CLW_TARGET_DOMAINS removed
       EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
 
     steps:
@@ -28,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies and set up Python virtual environment
+        # Note: Playwright is installed but its usage is not evident in the remaining script logic.
         run: |
           apt-get update
           apt-get install -y python3-venv
@@ -96,9 +91,9 @@ jobs:
             if curl -L -f --connect-timeout 15 "$FSC_BACKUP_URL" -o "$OUTPUT_FILE"; then
                 echo "✅ Successfully downloaded FSC.m3u from backup link."
             else
-                echo "❌ Both FSC links failed. Creating empty placeholder file."
-                echo "#EXTM3U" > "$OUTPUT_FILE"
-                echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
+              echo "❌ Both FSC links failed. Creating empty placeholder file."
+              echo "#EXTM3U" > "$OUTPUT_FILE"
+              echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
             fi
           fi
         shell: bash
@@ -107,6 +102,7 @@ jobs:
         run: |
           source venv/bin/activate
           
+          # Initialize the main playlist file
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
           
           S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
@@ -189,51 +185,16 @@ jobs:
           fi
         shell: bash
 
-      - name: Process and Create CLW
-        run: |
-          echo "Starting creation and processing of MyStuffCLW.m3u..."
-          cp MyStuff.m3u MyStuffCLW.m3u
-          
-          readarray -t TARGET_LIST <<< "$CLW_TARGET_DOMAINS"
-          CLW_URL="${CLOUDFLARE_WORKER_DOMAIN}"
-          CLW_URL=$(echo "$CLW_URL" | sed 's/\/$//')
-          
-          echo "a) Removing all #EXTVLCOPT headers"
-          sed -i.bak -E '/^#EXTVLCOPT/d' MyStuffCLW.m3u
-          rm -f MyStuffCLW.m3u.bak
-          
-          echo "b) Prefixing URLs matching CLW_TARGET_DOMAINS..."
-          for TARGET in "${TARGET_LIST[@]}"; do
-              TARGET=$(echo "$TARGET" | xargs)
-              if [[ -n "$TARGET" ]]; then
-                  SAFE_TARGET=$(echo "${TARGET}" | sed 's/[\/.]/\\&/g')
-                  sed -i.bak -E "/^http.*${SAFE_TARGET}/s|^|${CLW_URL}/|" MyStuffCLW.m3u
-                  rm -f MyStuffCLW.m3u.bak
-              fi
-          done
-          
-          echo "✅ MyStuffCLW.m3u created."
-        shell: bash
-
-      - name: Formatting
-        run: |
-          echo "Cleaning trailing spaces and empty lines..."
-          tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
-          sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
-          grep -v '^$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
-          rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
-          echo "✅ Formatting done."
-        shell: bash
+      # Process and Create CLW step removed
+      # Formatting step removed
         
       - name: Final Append S3.m3u (Unchanged) 🌟
         run: |
           S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
           if [ -s "$S3_TEMP_FILE" ]; then
-              echo "--- Appending 100% UNCHANGED S3.m3u content to BOTH playlists. ---"
+              echo "--- Appending 100% UNCHANGED S3.m3u content to MyStuff.m3u. ---"
               for i in {1..10}; do echo >> MyStuff.m3u; done
               cat "$S3_TEMP_FILE" >> MyStuff.m3u
-              for i in {1..10}; do echo >> MyStuffCLW.m3u; done
-              cat "$S3_TEMP_FILE" >> MyStuffCLW.m3u
               rm -f "$S3_TEMP_FILE"
           else
               echo "⚠️ S3_UNTOUCHED_TEMP.m3u missing or empty."
@@ -244,17 +205,25 @@ jobs:
         run: |
           REMOTE_UNTOUCHED_TEMP="REMOTE_UNTOUCHED_TEMP.m3u"
           if [ -s "$REMOTE_UNTOUCHED_TEMP" ]; then
-              echo "--- Appending 100% UNCHANGED remote URLs to BOTH playlists. ---"
+              echo "--- Appending 100% UNCHANGED remote URLs to MyStuff.m3u. ---"
               for i in {1..10}; do echo >> MyStuff.m3u; done
               cat "$REMOTE_UNTOUCHED_TEMP" >> MyStuff.m3u
-              for i in {1..10}; do echo >> MyStuffCLW.m3u; done
-              cat "$REMOTE_UNTOUCHED_TEMP" >> MyStuffCLW.m3u
               rm -f "$REMOTE_UNTOUCHED_TEMP"
           else
               echo "⚠️ No untouched remote URLs found."
           fi
         shell: bash
 
+      - name: Final Playlist Cleanup
+        run: |
+          echo "Cleaning trailing spaces and empty lines in MyStuff.m3u..."
+          tr -d '\r' < MyStuff.m3u > MyStuff_TEMP1.m3u
+          sed -E 's/[[:space:]]+$//' MyStuff_TEMP1.m3u > MyStuff_TEMP2.m3u
+          grep -v '^$' MyStuff_TEMP2.m3u > MyStuff.m3u
+          rm -f MyStuff_TEMP1.m3u MyStuff_TEMP2.m3u
+          echo "✅ Final formatting done on MyStuff.m3u."
+        shell: bash
+      
       - name: Upload original
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -264,11 +233,12 @@ jobs:
           source_path: MyStuff.m3u
           DEST_PATH: /MyStuff/MyStuff.m3u
 
-      - name: Upload Changed
+      - name: Upload Duplicate for MyStuffCLW path
+        # Uploads the *same* MyStuff.m3u file to the second Dropbox path
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyStuffCLW.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u
+          source_path: MyStuff.m3u
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u # Target path of the old CLW file
