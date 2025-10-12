@@ -4,7 +4,7 @@ on:
   # Runs on the same schedule as the main workflow (every 40 minutes)
   # Adjust this schedule if you want the FSC content updated less frequently.
   schedule:
-    - cron: '*/40 * * * *'
+    - cron: '*/59 * * * *'
   workflow_dispatch:
 
 jobs:
