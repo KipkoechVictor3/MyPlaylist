@@ -35,6 +35,7 @@ jobs:
       - name: Download scripts and clean line endings
         run: |
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
+          curl -L -o Rox.py "https://tinyurl.com/2jwbswfy"
           curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
@@ -114,6 +115,7 @@ jobs:
           script_outputs=(
             ["FS.py"]="S2.m3u8"
             ["PPL_SCRIPT.py"]="S3.m3u"
+            ["Rox.py"]="rox.m3u8"
             ["TML.py"]="S4.m3u8"
             ["WC.py"]="S5.m3u8"
             ["STB.py"]="S6.m3u8"
