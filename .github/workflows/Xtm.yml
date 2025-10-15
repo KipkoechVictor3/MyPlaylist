@@ -8,9 +8,9 @@ jobs:
   build_and_upload:
     runs-on: ubuntu-latest
     container:
-      # Using python:3-alpine is more reliable for Python/Linux commands
+      # Using a standard Python image for reliability
       image: python:3-alpine
-      # FIX: Run as root to ensure 'actions/checkout' has permission to write to the workspace
+      # FIX: Must explicitly set the container user to root for the checkout action to work
       options: --user root
 
     steps:
@@ -18,9 +18,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ⚙️ Install Required Tools (curl & bash)
-        # Python and pip are already in the 'python:3-alpine' image
+        # Install necessary tools not included in the base Python Alpine image
         run: |
-          # Install curl for downloading, and bash for better script execution
           apk update
           apk add curl bash
 
@@ -29,13 +28,13 @@ jobs:
         shell: bash
         run: |
           # --- Configuration ---
-          # NOTE: We use the direct M3U link since we are not using the xtream2m3u Flask app logic here.
+          # Use your direct M3U link with credentials
           PLAYLIST_URL="http://xxip25.top:8080/get.php?username=95621707&password=63396105&type=m3u_plus"
           OUTPUT_FILE="iptv_playlist.m3u"
           
           echo "-> Attempting to download playlist from ${PLAYLIST_URL}"
           
-          # Use curl to download the file, suppressing output (-s) and failing on error (-f)
+          # Use curl to download the file, failing if the server returns an error code
           curl -s --fail -o "${OUTPUT_FILE}" "${PLAYLIST_URL}"
           
           CURL_STATUS=$?
@@ -43,25 +42,21 @@ jobs:
           # Check for curl success and then verify content for non-empty playlist
           if [ $CURL_STATUS -eq 0 ] && grep -q "#EXTINF" "${OUTPUT_FILE}"; then
             echo "-> ✅ Success! Playlist downloaded and verified."
-            # Set output variable for next step (optional, but good practice)
-            echo "::set-output name=file_path::${OUTPUT_FILE}"
           elif [ $CURL_STATUS -ne 0 ]; then
-            echo "::error::Curl failed to download the playlist. Status: ${CURL_STATUS}"
+            echo "::error::Curl failed to download the playlist. Server request status: ${CURL_STATUS}"
             exit 1
           else
-            echo "::error::Playlist downloaded, but appears empty (no #EXTINF markers)."
+            echo "::error::Playlist downloaded, but appears empty (no #EXTINF markers). Did not save."
             exit 1
           fi
 
       - name: 📤 Upload Playlist to Dropbox
-        # This step uses the GitHub Action you requested
+        # The Dropbox action you requested
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           # These must be set as Secrets in your GitHub repository
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          # Use the file name generated in the previous step
           source_path: iptv_playlist.m3u
-          # Set your desired Dropbox destination path
           DEST_PATH: /MyPlaylists/iptv_playlist.m3u
