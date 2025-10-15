@@ -1,69 +1,63 @@
-name: XTM UPLOAD
+name: Generate IPTV Playlist and Upload to Dropbox
 
 on:
-  # This workflow will run manually from the GitHub Actions tab
+  # Allows you to run this workflow manually from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
   build_and_upload:
-    # Use one of the prebuild Docker images as the runner environment
     runs-on: ubuntu-latest
-    container: ghcr.io/prebuild/alpine:latest # Using Alpine as it includes Python and tools
+    container:
+      # Using python:3-alpine is more reliable for Python/Linux commands
+      image: python:3-alpine
+      # FIX: Run as root to ensure 'actions/checkout' has permission to write to the workspace
+      options: --user root
 
     steps:
       - name: ⬇️ Checkout Repository Code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Install Python Dependencies
-        # Since the Docker image is based on Alpine, we may need to install 
-        # basic dependencies first, then the Python requirements.
-        # However, the image states it includes Python 3.x, so we'll 
-        # just install your Python libraries.
+      - name: ⚙️ Install Required Tools (curl & bash)
+        # Python and pip are already in the 'python:3-alpine' image
         run: |
-          # This command must be run inside the container environment
-          # Note: We assume 'xtream2m3u' is cloned or its files are present here.
-          # If using 'xtream2m3u', you would typically run:
-          # pip install -r requirements.txt
-          # If using your simple script, you only need 'requests'.
-          
-          # We'll install only 'requests' as it's sufficient for the first script you wrote.
-          # If you want to run the full 'xtream2m3u' stack, you need all its requirements.
-          apk update && apk add python3 py3-pip git # Ensure basic tools are there
-          pip install requests
+          # Install curl for downloading, and bash for better script execution
+          apk update
+          apk add curl bash
 
-      - name: 📝 Generate M3U Playlist
+      - name: 📝 Generate M3U Playlist (Direct Download)
         id: generate_m3u
-        # Use a single Python command to run the script logic
+        shell: bash
         run: |
-          # The Python code to fetch the playlist and check if it's non-empty.
-          # We will use the URL with 'nostreamproxy=true' for direct links.
-          
+          # --- Configuration ---
+          # NOTE: We use the direct M3U link since we are not using the xtream2m3u Flask app logic here.
           PLAYLIST_URL="http://xxip25.top:8080/get.php?username=95621707&password=63396105&type=m3u_plus"
           OUTPUT_FILE="iptv_playlist.m3u"
           
-          echo "Attempting to download playlist..."
+          echo "-> Attempting to download playlist from ${PLAYLIST_URL}"
           
-          # Using curl as an alternative method that avoids Python file handling complexity in a one-liner
-          # We'll check for non-empty content after download
-          
+          # Use curl to download the file, suppressing output (-s) and failing on error (-f)
           curl -s --fail -o "${OUTPUT_FILE}" "${PLAYLIST_URL}"
           
-          # Basic check to see if the downloaded file is a valid M3U
-          if [ $? -eq 0 ] && grep -q "#EXTM3U" "${OUTPUT_FILE}"; then
+          CURL_STATUS=$?
+          
+          # Check for curl success and then verify content for non-empty playlist
+          if [ $CURL_STATUS -eq 0 ] && grep -q "#EXTINF" "${OUTPUT_FILE}"; then
+            echo "-> ✅ Success! Playlist downloaded and verified."
+            # Set output variable for next step (optional, but good practice)
             echo "::set-output name=file_path::${OUTPUT_FILE}"
-            echo "Playlist successfully downloaded and saved."
+          elif [ $CURL_STATUS -ne 0 ]; then
+            echo "::error::Curl failed to download the playlist. Status: ${CURL_STATUS}"
+            exit 1
           else
-            echo "::error::Failed to download a valid M3U playlist."
+            echo "::error::Playlist downloaded, but appears empty (no #EXTINF markers)."
             exit 1
           fi
-          
-        shell: bash
 
       - name: 📤 Upload Playlist to Dropbox
-        # This step uses the GitHub Action you provided for Dropbox upload
+        # This step uses the GitHub Action you requested
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
-          # Assuming you have set these secrets in your repository settings
+          # These must be set as Secrets in your GitHub repository
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
