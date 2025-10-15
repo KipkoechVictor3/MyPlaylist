@@ -1,4 +1,4 @@
-name: Generate IPTV Playlist and Upload to Dropbox
+name: XTM UPLOAD
 
 on:
   # This workflow will run manually from the GitHub Actions tab
