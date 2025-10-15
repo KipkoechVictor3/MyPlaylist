@@ -1,80 +1,79 @@
 name: Generate IPTV Playlist and Upload to Dropbox
 
 on:
-  # Allows you to run this workflow manually from the GitHub Actions tab
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual run
 
 jobs:
-  build_and_upload:
+  generate_and_upload:
     runs-on: ubuntu-latest
     container:
       image: python:3-alpine
-      # 🔥 FIX: Must explicitly set the container user to root for the checkout action to work
+      # FIX: Run as root for checkout and file system permissions
       options: --user root
 
     steps:
       - name: ⬇️ Checkout Repository Code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Install Python Libraries and Tools
+      - name: ⚙️ Install Tools and Python Libraries
         run: |
-          # Install requests library (to make the HTTP call) and bash
+          apk update && apk add bash
+          # We only need requests for the direct download logic
           pip install requests
-          apk update
-          apk add bash
-          
-      - name: 📝 Generate M3U Playlist (Python w/ User-Agent)
+
+      - name: 📝 Generate M3U Playlist (Python Script)
         id: generate_m3u
-        shell: bash
+        # Your full Xtream URL and credentials, stored safely as a secret
+        env:
+          XTREAM_API_URL: ${{ secrets.XTREAM_API_URL }}
         run: |
-          # Run a multi-line Python script inside the container to fetch and validate the playlist.
-          # This approach handles server checks better than plain 'curl'.
-          
-          # The Python script is written directly into the shell command
+          # The Python code runs directly in the runner shell
           python << END_SCRIPT
 import requests
 import os
+import sys
+from urllib.parse import urlparse, parse_qs
 
-PLAYLIST_URL = "http://xxip25.top:8080/get.php?username=95621707&password=63396105&type=m3u_plus"
-OUTPUT_FILE = "iptv_playlist.m3u"
-# Using a common browser User-Agent to satisfy potential server requirements
+# --- Configuration (Read from GitHub Secrets) ---
+# NOTE: The full URL is passed via environment variable
+XTREAM_FULL_API_URL = os.environ.get('XTREAM_API_URL')
+OUTPUT_FILE = "xtream_playlist_filtered.m3u"
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
 
-print(f"-> Attempting to download playlist from: {PLAYLIST_URL}")
+# --- Execution ---
+if not XTREAM_FULL_API_URL:
+    print("::error::XTREAM_API_URL secret is not set.")
+    sys.exit(1)
+
+print(f"-> Attempting to download playlist from Xtream API...")
 
 try:
     # Fetch content with timeout and required headers
-    response = requests.get(PLAYLIST_URL, headers=HEADERS, timeout=30)
+    response = requests.get(XTREAM_FULL_API_URL, headers=HEADERS, timeout=60)
     response.raise_for_status() 
     playlist_content = response.text.strip()
 
-    # Check for non-empty status (presence of a stream/channel entry marker)
-    if "#EXTINF" in playlist_content:
+    if "#EXTM3U" in playlist_content or "#EXTINF" in playlist_content:
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             f.write(playlist_content)
         
         file_size = os.path.getsize(OUTPUT_FILE)
-        print(f"-> ✅ Success! Playlist saved to {OUTPUT_FILE} ({file_size / 1024:.2f} KB).")
+        print(f"::notice::✅ Success! Playlist saved ({file_size / 1024:.2f} KB).")
     else:
-        # Exit with error if content is empty
-        print("::error::Playlist is empty or contains no detectable stream entries (#EXTINF).")
-        exit(1)
+        print("::error::Playlist is empty or contains no detectable entries.")
+        sys.exit(1)
 
 except requests.exceptions.RequestException as e:
-    # Report network or HTTP errors
-    print(f"::error::🛑 An error occurred during the request (likely server-side error or timeout): {e}")
-    exit(1)
+    print(f"::error::🛑 Request failed (server error or timeout): {e}")
+    sys.exit(1)
 
 END_SCRIPT
 
       - name: 📤 Upload Playlist to Dropbox
-        # This step uses the GitHub Action you provided for Dropbox upload
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
-          # These must be set as Secrets in your GitHub repository
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: iptv_playlist.m3u
-          # Set your desired Dropbox destination path
-          DEST_PATH: /MyPlaylists/iptv_playlist.m3u
+          source_path: ${{ steps.generate_m3u.outputs.file_path }}
+          DEST_PATH: /MyPlaylists/xtream_playlist_filtered.m3u
