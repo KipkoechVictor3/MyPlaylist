@@ -1,0 +1,73 @@
+name: Generate IPTV Playlist and Upload to Dropbox
+
+on:
+  # This workflow will run manually from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  build_and_upload:
+    # Use one of the prebuild Docker images as the runner environment
+    runs-on: ubuntu-latest
+    container: ghcr.io/prebuild/alpine:latest # Using Alpine as it includes Python and tools
+
+    steps:
+      - name: ⬇️ Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Install Python Dependencies
+        # Since the Docker image is based on Alpine, we may need to install 
+        # basic dependencies first, then the Python requirements.
+        # However, the image states it includes Python 3.x, so we'll 
+        # just install your Python libraries.
+        run: |
+          # This command must be run inside the container environment
+          # Note: We assume 'xtream2m3u' is cloned or its files are present here.
+          # If using 'xtream2m3u', you would typically run:
+          # pip install -r requirements.txt
+          # If using your simple script, you only need 'requests'.
+          
+          # We'll install only 'requests' as it's sufficient for the first script you wrote.
+          # If you want to run the full 'xtream2m3u' stack, you need all its requirements.
+          apk update && apk add python3 py3-pip git # Ensure basic tools are there
+          pip install requests
+
+      - name: 📝 Generate M3U Playlist
+        id: generate_m3u
+        # Use a single Python command to run the script logic
+        run: |
+          # The Python code to fetch the playlist and check if it's non-empty.
+          # We will use the URL with 'nostreamproxy=true' for direct links.
+          
+          PLAYLIST_URL="http://xxip25.top:8080/get.php?username=95621707&password=63396105&type=m3u_plus"
+          OUTPUT_FILE="iptv_playlist.m3u"
+          
+          echo "Attempting to download playlist..."
+          
+          # Using curl as an alternative method that avoids Python file handling complexity in a one-liner
+          # We'll check for non-empty content after download
+          
+          curl -s --fail -o "${OUTPUT_FILE}" "${PLAYLIST_URL}"
+          
+          # Basic check to see if the downloaded file is a valid M3U
+          if [ $? -eq 0 ] && grep -q "#EXTM3U" "${OUTPUT_FILE}"; then
+            echo "::set-output name=file_path::${OUTPUT_FILE}"
+            echo "Playlist successfully downloaded and saved."
+          else
+            echo "::error::Failed to download a valid M3U playlist."
+            exit 1
+          fi
+          
+        shell: bash
+
+      - name: 📤 Upload Playlist to Dropbox
+        # This step uses the GitHub Action you provided for Dropbox upload
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          # Assuming you have set these secrets in your repository settings
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          # Use the file name generated in the previous step
+          source_path: iptv_playlist.m3u
+          # Set your desired Dropbox destination path
+          DEST_PATH: /MyPlaylists/iptv_playlist.m3u
