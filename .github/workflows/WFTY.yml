@@ -2,7 +2,7 @@ name: WatchFooty Playlist Update
 
 on:
   schedule:
-    - cron: '*/55 * * * *'  # Runs every 55 minutes
+    - cron: '*/55 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -19,33 +19,26 @@ jobs:
 
       - name: Install dependencies 🛠️
         run: |
-          # The fix for 'The virtual environment was not created successfully' error:
+          # Ensures venv is available and dependencies are installed
           apt-get update
           apt-get install -y python3-venv
-          
-          # Create and activate the virtual environment
           python3 -m venv venv
           source venv/bin/activate
-          
-          # Install Python packages
           python -m pip install --upgrade pip
           pip install playwright==1.55.0 aiohttp httpx requests beautifulsoup4 python-dateutil
         shell: bash
 
       - name: Download WFTY.py from Dropbox
         run: |
-          # Downloading your script and naming it WFTY.py
           curl -L -o WFTY.py "https://www.dropbox.com/scl/fi/k16u26m9fd8440178li1s/Watch-Footy.py?rlkey=ykad9423ydywxg9xtvbjfqojp&st=lffl883g&dl=1"
         shell: bash
 
       - name: Run WFTY.py ⏱️
         run: |
-          # Activate the virtual environment before running the script
           source venv/bin/activate
-          echo "::group::▶️ Running WFTY.py (Football/Racing)..."
+          echo "::group::▶️ Running WFTY.py (Football & Racing)..."
           START_TIME=$(date +%s)
           
-          # Unbuffered mode for real-time logs
           python -u WFTY.py
           
           END_TIME=$(date +%s)
@@ -53,28 +46,17 @@ jobs:
           echo "::endgroup::"
           echo "::notice title=Script Time Complete::**✅ WFTY.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          if [ ! -f "TV.m3u8" ]; then
-              echo "⚠️ Expected output TV.m3u8 not found!"
-          fi
-          if [ ! -f "events.m3u8" ]; then
-              echo "⚠️ Expected output events.m3u8 not found!"
+          # Check for the single output file
+          if [ ! -f "Footy.m3u8" ]; then
+              echo "⚠️ Expected output Footy.m3u8 not found!"
           fi
         shell: bash
 
-      - name: Upload TV.m3u8 (Combined) to Dropbox
+      - name: Upload Footy.m3u8 to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: TV.m3u8
-          DEST_PATH: /MyStuff/TV.m3u8 # Change this path if needed
-
-      - name: Upload events.m3u8 (Live Events) to Dropbox
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: events.m3u8
-          DEST_PATH: /MyStuff/events.m3u8 # Change this path if needed
+          source_path: Footy.m3u8 # Single source file
+          DEST_PATH: /MyStuff/Footy.m3u8 # Single destination file
