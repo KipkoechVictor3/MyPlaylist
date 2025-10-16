@@ -19,10 +19,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies 🛠️
         run: |
-          # The Playwright container already has Python 3 installed.
-          # We use the system-wide 'pip' to install necessary Python packages globally.
+          # FIX: Removed venv creation. Installing dependencies using the container's system-wide pip.
           pip install --upgrade pip
           pip install httpx aiohttp requests beautifulsoup4 python-dateutil playwright==1.55.0
         shell: bash
@@ -35,7 +34,7 @@ jobs:
 
       - name: Run WFTY.py ⏱️
         run: |
-          # Removed 'source venv/bin/activate' as we are using the system Python.
+          # Removed 'source venv/bin/activate'. Running script directly with the system Python.
           echo "::group::▶️ Running WFTY.py (Football/Racing)..."
           START_TIME=$(date +%s)
           
