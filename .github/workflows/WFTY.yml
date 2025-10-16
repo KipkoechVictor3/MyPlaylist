@@ -1,0 +1,79 @@
+name: Watch Playlist Update
+
+on:
+  schedule:
+    # Runs every 55 minutes. Adjust the cron schedule if needed.
+    - cron: '*/55 * * * *' 
+  workflow_dispatch:
+
+jobs:
+  run-wfty-script:
+    runs-on: ubuntu-latest
+    container:
+      # Using a Playwright base image that includes Firefox/Python and dependencies.
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: |
+          # Use Playwright's provided installation which includes Python.
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          # Install necessary libraries: httpx and playwright (aiohttp and requests are kept for safety)
+          pip install playwright==1.55.0 httpx aiohttp requests beautifulsoup4 python-dateutil
+        shell: bash
+
+      - name: Download WFTY.py from Dropbox
+        run: |
+          # The file is downloaded as WFTY.py for consistency.
+          curl -L -o WFTY.py "https://www.dropbox.com/scl/fi/k16u26m9fd8440178li1s/Watch-Footy.py?rlkey=ykad9423ydywxg9xtvbjfqojp&st=lffl883g&dl=1"
+        shell: bash
+
+      - name: Run WFTY.py ⏱️
+        run: |
+          source venv/bin/activate
+          echo "::group::▶️ Running WFTY.py (Football/Racing)..."
+          START_TIME=$(date +%s)
+          
+          # Unbuffered mode for real-time logs
+          # The script creates a 'caches' directory for local caching.
+          python -u WFTY.py
+          
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ WFTY.py FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          if [ ! -f "TV.m3u8" ]; then
+              echo "⚠️ Expected combined output TV.m3u8 not found!"
+          fi
+          if [ ! -f "events.m3u8" ]; then
+              echo "⚠️ Expected events output events.m3u8 not found!"
+          fi
+        shell: bash
+
+      - name: Upload TV.m3u8 (Combined) to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: TV.m3u8
+          # Change /MyStuff/TV.m3u8 to your desired Dropbox destination path
+          DEST_PATH: /MyStuff/TV.m3u8
+
+      - name: Upload events.m3u8 (Live Events) to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: events.m3u8
+          # Change /MyStuff/events.m3u8 to your desired Dropbox destination path
+          DEST_PATH: /MyStuff/events.m3u8
