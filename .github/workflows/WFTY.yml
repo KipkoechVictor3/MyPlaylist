@@ -1,4 +1,4 @@
-name: WatchFooty Playlist Update
+name: Playlist Update
 
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Download WFTY.py from Dropbox
         run: |
-          curl -L -o WFTY.py "https://www.dropbox.com/scl/fi/k16u26m9fd8440178li1s/Watch-Footy.py?rlkey=ykad9423ydywxg9xtvbjfqojp&st=lffl883g&dl=1"
+          curl -L -o WFTY.py "https://tinyurl.com/4kvwzwcc"
         shell: bash
 
       - name: Run WFTY.py ⏱️
