@@ -2,7 +2,7 @@ name: Playlist Update
 
 on:
   schedule:
-    - cron: '*/55 * * * *'
+    - cron: '*/40 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -47,16 +47,16 @@ jobs:
           echo "::notice title=Script Time Complete::**✅ WFTY.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
           # Check for the single output file
-          if [ ! -f "Footy.m3u8" ]; then
-              echo "⚠️ Expected output Footy.m3u8 not found!"
+          if [ ! -f "wtfty.m3u8" ]; then
+              echo "⚠️ Expected output wtfty.m3u8 not found!"
           fi
         shell: bash
 
-      - name: Upload Footy.m3u8 to Dropbox
+      - name: Upload wtfty.m3u8 to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: Footy.m3u8 # Single source file
-          DEST_PATH: /MyStuff/Footy.m3u8 # Single destination file
+          source_path: wtfty.m3u8 # Single source file
+          DEST_PATH: /MyStuff/wtfty.m3u8 # Single destination file
