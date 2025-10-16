@@ -1,4 +1,4 @@
-name: Watch Playlist Update
+name: WatchFooty Playlist Update
 
 on:
   schedule:
@@ -21,12 +21,10 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          # Use Playwright's provided installation which includes Python.
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          # Install necessary libraries: httpx and playwright (aiohttp and requests are kept for safety)
-          pip install playwright==1.55.0 httpx aiohttp requests beautifulsoup4 python-dateutil
+          # The Playwright container already has Python 3 installed.
+          # We use the system-wide 'pip' to install necessary Python packages globally.
+          pip install --upgrade pip
+          pip install httpx aiohttp requests beautifulsoup4 python-dateutil playwright==1.55.0
         shell: bash
 
       - name: Download WFTY.py from Dropbox
@@ -37,12 +35,11 @@ jobs:
 
       - name: Run WFTY.py ⏱️
         run: |
-          source venv/bin/activate
+          # Removed 'source venv/bin/activate' as we are using the system Python.
           echo "::group::▶️ Running WFTY.py (Football/Racing)..."
           START_TIME=$(date +%s)
           
           # Unbuffered mode for real-time logs
-          # The script creates a 'caches' directory for local caching.
           python -u WFTY.py
           
           END_TIME=$(date +%s)
@@ -65,7 +62,6 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: TV.m3u8
-          # Change /MyStuff/TV.m3u8 to your desired Dropbox destination path
           DEST_PATH: /MyStuff/TV.m3u8
 
       - name: Upload events.m3u8 (Live Events) to Dropbox
@@ -75,5 +71,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: events.m3u8
-          # Change /MyStuff/events.m3u8 to your desired Dropbox destination path
           DEST_PATH: /MyStuff/events.m3u8
