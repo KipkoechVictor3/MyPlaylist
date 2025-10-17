@@ -14,7 +14,6 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
-      # CLOUDFLARE_WORKER_DOMAIN and CLW_TARGET_DOMAINS removed
       EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
 
     steps:
@@ -22,13 +21,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies and set up Python virtual environment
-        # Note: Playwright is installed but its usage is not evident in the remaining script logic.
         run: |
           apt-get update
           apt-get install -y python3-venv
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
+          # httpx is used by the new processing script
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
@@ -45,6 +44,8 @@ jobs:
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
+          # === NEW: DOWNLOAD THE PLAYLIST PROCESSING SCRIPT ===
+          curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr"
 
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
@@ -186,9 +187,6 @@ jobs:
             echo "⚠️ No remote playlists found."
           fi
         shell: bash
-
-      # Process and Create CLW step removed
-      # Formatting step removed
         
       - name: Final Append S3.m3u (Unchanged) 🌟
         run: |
@@ -212,7 +210,7 @@ jobs:
               cat "$REMOTE_UNTOUCHED_TEMP" >> MyStuff.m3u
               rm -f "$REMOTE_UNTOUCHED_TEMP"
           else
-              echo "⚠️ No untouched remote URLs found."
+            echo "⚠️ No untouched remote URLs found."
           fi
         shell: bash
 
@@ -226,6 +224,34 @@ jobs:
           echo "✅ Final formatting done on MyStuff.m3u."
         shell: bash
       
+      # === NEW STEP: PROCESS FINAL PLAYLIST AND GENERATE WORKER LOOKUP FILES ===
+      - name: Process MyStuff.m3u for Worker Files
+        run: |
+          source venv/bin/activate
+          # PROCESS_PLAYLIST.py processes MyStuff.m3u and outputs live_lookup.json, live_processed.m3u, and header_map_export.txt
+          python PROCESS_PLAYLIST.py
+        shell: bash
+
+      # === NEW UPLOAD STEPS FOR WORKER SOURCES ===
+      - name: Upload Worker Lookup JSON
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: live_lookup.json
+          DEST_PATH: /MyStuff/live_lookup.json # IMPORTANT: Use this link in your worker's LIVE_LOOKUP_JSON_URL
+
+      - name: Upload Processed M3U
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: live_processed.m3u
+          DEST_PATH: /MyStuff/live_processed.m3u # IMPORTANT: Use this link in your worker's LIVE_PROCESSED_M3U_URL
+
+      # === ORIGINAL UPLOAD STEPS (Kept for compatibility) ===
       - name: Upload original
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -243,4 +269,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuff.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u # Target path of the old CLW file
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u
