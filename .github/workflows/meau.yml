@@ -50,12 +50,12 @@ jobs:
           echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
           # Rename output to Mediauu.m3u if needed
-          if [ -f "filtered_playlist.m3u" ]; then
-              mv filtered_playlist.m3u Mediauu.m3u
+          if [ -f "filP.m3u" ]; then
+              mv filP.m3u Mediauu.m3u
           elif [ -f "Meau.m3u" ]; then
               mv Meau.m3u Mediauu.m3u
           else
-              echo "⚠️ No playlist file found — expected filtered_playlist.m3u or Meau.m3u."
+              echo "⚠️ No playlist file found — expected filP.m3u or Meau.m3u."
           fi
         shell: bash
 
