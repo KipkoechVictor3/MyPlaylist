@@ -1,0 +1,69 @@
+name: Media4u Scraper Script
+
+on:
+  # Runs once every 24 hours at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+  # Allow manual runs too
+  workflow_dispatch:
+
+jobs:
+  run-media4u-script:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install requests
+        shell: bash
+
+      - name: Download Media4u Scraper script
+        run: |
+          echo "📥 Downloading Meau.py from Dropbox..."
+          curl -L -o Meau.py "https://www.dropbox.com/scl/fi/v5nhpz243jcka7xh0818v/Meau.py?rlkey=tjkbjyrb60qvzrujd9pdygzhp&st=fx6hw6sr&dl=1"
+        shell: bash
+
+      - name: Run craper and Measure Time ⏱️
+        run: |
+          source venv/bin/activate
+          
+          echo "::group::▶️ Running Meau.py..."
+          START_TIME=$(date +%s)
+
+          python Meau.py
+
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          # Rename output to Mediauu.m3u if needed
+          if [ -f "filtered_playlist.m3u" ]; then
+              mv filtered_playlist.m3u Mediauu.m3u
+          elif [ -f "Meau.m3u" ]; then
+              mv Meau.m3u Mediauu.m3u
+          else
+              echo "⚠️ No playlist file found — expected filtered_playlist.m3u or Meau.m3u."
+          fi
+        shell: bash
+
+      - name: Upload Mediauu.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: Mediauu.m3u
+          DEST_PATH: /MyStuff/Mediauu.m3u
