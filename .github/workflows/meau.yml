@@ -1,4 +1,4 @@
-name: Media4u Scraper Script
+name: Scraper Script
 
 on:
   # Runs once every 24 hours at midnight UTC
