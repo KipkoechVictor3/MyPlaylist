@@ -1,0 +1,63 @@
+name: TML Playlist Updater
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every 40 minutes
+    - cron: '*/30 * * * *'
+
+jobs:
+  update-tml-playlist:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python and dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install playwright==1.55.0 httpx aiohttp dropbox requests
+          playwright install firefox
+        shell: bash
+
+      - name: Download TML Scraper
+        run: |
+          echo "📥 Downloading TML script..."
+          curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
+        shell: bash
+
+      - name: Run TML Scraper
+        run: |
+          source venv/bin/activate
+          echo "🚀 Running TML scraper..."
+          python TML.py || echo "⚠️ TML scraper failed but continuing..."
+        shell: bash
+
+      - name: Rename Output to TML.m3u
+        run: |
+          if [ -f "S4.m3u8" ]; then
+            mv S4.m3u8 TML.m3u
+            echo "✅ Renamed S4.m3u8 → TML.m3u"
+          else
+            echo "⚠️ No S4.m3u8 found; creating empty TML.m3u."
+            echo "#EXTM3U" > TML.m3u
+          fi
+        shell: bash
+
+      - name: Upload TML Playlist to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: TML.m3u
+          DEST_PATH: /MyStuff/TML.m3u
