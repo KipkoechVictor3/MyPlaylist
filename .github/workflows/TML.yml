@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Run every 40 minutes
-    - cron: '*/30 * * * *'
+    - cron: '*/35 * * * *'
 
 jobs:
   update-tml-playlist:
