@@ -10,7 +10,7 @@ jobs:
   run-fsc-script:
     runs-on: ubuntu-latest
     container:
-      # Using the original Playwright image as requested
+      # Using the original Playwright image
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -22,36 +22,36 @@ jobs:
       # --- Install dependencies ---
       - name: Install dependencies
         run: |
-          # The Playwright image is large, but this setup ensures dependencies are available.
           apt-get update
           apt-get install -y python3-venv
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          # Including the original list of libraries
+          # Installing Playwright, aiohttp, httpx, and requests
           pip install playwright==1.55.0 aiohttp httpx requests
         shell: bash
 
-      # --- Download BYTV Script ---
+      # --- Download BYTV Script (FIXED: Installing curl) ---
       - name: Download BYTV Script
         run: |
-          # 'curl' is likely present in the heavy Playwright image, but we confirmed it's missing in slim images.
-          # It should work here.
+          # The fix: Install curl before using it, as it's missing from the base container.
+          apt-get update
+          apt-get install -y curl
+          
+          # Now, download the script
           curl -L -o Bytvv.py "https://bit.ly/4qwxVRA"
         shell: bash
 
       # --- Run Bytvv.py and Measure Time ⏱️ ---
       - name: Run Bytvv.py and Measure Time ⏱️
-        # CRITICAL FIX: Ensure the shell command keeps the virtual environment activated 
-        # for the entire run block to use the installed packages.
         run: |
-          # Source venv activation
+          # Activate the virtual environment
           source venv/bin/activate
           
           echo "::group::▶️ Running Bytvv.py..."
           START_TIME=$(date +%s)
           
-          # Run the script using the environment's python
+          # Run the script to generate bytvv.m3u
           python Bytvv.py
           
           END_TIME=$(date +%s)
@@ -62,7 +62,7 @@ jobs:
           
           # Rename output file logic
           if [ ! -f "bytvv.m3u" ]; then
-              # Assuming Bytvv.py outputs S1.m3u if bytvv.m3u is not found
+              # Assuming Bytvv.py outputs S1.m3u based on your previous config
               mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file (S1.m3u or bytvv.m3u)."
           fi
         shell: bash
