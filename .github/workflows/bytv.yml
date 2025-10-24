@@ -1,49 +1,57 @@
-name: BTV Playlist Updater
+name: bytv script
 
 on:
   # Runs every 30 minutes
   schedule:
     - cron: '*/30 * * * *'
-  # Allows manual triggering from the GitHub UI
   workflow_dispatch:
 
 jobs:
-  run-playlist-script:
+  run-fsc-script:
     runs-on: ubuntu-latest
     container:
-      # Using a slim Python image
-      image: python:3.11-slim 
+      # Using the original Playwright image as requested
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- Install curl and Python dependencies ---
-      - name: Install System and Python Dependencies
+      # --- Install dependencies ---
+      - name: Install dependencies
         run: |
-          # 1. Update package lists and install curl
+          # The Playwright image is large, but this setup ensures dependencies are available.
           apt-get update
-          apt-get install -y curl 
-          
-          # 2. Install necessary Python package
-          pip install requests
+          apt-get install -y python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          # Including the original list of libraries
+          pip install playwright==1.55.0 aiohttp httpx requests
         shell: bash
-        
-      # --- Download Script (Now curl will work) ---
-      - name: Download BTV Script
+
+      # --- Download BYTV Script ---
+      - name: Download BYTV Script
         run: |
-          # Downloads the external script and names it Bytvv.py
+          # 'curl' is likely present in the heavy Playwright image, but we confirmed it's missing in slim images.
+          # It should work here.
           curl -L -o Bytvv.py "https://bit.ly/4qwxVRA"
         shell: bash
 
-      # --- Run Script and Rename Output ---
+      # --- Run Bytvv.py and Measure Time ⏱️ ---
       - name: Run Bytvv.py and Measure Time ⏱️
+        # CRITICAL FIX: Ensure the shell command keeps the virtual environment activated 
+        # for the entire run block to use the installed packages.
         run: |
+          # Source venv activation
+          source venv/bin/activate
           
           echo "::group::▶️ Running Bytvv.py..."
           START_TIME=$(date +%s)
           
-          # Run the downloaded script
+          # Run the script using the environment's python
           python Bytvv.py
           
           END_TIME=$(date +%s)
@@ -52,14 +60,14 @@ jobs:
 
           echo "::notice title=Script Time Complete::**✅ Bytvv.py FINISHED!** Time Taken: **${DURATION} seconds**"
           
-          # Renames the output file to 'bytvv.m3u' if the script output 'S1.m3u'
+          # Rename output file logic
           if [ ! -f "bytvv.m3u" ]; then
-              # This line assumes the script outputs 'S1.m3u' if 'bytvv.m3u' isn't found
+              # Assuming Bytvv.py outputs S1.m3u if bytvv.m3u is not found
               mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file (S1.m3u or bytvv.m3u)."
           fi
         shell: bash
 
-      # --- Upload to Dropbox ---
+      # --- Upload bytvv.m3u to Dropbox ---
       - name: Upload bytvv.m3u to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
