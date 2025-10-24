@@ -10,48 +10,38 @@ jobs:
   run-fsc-script:
     runs-on: ubuntu-latest
     container:
-      # Using the original Playwright image
+      # Keep the large Playwright image, as we know it contains curl and other needed tools
       image: mcr.microsoft.com/playwright:v1.55.0-noble
-    env:
-      HOME: /root
+    # Removed env: HOME: /root to help prevent the permission warning.
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- Install dependencies ---
+      # --- Install dependencies (Cleaned up) ---
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y python3-venv
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          # Installing Playwright, aiohttp, httpx, and requests
-          pip install playwright==1.55.0 aiohttp httpx requests
+          # Only installing essential Python packages for your script (requests)
+          pip install requests
         shell: bash
 
-      # --- Download BYTV Script (FIXED: Installing curl) ---
+      # --- Download BYTV Script (Curl Fix Confirmed) ---
       - name: Download BYTV Script
         run: |
-          # The fix: Install curl before using it, as it's missing from the base container.
           apt-get update
           apt-get install -y curl
           
-          # Now, download the script
           curl -L -o Bytvv.py "https://bit.ly/4qwxVRA"
         shell: bash
 
-      # --- Run Bytvv.py and Measure Time ⏱️ ---
+      # --- Run Bytvv.py and Measure Time ⏱️ (Cleaned up) ---
       - name: Run Bytvv.py and Measure Time ⏱️
         run: |
-          # Activate the virtual environment
-          source venv/bin/activate
-          
           echo "::group::▶️ Running Bytvv.py..."
           START_TIME=$(date +%s)
           
-          # Run the script to generate bytvv.m3u
+          # Run the script
           python Bytvv.py
           
           END_TIME=$(date +%s)
@@ -60,15 +50,23 @@ jobs:
 
           echo "::notice title=Script Time Complete::**✅ Bytvv.py FINISHED!** Time Taken: **${DURATION} seconds**"
           
-          # Rename output file logic
+          # CRITICAL FIX: The script is NOT generating S1.m3u or bytvv.m3u.
+          # We must check for *any* generated file OR use the script's intended output name.
           if [ ! -f "bytvv.m3u" ]; then
-              # Assuming Bytvv.py outputs S1.m3u based on your previous config
-              mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file (S1.m3u or bytvv.m3u)."
+              if [ -f "S1.m3u" ]; then
+                  mv S1.m3u bytvv.m3u
+                  echo "File S1.m3u found and renamed to bytvv.m3u."
+              else
+                  echo "❌ FATAL ERROR: Bytvv.py finished in ${DURATION} seconds but created no output file (S1.m3u or bytvv.m3u)."
+                  # Fail the step if no file is found to prevent the empty file upload
+                  exit 1 
+              fi
           fi
         shell: bash
 
       # --- Upload bytvv.m3u to Dropbox ---
       - name: Upload bytvv.m3u to Dropbox
+        # This step will only run if the previous step created bytvv.m3u
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
