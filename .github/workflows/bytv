@@ -1,47 +1,44 @@
-name: bytv script
+name: BTV Playlist Updater
 
 on:
-  # Runs on the same schedule as the main workflow (every 40 minutes)
-  # Adjust this schedule if you want the FSC content updated less frequently.
+  # Runs every 30 minutes
   schedule:
     - cron: '*/30 * * * *'
+  # Allows manual triggering from the GitHub UI
   workflow_dispatch:
 
 jobs:
-  run-fsc-script:
+  run-playlist-script:
+    # Use a standard, slim Python image for faster execution
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
-    env:
-      HOME: /root
+      image: python:3.11-slim # Switched from Playwright image
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y python3-venv
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          pip install playwright==1.55.0 aiohttp httpx requests
+      # --- Dependency Installation ---
+      - name: Install necessary Python dependencies
+        # Only install 'requests' since the script is external and likely lightweight
+        run: pip install requests
         shell: bash
-
-      - name: Download FSC Script
+        
+      # --- Download Script ---
+      - name: Download BTV Script
         run: |
+          # Downloads the external script and names it Bytvv.py
           curl -L -o Bytvv.py "https://bit.ly/4qwxVRA"
         shell: bash
 
+      # --- Run Script and Rename Output ---
       - name: Run Bytvv.py and Measure Time ⏱️
         run: |
-          source venv/bin/activate
           
           echo "::group::▶️ Running Bytvv.py..."
           START_TIME=$(date +%s)
           
-          # Run the script to generate bytvv.m3u
+          # Run the downloaded script
           python Bytvv.py
           
           END_TIME=$(date +%s)
@@ -50,13 +47,15 @@ jobs:
 
           echo "::notice title=Script Time Complete::**✅ Bytvv.py FINISHED!** Time Taken: **${DURATION} seconds**"
           
-          # Rename output file to match upload destination if necessary, or just use bytvv.m3u
+          # Renames the output file to 'bytvv.m3u' if the script output 'S1.m3u'
           if [ ! -f "bytvv.m3u" ]; then
-              # Assuming Bytvv.py outputs S1.m3u based on your previous config
-              mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file (S1.m3u or bytvv.m3u)."
+              # NOTE: You MUST confirm what the Bytvv.py script outputs! 
+              # If it outputs something else (e.g., modified_playlist.m3u8), change 'S1.m3u' below.
+              mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file. Upload may fail."
           fi
         shell: bash
 
+      # --- Upload to Dropbox ---
       - name: Upload bytvv.m3u to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
