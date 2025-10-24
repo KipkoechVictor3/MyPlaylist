@@ -1,4 +1,4 @@
-name: Playlist
+name: BTV Playlist Updater
 
 on:
   # Runs every 30 minutes
@@ -9,22 +9,27 @@ on:
 
 jobs:
   run-playlist-script:
-    # Use a standard, slim Python image for faster execution
     runs-on: ubuntu-latest
     container:
-      image: python:3.11-slim # Switched from Playwright image
+      # Using a slim Python image
+      image: python:3.11-slim 
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- Dependency Installation ---
-      - name: Install necessary Python dependencies
-        # Only install 'requests' since the script is external and likely lightweight
-        run: pip install requests
+      # --- Install curl and Python dependencies ---
+      - name: Install System and Python Dependencies
+        run: |
+          # 1. Update package lists and install curl
+          apt-get update
+          apt-get install -y curl 
+          
+          # 2. Install necessary Python package
+          pip install requests
         shell: bash
         
-      # --- Download Script ---
+      # --- Download Script (Now curl will work) ---
       - name: Download BTV Script
         run: |
           # Downloads the external script and names it Bytvv.py
@@ -49,9 +54,8 @@ jobs:
           
           # Renames the output file to 'bytvv.m3u' if the script output 'S1.m3u'
           if [ ! -f "bytvv.m3u" ]; then
-              # NOTE: You MUST confirm what the Bytvv.py script outputs! 
-              # If it outputs something else (e.g., modified_playlist.m3u8), change 'S1.m3u' below.
-              mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file. Upload may fail."
+              # This line assumes the script outputs 'S1.m3u' if 'bytvv.m3u' isn't found
+              mv S1.m3u bytvv.m3u || echo "⚠️ Could not find expected output file (S1.m3u or bytvv.m3u)."
           fi
         shell: bash
 
