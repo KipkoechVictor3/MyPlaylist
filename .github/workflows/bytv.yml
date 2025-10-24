@@ -1,4 +1,4 @@
-name: BTV Playlist Updater
+name: Playlist
 
 on:
   # Runs every 30 minutes
