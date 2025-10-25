@@ -1,4 +1,4 @@
-name: Combined Workflow
+name: Combined Workflow Simplified (MyStuffCLW)
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ jobs:
   update-playlist:
     runs-on: ubuntu-latest
     container:
+      # Using v1.55.0 Playwright image (Firefox preference noted)
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -26,6 +27,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
+          # Installing required Python packages
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
@@ -33,7 +35,6 @@ jobs:
         run: |
           curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o Rox.py "https://tinyurl.com/2jwbswfy"
-          curl -L -o PP.py "https://tinyurl.com/muuurv94"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
           curl -L -o STB.py "https://tinyurl.com/37yajm8v"
           curl -L -o OVG.py "https://tinyurl.com/r5re7n5t"
@@ -41,7 +42,8 @@ jobs:
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr"
+          # PROCESS_PLAYLIST.py is downloaded but not run, as its outputs (json, live_processed.m3u) are excluded.
+          curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr" 
 
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
@@ -59,10 +61,10 @@ jobs:
             while read -r url; do
               line_number=$((line_number + 1))
               if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
-                temp_file="remote_playlist_${line_number}.m3u"
+                temp_file="remote_playlist_S${line_number}.m3u"
                 echo "Downloading line ${line_number}: $url"
                 if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
-                  echo "✅ Successfully downloaded: $url"
+                  echo "✅ Successfully downloaded: $url to ${temp_file}"
                 else
                   echo "❌ Failed to download: $url"
                   echo "#EXTM3U" > "$temp_file"
@@ -79,7 +81,7 @@ jobs:
         run: |
           FSC_MAIN_URL="https://bit.ly/FSCChannelsm3u"
           FSC_BACKUP_URL="https://bit.ly/3Wmleuo"
-          OUTPUT_FILE="remote_FSC.m3u"
+          OUTPUT_FILE="FSC.m3u"
           
           echo "Attempting to download FSC.m3u from main link..."
           if curl -L -f --connect-timeout 15 "$FSC_MAIN_URL" -o "$OUTPUT_FILE"; then
@@ -96,146 +98,148 @@ jobs:
           fi
         shell: bash
 
-      - name: Run Python scripts and merge outputs
+      - name: Run Python scripts and merge content to MyStuffCLW.m3u
         run: |
           source venv/bin/activate
-          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > MyStuff.m3u
           
-          S3_TEMP_FILE="S3_UNTOUCHED_TEMP.m3u"
-          REMOTE_UNTOUCHED_TEMP="REMOTE_UNTOUCHED_TEMP.m3u"
-          echo "" > "$S3_TEMP_FILE"
-          echo "" > "$REMOTE_UNTOUCHED_TEMP"
-          
-          declare -A script_outputs
-          script_outputs=( 
-            ["FS.py"]="S2.m3u8"
-            ["PPL_SCRIPT.py"]="S3.m3u"
-            ["Rox.py"]="rox.m3u8"
-            ["WC.py"]="S5.m3u8"
-            ["STB.py"]="S6.m3u8"
-            ["OVG.py"]="S7.m3u8"
-            ["ACEE.py"]="ACEE.m3u8"
-            ["FILTER.py"]="S_FILTER.m3u"
+          OUTPUT_FILE="MyStuffCLW.m3u"
+          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
+          echo "Initial: ${OUTPUT_FILE} created with main #EXTM3U header."
+
+          # Define the files to be processed in order, with their logical name for the comment
+          declare -A files_to_process
+          files_to_process=(
+            ["FS.py"]="S2.m3u8 from FS script"
+            ["PPL_SCRIPT.py"]="S3.m3u from PPL script"
+            ["Rox.py"]="rox.m3u8 from Rox script"
+            ["WC.py"]="S5.m3u8 from WC script"
+            ["STB.py"]="S6.m3u8 from STB script"
+            ["OVG.py"]="S7.m3u8 from OVG script"
+            ["ACEE.py"]="ACEE.m3u8 from ACEE script"
+            ["FILTER.py"]="S_FILTER.m3u from FILTER script"
+            ["FSC.m3u"]="FSC.m3u from remote download"
           )
           
-          TOTAL_SCRIPTS=${#script_outputs[@]}
-          SCRIPTS_COMPLETED=0
-
-          echo "--- Combining content from scripts ---"
-          for script in "${!script_outputs[@]}"; do
-            SCRIPTS_COMPLETED=$((SCRIPTS_COMPLETED + 1))
-            echo -e "\n\033[1;44m --- SCRIPT PROGRESS: ${SCRIPTS_COMPLETED}/${TOTAL_SCRIPTS} --- \033[0m"
-            START_TIME=$(date +%s)
-            python "$script" || echo "⚠️ $script failed but continuing..."
-            END_TIME=$(date +%s)
-            DURATION=$((END_TIME - START_TIME))
-            echo "::notice title=Script Complete::✅ $script finished in ${DURATION}s"
-            
-            output_file="${script_outputs[$script]}"
-            if [ -s "$output_file" ]; then
-              if [ "$script" == "PPL_SCRIPT.py" ]; then
-                cat "$output_file" > "$S3_TEMP_FILE"
-              else
-                for i in {1..5}; do echo >> MyStuff.m3u; done
-                grep -v '^#EXTM3U' "$output_file" >> MyStuff.m3u || true
-              fi
-              rm -f "$output_file"
-            else
-              echo "⚠️ $output_file missing or empty."
-            fi
+          # Add remote playlists from channels.txt. Their filenames are 'remote_playlist_S*.m3u'
+          REMOTE_FILES_COUNT=$(find . -maxdepth 1 -type f -name 'remote_playlist_S*.m3u' | wc -l)
+          for i in $(seq 1 $REMOTE_FILES_COUNT); do
+            temp_file="remote_playlist_S${i}.m3u"
+            files_to_process["$temp_file"]="${temp_file} from channels.txt"
+          done
+          
+          TOTAL_FILES=${#files_to_process[@]}
+          FILES_COMPLETED=0
+          
+          echo -e "\n--- Starting script execution and content consolidation ---"
+          
+          # Use an ordered array to process files in a specific order
+          ordered_keys=(
+            "FS.py" "PPL_SCRIPT.py" "Rox.py" "WC.py" "STB.py" "OVG.py" "ACEE.py" "FILTER.py" 
+            "FSC.m3u"
+          )
+          # Append remote files to the ordered list
+          for i in $(seq 1 $REMOTE_FILES_COUNT); do
+            ordered_keys+=("remote_playlist_S${i}.m3u")
           done
 
-          echo "--- Appending FSC.m3u ---"
-          FSC_FILE="remote_FSC.m3u"
-          if [ -s "$FSC_FILE" ] && ! grep -q "#ERROR_FSC_DOWNLOAD_FAILED" "$FSC_FILE"; then
-            for i in {1..5}; do echo >> MyStuff.m3u; done
-            grep -v '^#EXTM3U' "$FSC_FILE" >> MyStuff.m3u || true
-          else
-            echo "⚠️ FSC.m3u failed or empty."
-          fi
+          for key in "${ordered_keys[@]}"; do
+            FILES_COMPLETED=$((FILES_COMPLETED + 1))
+            logical_name="${files_to_process[$key]}"
+            output_file=""
 
-          echo "--- Collecting untouched remote playlists (includes TML.m3u) ---"
-          downloaded_files=$(find . -maxdepth 1 -type f -name 'remote_playlist_*.m3u' | sort -V)
-          if [ -n "$downloaded_files" ]; then
-            for temp_file in $downloaded_files; do
-              if grep -q "#ERROR_DOWNLOAD_FAILED" "$temp_file"; then
-                echo "⚠️ Skipping failed: $(basename "$temp_file")"
-              else
-                for i in {1..5}; do echo >> "$REMOTE_UNTOUCHED_TEMP"; done
-                cat "$temp_file" >> "$REMOTE_UNTOUCHED_TEMP"
+            if [[ "$key" == *".py" ]]; then
+              # This is a Python script, run it first
+              START_TIME=$(date +%s)
+              echo -e "\n\033[1;44m --- SCRIPT PROGRESS: ${FILES_COMPLETED}/${TOTAL_FILES} --- \033[0m"
+              echo "Executing script: ${key} to produce ${key/\.py/.m3u8}..."
+              python "$key" || echo "⚠️ $key failed but continuing..."
+              END_TIME=$(date +%s)
+              DURATION=$((END_TIME - START_TIME))
+              echo "::notice title=Script Complete::✅ $key finished in ${DURATION}s"
+              
+              # Rename key to the script's expected output file for processing
+              case "$key" in
+                "FS.py") output_file="S2.m3u8" ;;
+                "PPL_SCRIPT.py") output_file="S3.m3u" ;;
+                "Rox.py") output_file="rox.m3u8" ;;
+                "WC.py") output_file="S5.m3u8" ;;
+                "STB.py") output_file="S6.m3u8" ;;
+                "OVG.py") output_file="S7.m3u8" ;;
+                "ACEE.py") output_file="ACEE.m3u8" ;;
+                "FILTER.py") output_file="S_FILTER.m3u" ;;
+                *) echo "Unknown script output for $key. Skipping content processing." ; continue ;;
+              esac
+            else
+              # This is a downloaded file (FSC.m3u or remote_playlist_S*.m3u)
+              output_file="$key"
+              echo -e "\n\033[1;44m --- FILE PROCESSING: ${FILES_COMPLETED}/${TOTAL_FILES} --- \033[0m"
+              echo "Processing downloaded file: ${output_file}..."
+            fi
+
+            if [ -s "$output_file" ]; then
+              echo "✅ ${output_file} found. Starting line-by-line transfer with checks."
+              
+              # Add empty lines for separation (4 or 5 empty lines is 4 \n)
+              for i in {1..5}; do echo >> "$OUTPUT_FILE"; done
+              echo "Added 5 empty lines for separation."
+
+              # Add commented source line
+              echo "######## ${logical_name} ########" >> "$OUTPUT_FILE"
+              echo "Added source comment line: #######${logical_name}########"
+
+              # Process content line-by-line for robust transfer
+              TEMP_CONTENT=$(cat "$output_file")
+              LINE_COUNT=0
+              EXTM3U_REMOVED="NO"
+              
+              # Using a while loop to process content line by line with full logging
+              while IFS= read -r line; do
+                LINE_COUNT=$((LINE_COUNT + 1))
+                
+                # Check for #EXTM3U and remove it (only needed at the top)
+                if [[ "$line" == "#EXTM3U" ]]; then
+                  echo "  -> Line ${LINE_COUNT}: Found and **removed** redundant #EXTM3U."
+                  EXTM3U_REMOVED="YES"
+                  continue # Skip appending this line
+                fi
+                
+                # Append the line
+                echo "$line" >> "$OUTPUT_FILE"
+              done <<< "$TEMP_CONTENT"
+
+              echo "Finished appending content from ${output_file}. Total lines checked: ${LINE_COUNT}. Redundant #EXTM3U removed: ${EXTM3U_REMOVED}. Fully checked and done."
+              
+              # Clean up script output file
+              if [[ "$key" == *".py" ]]; then
+                rm -f "$output_file"
+                echo "Cleaned up script output file: ${output_file}."
+              elif [[ "$key" == "FSC.m3u" || "$key" == remote_playlist_S*.m3u ]]; then
+                # Clean up remote files after they are processed
+                rm -f "$output_file"
+                echo "Cleaned up downloaded file: ${output_file}."
               fi
-              rm -f "$temp_file"
-            done
-          else
-            echo "⚠️ No remote playlists found."
-          fi
-        shell: bash
-
-      - name: Append untouched S3.m3u
-        run: |
-          if [ -s "S3_UNTOUCHED_TEMP.m3u" ]; then
-            for i in {1..10}; do echo >> MyStuff.m3u; done
-            cat S3_UNTOUCHED_TEMP.m3u >> MyStuff.m3u
-            rm -f S3_UNTOUCHED_TEMP.m3u
-          fi
-        shell: bash
-
-      - name: Append untouched remote URLs
-        run: |
-          if [ -s "REMOTE_UNTOUCHED_TEMP.m3u" ]; then
-            for i in {1..10}; do echo >> MyStuff.m3u; done
-            cat REMOTE_UNTOUCHED_TEMP.m3u >> MyStuff.m3u
-            rm -f REMOTE_UNTOUCHED_TEMP.m3u
-          fi
+            else
+              echo "⚠️ ${output_file} missing or empty. Skipping content transfer. Fully checked and done."
+            fi
+          done
+          
+          echo -e "\n--- Consolidation Complete ---"
         shell: bash
 
       - name: Clean and finalize playlist
         run: |
-          tr -d '\r' < MyStuff.m3u > MyStuff_TEMP1.m3u
-          sed -E 's/[[:space:]]+$//' MyStuff_TEMP1.m3u > MyStuff_TEMP2.m3u
-          grep -v '^$' MyStuff_TEMP2.m3u > MyStuff.m3u
-          rm -f MyStuff_TEMP1.m3u MyStuff_TEMP2.m3u
-          echo "✅ MyStuff.m3u cleaned and ready."
+          # Final line-ending and whitespace cleanup (no more empty line removal required due to append logic)
+          tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
+          sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW.m3u
+          rm -f MyStuffCLW_TEMP1.m3u
+          echo "✅ MyStuffCLW.m3u cleaned and ready."
         shell: bash
 
-      - name: Process MyStuff.m3u for Worker Files
-        run: |
-          source venv/bin/activate
-          python PROCESS_PLAYLIST.py
-        shell: bash
-
-      - name: Upload Worker JSON
+      - name: Upload Final Playlist MyStuffCLW.m3u
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: live_lookup.json
-          DEST_PATH: /MyStuff/live_lookup.json
-
-      - name: Upload Processed M3U
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: live_processed.m3u
-          DEST_PATH: /MyStuff/live_processed.m3u
-
-      - name: Upload Original Playlist
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyStuff.m3u
-          DEST_PATH: /MyStuff/MyStuff.m3u
-
-      - name: Upload Duplicate for CLW path
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyStuff.m3u
+          source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
