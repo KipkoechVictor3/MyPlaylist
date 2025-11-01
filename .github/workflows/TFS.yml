@@ -48,7 +48,7 @@ jobs:
           # Re-activate venv for this run step
           source venv/bin/activate
           
-          OUTPUT_FILE="filtered_FTS_playlist.m3u8"
+          OUTPUT_FILE="FTS.m3u8"
           
           echo "::group::▶️ Running FTS_processor.py..."
           START_TIME=$(date +%s)
@@ -62,7 +62,7 @@ jobs:
 
           echo "::notice title=Script Time Complete::**✅ FTS Processor FINISHED!** Time Taken: **${DURATION} seconds**"
           
-          # Check for the expected output file: filtered_FTS_playlist.m3u8
+          # Check for the expected output file: FTS.m3u8
           if [ ! -f "$OUTPUT_FILE" ]; then
             echo "❌ FATAL ERROR: Script finished in ${DURATION} seconds but created no output file ($OUTPUT_FILE)."
             # Fail the step if no file is found (exit code 1)
@@ -77,5 +77,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: filtered_FTS_playlist.m3u8
-          DEST_PATH: /MyStuff/filtered_FTS_playlist.m3u8
+          source_path: FTS.m3u8
+          DEST_PATH: /MyStuff/FTS.m3u8
