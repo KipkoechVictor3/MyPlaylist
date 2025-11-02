@@ -32,7 +32,7 @@ jobs:
       - name: Download TML Scraper
         run: |
           echo "📥 Downloading TML script..."
-          curl -L -o TML.py "https://tinyurl.com/mrmtxffk"
+          curl -L -o TML.py "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
         shell: bash
 
       - name: Run TML Scraper
