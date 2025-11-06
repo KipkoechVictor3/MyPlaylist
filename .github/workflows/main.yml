@@ -176,6 +176,10 @@ jobs:
           FILES_COMPLETED=0
           
           echo -e "\n--- Starting script execution and content consolidation ---"
+
+          # *** CRITICAL FIX FOR EXIT CODE 141 ***
+          # Prevents script from exiting if a command fails due to a broken pipe (SIGPIPE).
+          set +o pipefail
           
           for key in "${ordered_keys[@]}"; do
             FILES_COMPLETED=$((FILES_COMPLETED + 1))
@@ -183,8 +187,6 @@ jobs:
             output_file=""
 
             if [[ "$key" == *".py" ]]; then
-              # This is a Python script, run it first
-              
               # Execute script and determine output_file
               case "$key" in
                 "FS.py") output_file="S2.m3u8" ;;
@@ -212,7 +214,7 @@ jobs:
               echo "Processing downloaded file: ${output_file}..."
             fi
 
-            # ROBUST APPEND LOGIC: Checks for file content validity and uses safe append to fix exit code 141
+            # ROBUST APPEND LOGIC: Checks for file content validity and uses safe append
             if [ -s "$output_file" ]; then
               # Check for valid M3U/M3U8 header before proceeding
               first_line=$(grep -v '^[[:space:]]*$' "$output_file" | head -n 1)
@@ -226,13 +228,14 @@ jobs:
                 echo "Added source comment line: ######## ${logical_name} ########"
 
                 # Use grep -v to safely exclude the #EXTM3U header and append the rest of the file.
-                # This fixes the exit code 141 issue by avoiding a process substitution pipe.
                 grep -v '^#EXTM3U$' "$output_file" >> "$OUTPUT_FILE"
                 
+                # Check for successful transfer 
                 if [ $? -eq 0 ]; then
                     echo "✅ Content from ${output_file} successfully appended (redundant #EXTM3U lines removed)."
                 else
-                    echo "⚠️ Content transfer from ${output_file} completed but may have encountered a non-fatal grep error."
+                    # grep -v returns non-zero code (1) if no matching lines are found, which is fine here.
+                    echo "ℹ️ Content transfer from ${output_file} completed. (grep may have returned code 1 if no #EXTM3U was found)."
                 fi
               else
                 echo "❌ ${output_file} file exists, but first content line is: '$first_line'. **Content not a valid M3U/M3U8 file.** Skipping."
@@ -247,6 +250,8 @@ jobs:
             fi
           done
           
+          # Restore pipefail setting (optional, but good practice)
+          set -o pipefail
           echo -e "\n--- Consolidation Complete ---"
         shell: bash
 
@@ -256,8 +261,7 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           # Remove trailing whitespace
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
-          # Remove all empty lines, leaving only one blank line between groups.
-          # The merge logic adds 5, but this ensures no accidental duplicates or excessive blanks.
+          # Remove excessive empty lines (consolidate to maximum of one blank line)
           grep -v '^[[:space:]]*$' MyStuffCLW_TEMP2.m3u | awk 'BEGIN{last=""} /^$/ && last!="" {print; last==""} /./ {print; last=1}' > MyStuffCLW.m3u
           
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
@@ -266,9 +270,7 @@ jobs:
 
       - name: Check Stream Lines in Final Playlist
         run: |
-          # Count lines that contain a full URL starting with http(s) and ending in .m3u8, 
-          # while NOT being an EXTVLCOPT or EXTINF line (as they often contain URLs but are headers).
-          # The regex is '^https?:\/\/[^\r\n]*\.m3u8$'
+          # Count lines that contain a full URL starting with http(s) and ending in .m3u8
           STREAM_LINE_COUNT=$(grep -E '^https?:\/\/[^\r\n]*\.m3u8$' MyStuffCLW.m3u | wc -l)
           echo "::notice title=Stream Check::Found ${STREAM_LINE_COUNT} potential .m3u8 stream URLs."
           echo "✅ Stream line check complete. Count: ${STREAM_LINE_COUNT}."
