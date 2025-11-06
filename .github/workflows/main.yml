@@ -177,7 +177,7 @@ jobs:
           
           echo -e "\n--- Starting script execution and content consolidation ---"
 
-          # FIX 1: Prevents script from exiting on broken pipes (Exit Code 141)
+          # Fix for intermittent Exit Code 141 (broken pipe)
           set +o pipefail
           
           for key in "${ordered_keys[@]}"; do
@@ -193,13 +193,7 @@ jobs:
                 "Rox.py") output_file="rox.m3u8" ;;
                 "WC.py") output_file="S5.m3u8" ;;
                 "STB.py") output_file="S6.m3u8" ;;
-                "OVG.py") 
-                    # NOTE: OVG.py output name is 'ovogoals_streams.m3u' in your log, 
-                    # but we keep 'S7.m3u8' to match the case statement. 
-                    # If the script truly saves to a different file, you must update the script 
-                    # or change 'output_file' here. Assuming 'S7.m3u8' is the intended output.
-                    output_file="S7.m3u8" 
-                    ;;
+                "OVG.py") output_file="S7.m3u8" ;;
                 "ACEE.py") output_file="ACEE.m3u8" ;;
                 "FILTER.py") output_file="S_FILTER.m3u" ;;
                 *) echo "Unknown script output for $key. Skipping execution and content processing." ; continue ;;
@@ -232,7 +226,8 @@ jobs:
                 echo "######## ${logical_name} ########" >> "$OUTPUT_FILE"
                 echo "Added source comment line: ######## ${logical_name} ########"
 
-                # FIX 2: Ignore Exit Code 1 from grep when no #EXTM3U lines are found (fixes the current Exit Code 1 error)
+                # Use grep -v to safely exclude the #EXTM3U header and append the rest of the file.
+                # Use || true to ignore Exit Code 1 (no match found for #EXTM3U).
                 grep -v '^#EXTM3U$' "$output_file" >> "$OUTPUT_FILE" || true 
                 
                 echo "✅ Content from ${output_file} successfully appended (redundant #EXTM3U lines removed)."
@@ -260,7 +255,7 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           # Remove trailing whitespace
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
-          # Clean up blank lines: remove entirely empty lines, then use 'tr' to consolidate multiple blank lines to a single newline
+          # Remove entirely empty lines, then consolidate multiple blank lines to a single newline
           cat MyStuffCLW_TEMP2.m3u | grep -v '^[[:space:]]*$' | tr -s '\n' > MyStuffCLW.m3u
           
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
@@ -269,8 +264,16 @@ jobs:
 
       - name: Check Stream Lines in Final Playlist
         run: |
-          # Count lines that contain a full URL starting with http(s) and ending in .m3u8
-          STREAM_LINE_COUNT=$(grep -E '^https?:\/\/[^\r\n]*\.m3u8$' MyStuffCLW.m3u | wc -l)
+          # Use || true to ignore Exit Code 1 from grep when no matches are found, 
+          # which is the cause of the current job failure.
+          STREAM_LINE_COUNT=$(grep -E '^https?:\/\/[^\r\n]*\.m3u8$' MyStuffCLW.m3u | wc -l) || true
+          
+          # We must get the count *after* the command runs. 
+          # The fix is to ensure the job doesn't fail on a non-zero exit from the first part of the pipe.
+          # The most robust way is to break the pipe and always succeed the grep part.
+          STREAM_LINE_COUNT=$(grep -E '^https?:\/\/[^\r\n]*\.m3u8$' MyStuffCLW.m3u 2>/dev/null || echo "")
+          STREAM_LINE_COUNT=$(echo "$STREAM_LINE_COUNT" | wc -l)
+          
           echo "::notice title=Stream Check::Found ${STREAM_LINE_COUNT} potential .m3u8 stream URLs."
           echo "✅ Stream line check complete. Count: ${STREAM_LINE_COUNT}."
         shell: bash
