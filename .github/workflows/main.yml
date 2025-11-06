@@ -27,7 +27,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          # Installing required Python packages
+          # Installing required Python packages, ensuring Playwright dependency is correct for the container
           pip install playwright==1.55.0 aiohttp dropbox httpx requests
         shell: bash
 
@@ -63,10 +63,23 @@ jobs:
               if [[ ! -z "$url" && ! "$url" =~ ^# ]]; then
                 temp_file="remote_playlist_S${line_number}.m3u"
                 echo "Downloading line ${line_number}: $url"
-                if curl -L -f --connect-timeout 15 "$url" -o "$temp_file"; then
-                  echo "✅ Successfully downloaded: $url to ${temp_file}"
+                
+                # Use --fail-with-body for more informative failure in case of HTTP error pages
+                if curl -L -f -s --connect-timeout 15 "$url" -o "$temp_file"; then
+                  # Check if the downloaded file is a valid M3U/M3U8 file
+                  # Look for #EXTM3U or #EXT-X-STREAM-INF at the beginning of the file
+                  if grep -qE '^(#EXTM3U|#EXT-X-STREAM-INF)' "$temp_file"; then
+                    echo "✅ Successfully downloaded: $url to ${temp_file}"
+                  else
+                    # Download succeeded, but content is not a playlist (likely HTML error/redirect page)
+                    echo "❌ Downloaded content from $url is NOT a playlist header. Creating error file."
+                    echo "#EXTM3U" > "$temp_file"
+                    # Add a unique error tag for easy identification
+                    echo "#ERROR_INVALID_CONTENT_MAYBE_HTML $url" >> "$temp_file" 
+                  fi
                 else
-                  echo "❌ Failed to download: $url"
+                  # Download failed (timeout, 404, etc.)
+                  echo "❌ Failed to download: $url. Creating error file."
                   echo "#EXTM3U" > "$temp_file"
                   echo "#ERROR_DOWNLOAD_FAILED $url" >> "$temp_file"
                 fi
@@ -83,17 +96,44 @@ jobs:
           FSC_BACKUP_URL="https://bit.ly/3Wmleuo"
           OUTPUT_FILE="FSC.m3u"
           
+          download_playlist() {
+              local url="$1"
+              local output="$2"
+              if curl -L -f -s --connect-timeout 15 "$url" -o "$output"; then
+                  if grep -qE '^(#EXTM3U|#EXT-X-STREAM-INF)' "$output"; then
+                      return 0 # Success
+                  else
+                      return 1 # Invalid Content
+                  fi
+              else
+                  return 2 # Download Failure
+              fi
+          }
+
           echo "Attempting to download FSC.m3u from main link..."
-          if curl -L -f --connect-timeout 15 "$FSC_MAIN_URL" -o "$OUTPUT_FILE"; then
+          if download_playlist "$FSC_MAIN_URL" "$OUTPUT_FILE"; then
               echo "✅ Successfully downloaded FSC.m3u from main link."
+          elif [ $? -eq 1 ]; then
+              echo "❌ Main link downloaded, but content is NOT a playlist header. Attempting backup link..."
+              if download_playlist "$FSC_BACKUP_URL" "$OUTPUT_FILE"; then
+                  echo "✅ Successfully downloaded FSC.m3u from backup link."
+              elif [ $? -eq 1 ]; then
+                  echo "❌ Backup link downloaded, but content is NOT a playlist header. Creating empty placeholder file."
+                  echo "#EXTM3U" > "$OUTPUT_FILE"
+                  echo "#ERROR_FSC_INVALID_CONTENT" >> "$OUTPUT_FILE"
+              else
+                  echo "❌ Both FSC links failed to download. Creating empty placeholder file."
+                  echo "#EXTM3U" > "$OUTPUT_FILE"
+                  echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
+              fi
           else
-            echo "❌ Main link failed. Attempting backup link..."
-            if curl -L -f --connect-timeout 15 "$FSC_BACKUP_URL" -o "$OUTPUT_FILE"; then
+            echo "❌ Main link failed to download. Attempting backup link..."
+            if download_playlist "$FSC_BACKUP_URL" "$OUTPUT_FILE"; then
                 echo "✅ Successfully downloaded FSC.m3u from backup link."
             else
-              echo "❌ Both FSC links failed. Creating empty placeholder file."
-              echo "#EXTM3U" > "$OUTPUT_FILE"
-              echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
+                echo "❌ Both FSC links failed. Creating empty placeholder file."
+                echo "#EXTM3U" > "$OUTPUT_FILE"
+                echo "#ERROR_FSC_DOWNLOAD_FAILED" >> "$OUTPUT_FILE"
             fi
           fi
         shell: bash
@@ -107,6 +147,7 @@ jobs:
           echo "Initial: ${OUTPUT_FILE} created with main #EXTM3U header."
 
           # Define the files to be processed in order, with their logical name for the comment
+          # The logic below relies on an ordered_keys array, so this associative array is for logging names only.
           declare -A files_to_process
           files_to_process=(
             ["FS.py"]="S2.m3u8 from FS script"
@@ -120,28 +161,25 @@ jobs:
             ["FSC.m3u"]="FSC.m3u from remote download"
           )
           
-          # Add remote playlists from channels.txt. Their filenames are 'remote_playlist_S*.m3u'
-          REMOTE_FILES_COUNT=$(find . -maxdepth 1 -type f -name 'remote_playlist_S*.m3u' | wc -l)
-          for i in $(seq 1 $REMOTE_FILES_COUNT); do
-            temp_file="remote_playlist_S${i}.m3u"
-            files_to_process["$temp_file"]="${temp_file} from channels.txt"
-          done
-          
-          TOTAL_FILES=${#files_to_process[@]}
-          FILES_COMPLETED=0
-          
-          echo -e "\n--- Starting script execution and content consolidation ---"
-          
           # Use an ordered array to process files in a specific order
           ordered_keys=(
             "FS.py" "PPL_SCRIPT.py" "Rox.py" "WC.py" "STB.py" "OVG.py" "ACEE.py" "FILTER.py" 
             "FSC.m3u"
           )
-          # Append remote files to the ordered list
-          for i in $(seq 1 $REMOTE_FILES_COUNT); do
-            ordered_keys+=("remote_playlist_S${i}.m3u")
-          done
 
+          # Add remote playlists from channels.txt. Their filenames are 'remote_playlist_S*.m3u'
+          REMOTE_FILES_COUNT=$(find . -maxdepth 1 -type f -name 'remote_playlist_S*.m3u' | wc -l)
+          for i in $(seq 1 $REMOTE_FILES_COUNT); do
+            temp_file="remote_playlist_S${i}.m3u"
+            ordered_keys+=("$temp_file")
+            files_to_process["$temp_file"]="${temp_file} from channels.txt"
+          done
+          
+          TOTAL_FILES=${#ordered_keys[@]}
+          FILES_COMPLETED=0
+          
+          echo -e "\n--- Starting script execution and content consolidation ---"
+          
           for key in "${ordered_keys[@]}"; do
             FILES_COMPLETED=$((FILES_COMPLETED + 1))
             logical_name="${files_to_process[$key]}"
@@ -152,12 +190,7 @@ jobs:
               START_TIME=$(date +%s)
               echo -e "\n\033[1;44m --- SCRIPT PROGRESS: ${FILES_COMPLETED}/${TOTAL_FILES} --- \033[0m"
               echo "Executing script: ${key} to produce ${key/\.py/.m3u8}..."
-              python "$key" || echo "⚠️ $key failed but continuing..."
-              END_TIME=$(date +%s)
-              DURATION=$((END_TIME - START_TIME))
-              echo "::notice title=Script Complete::✅ $key finished in ${DURATION}s"
-              
-              # Rename key to the script's expected output file for processing
+              # The logical output file name must be derived here.
               case "$key" in
                 "FS.py") output_file="S2.m3u8" ;;
                 "PPL_SCRIPT.py") output_file="S3.m3u" ;;
@@ -167,8 +200,15 @@ jobs:
                 "OVG.py") output_file="S7.m3u8" ;;
                 "ACEE.py") output_file="ACEE.m3u8" ;;
                 "FILTER.py") output_file="S_FILTER.m3u" ;;
-                *) echo "Unknown script output for $key. Skipping content processing." ; continue ;;
+                *) echo "Unknown script output for $key. Skipping execution and content processing." ; continue ;;
               esac
+              
+              python "$key" || echo "⚠️ $key failed but continuing..."
+              
+              END_TIME=$(date +%s)
+              DURATION=$((END_TIME - START_TIME))
+              echo "::notice title=Script Complete::✅ $key finished in ${DURATION}s"
+
             else
               # This is a downloaded file (FSC.m3u or remote_playlist_S*.m3u)
               output_file="$key"
@@ -176,48 +216,52 @@ jobs:
               echo "Processing downloaded file: ${output_file}..."
             fi
 
+            # NEW LOGIC: Only proceed if the file exists AND has content AND the first non-whitespace character 
+            # is a playlist header (#EXTM3U or #EXTINF) 
             if [ -s "$output_file" ]; then
-              echo "✅ ${output_file} found. Starting line-by-line transfer with checks."
-              
-              # Add empty lines for separation (4 or 5 empty lines is 4 \n)
-              for i in {1..5}; do echo >> "$OUTPUT_FILE"; done
-              echo "Added 5 empty lines for separation."
-
-              # Add commented source line
-              echo "######## ${logical_name} ########" >> "$OUTPUT_FILE"
-              echo "Added source comment line: #######${logical_name}########"
-
-              # Process content line-by-line for robust transfer
-              TEMP_CONTENT=$(cat "$output_file")
-              LINE_COUNT=0
-              EXTM3U_REMOVED="NO"
-              
-              # Using a while loop to process content line by line with full logging
-              while IFS= read -r line; do
-                LINE_COUNT=$((LINE_COUNT + 1))
+              # Get the first non-blank line and check for playlist headers
+              first_line=$(grep -v '^[[:space:]]*$' "$output_file" | head -n 1)
+              if [[ "$first_line" == "#EXTM3U"* || "$first_line" == "#EXTINF"* ]]; then
+                echo "✅ ${output_file} found and confirmed as valid playlist content. Starting transfer."
                 
-                # Check for #EXTM3U and remove it (only needed at the top)
-                if [[ "$line" == "#EXTM3U" ]]; then
-                  echo "  -> Line ${LINE_COUNT}: Found and **removed** redundant #EXTM3U."
-                  EXTM3U_REMOVED="YES"
-                  continue # Skip appending this line
-                fi
-                
-                # Append the line
-                echo "$line" >> "$OUTPUT_FILE"
-              done <<< "$TEMP_CONTENT"
+                # Add empty lines for separation
+                printf '\n%.0s' {1..5} >> "$OUTPUT_FILE"
+                echo "Added 5 empty lines for separation."
 
-              echo "Finished appending content from ${output_file}. Total lines checked: ${LINE_COUNT}. Redundant #EXTM3U removed: ${EXTM3U_REMOVED}. Fully checked and done."
-              
-              # Clean up script output file
-              if [[ "$key" == *".py" ]]; then
-                rm -f "$output_file"
-                echo "Cleaned up script output file: ${output_file}."
-              elif [[ "$key" == "FSC.m3u" || "$key" == remote_playlist_S*.m3u ]]; then
-                # Clean up remote files after they are processed
-                rm -f "$output_file"
-                echo "Cleaned up downloaded file: ${output_file}."
+                # Add commented source line
+                echo "######## ${logical_name} ########" >> "$OUTPUT_FILE"
+                echo "Added source comment line: ######## ${logical_name} ########"
+
+                # Process content line-by-line for robust transfer
+                TEMP_CONTENT=$(cat "$output_file")
+                LINE_COUNT=0
+                EXTM3U_REMOVED="NO"
+                
+                # Using a while loop to process content line by line with full logging
+                while IFS= read -r line; do
+                  LINE_COUNT=$((LINE_COUNT + 1))
+                  
+                  # Check for #EXTM3U and remove it (only needed at the top)
+                  if [[ "$line" == "#EXTM3U" ]]; then
+                    echo "  -> Line ${LINE_COUNT}: Found and **removed** redundant #EXTM3U."
+                    EXTM3U_REMOVED="YES"
+                    continue # Skip appending this line
+                  fi
+                  
+                  # Append the line
+                  echo "$line" >> "$OUTPUT_FILE"
+                done <<< "$TEMP_CONTENT"
+
+                echo "Finished appending content from ${output_file}. Total lines checked: ${LINE_COUNT}. Redundant #EXTM3U removed: ${EXTM3U_REMOVED}. Fully checked and done."
+                
+              else
+                echo "❌ ${output_file} file exists, but first content line is: '$first_line'. **Content not a valid M3U/M3U8 file.** Skipping."
               fi
+
+              # Clean up script output file or downloaded file
+              rm -f "$output_file"
+              echo "Cleaned up file: ${output_file}."
+
             else
               echo "⚠️ ${output_file} missing or empty. Skipping content transfer. Fully checked and done."
             fi
@@ -230,9 +274,22 @@ jobs:
         run: |
           # Final line-ending and whitespace cleanup (no more empty line removal required due to append logic)
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
-          sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW.m3u
-          rm -f MyStuffCLW_TEMP1.m3u
+          # Remove trailing whitespace
+          sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
+          # Remove all empty lines, just to be safe (if more than the 5 separators were introduced)
+          grep -v '^[[:space:]]*$' MyStuffCLW_TEMP2.m3u > MyStuffCLW.m3u
+          
+          rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ MyStuffCLW.m3u cleaned and ready."
+        shell: bash
+
+      - name: Check Stream Lines in Final Playlist
+        run: |
+          # Count lines that contain a full URL starting with http(s) and ending in .m3u8, 
+          # while NOT being an EXTVLCOPT or EXTINF line.
+          STREAM_LINE_COUNT=$(grep -E '^https?:\/\/[^\r\n]*\.m3u8$' MyStuffCLW.m3u | wc -l)
+          echo "::notice title=Stream Check::Found ${STREAM_LINE_COUNT} potential .m3u8 stream URLs (excluding header and info lines)."
+          echo "✅ Stream line check complete. Count: ${STREAM_LINE_COUNT}."
         shell: bash
 
       - name: Upload Final Playlist MyStuffCLW.m3u
