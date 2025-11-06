@@ -177,8 +177,7 @@ jobs:
           
           echo -e "\n--- Starting script execution and content consolidation ---"
 
-          # *** CRITICAL FIX FOR EXIT CODE 141 ***
-          # Prevents script from exiting if a command fails due to a broken pipe (SIGPIPE).
+          # FIX 1: Prevents script from exiting on broken pipes (Exit Code 141)
           set +o pipefail
           
           for key in "${ordered_keys[@]}"; do
@@ -194,7 +193,13 @@ jobs:
                 "Rox.py") output_file="rox.m3u8" ;;
                 "WC.py") output_file="S5.m3u8" ;;
                 "STB.py") output_file="S6.m3u8" ;;
-                "OVG.py") output_file="S7.m3u8" ;;
+                "OVG.py") 
+                    # NOTE: OVG.py output name is 'ovogoals_streams.m3u' in your log, 
+                    # but we keep 'S7.m3u8' to match the case statement. 
+                    # If the script truly saves to a different file, you must update the script 
+                    # or change 'output_file' here. Assuming 'S7.m3u8' is the intended output.
+                    output_file="S7.m3u8" 
+                    ;;
                 "ACEE.py") output_file="ACEE.m3u8" ;;
                 "FILTER.py") output_file="S_FILTER.m3u" ;;
                 *) echo "Unknown script output for $key. Skipping execution and content processing." ; continue ;;
@@ -214,7 +219,7 @@ jobs:
               echo "Processing downloaded file: ${output_file}..."
             fi
 
-            # ROBUST APPEND LOGIC: Checks for file content validity and uses safe append
+            # ROBUST APPEND LOGIC: Checks for file content validity
             if [ -s "$output_file" ]; then
               # Check for valid M3U/M3U8 header before proceeding
               first_line=$(grep -v '^[[:space:]]*$' "$output_file" | head -n 1)
@@ -227,16 +232,10 @@ jobs:
                 echo "######## ${logical_name} ########" >> "$OUTPUT_FILE"
                 echo "Added source comment line: ######## ${logical_name} ########"
 
-                # Use grep -v to safely exclude the #EXTM3U header and append the rest of the file.
-                grep -v '^#EXTM3U$' "$output_file" >> "$OUTPUT_FILE"
+                # FIX 2: Ignore Exit Code 1 from grep when no #EXTM3U lines are found (fixes the current Exit Code 1 error)
+                grep -v '^#EXTM3U$' "$output_file" >> "$OUTPUT_FILE" || true 
                 
-                # Check for successful transfer 
-                if [ $? -eq 0 ]; then
-                    echo "✅ Content from ${output_file} successfully appended (redundant #EXTM3U lines removed)."
-                else
-                    # grep -v returns non-zero code (1) if no matching lines are found, which is fine here.
-                    echo "ℹ️ Content transfer from ${output_file} completed. (grep may have returned code 1 if no #EXTM3U was found)."
-                fi
+                echo "✅ Content from ${output_file} successfully appended (redundant #EXTM3U lines removed)."
               else
                 echo "❌ ${output_file} file exists, but first content line is: '$first_line'. **Content not a valid M3U/M3U8 file.** Skipping."
               fi
@@ -250,7 +249,7 @@ jobs:
             fi
           done
           
-          # Restore pipefail setting (optional, but good practice)
+          # Restore pipefail setting
           set -o pipefail
           echo -e "\n--- Consolidation Complete ---"
         shell: bash
@@ -261,8 +260,8 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > MyStuffCLW_TEMP1.m3u
           # Remove trailing whitespace
           sed -E 's/[[:space:]]+$//' MyStuffCLW_TEMP1.m3u > MyStuffCLW_TEMP2.m3u
-          # Remove excessive empty lines (consolidate to maximum of one blank line)
-          grep -v '^[[:space:]]*$' MyStuffCLW_TEMP2.m3u | awk 'BEGIN{last=""} /^$/ && last!="" {print; last==""} /./ {print; last=1}' > MyStuffCLW.m3u
+          # Clean up blank lines: remove entirely empty lines, then use 'tr' to consolidate multiple blank lines to a single newline
+          cat MyStuffCLW_TEMP2.m3u | grep -v '^[[:space:]]*$' | tr -s '\n' > MyStuffCLW.m3u
           
           rm -f MyStuffCLW_TEMP1.m3u MyStuffCLW_TEMP2.m3u
           echo "✅ MyStuffCLW.m3u cleaned and ready."
