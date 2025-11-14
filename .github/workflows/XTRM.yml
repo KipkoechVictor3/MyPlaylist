@@ -1,0 +1,54 @@
+name: M3U XTRM
+
+# Controls when the workflow will run
+on:
+  # Schedule the workflow to run automatically every 6 hours
+  schedule:
+    # Runs at minute 0, every 6th hour (0, 6, 12, 18) UTC
+    - cron: '0 */6 * * *'
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  update_playlist:
+    runs-on: ubuntu-latest
+    
+    # Define environment variables for the Dropbox download step
+    env:
+      SETUP_PY_URL: "https://www.dropbox.com/scl/fi/yqthkouedpsg1jc32lu1v/setup.py?rlkey=n7c8ko1lgt4fnl96x2jyyrohh&st=6icih5j2&dl=1"
+      MAPPINGS_TXT_URL: "https://www.dropbox.com/scl/fi/ow8s16pbppb2dnu3ernmp/channel_mappings.txt?rlkey=zu3a1voqbh3f17etup39h5svx&st=dobzxteg&dl=1"
+
+    steps:
+      # 1. Checkout your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # 3. Install Python dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Need requests (for API), and dropbox (for upload)
+          pip install requests dropbox
+
+      # 4. Download setup.py from Dropbox link (overwrite local if it exists)
+      - name: Download setup.py (The main script)
+        # We use curl with -L to follow the redirect from the Dropbox link
+        run: curl -L -o setup.py "${{ env.SETUP_PY_URL }}"
+          
+      # 5. Download channel_mappings.txt from Dropbox link
+      - name: Download channel_mappings.txt
+        run: curl -L -o channel_mappings.txt "${{ env.MAPPINGS_TXT_URL }}"
+
+      # 6. Execute your Python script
+      - name: Run M3U Filtering and Upload Script
+        run: python setup.py
+        
+      - name: Verify completion
+        run: echo "The script ran and attempted to upload the M3U content directly to Dropbox."
