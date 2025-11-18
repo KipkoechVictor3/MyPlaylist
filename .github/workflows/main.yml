@@ -156,7 +156,7 @@ jobs:
             ["OVG.py"]="S7.m3u8 from OVG script"
             ["ACEE.py"]="ACEE.m3u8 from ACEE script"
             ["FILTER.py"]="S_FILTER.m3u from FILTER script"
-            ["SFaw.py"]="SFa.m3u from FILTER script"
+            ["SFaw.py"]="SFa.m3u8 from FILTER script"
             ["FSC.m3u"]="FSC.m3u from remote download"
           )
           
@@ -197,6 +197,7 @@ jobs:
                 "STB.py") output_file="S6.m3u8" ;;
                 "OVG.py") output_file="S7.m3u8" ;;
                 "ACEE.py") output_file="ACEE.m3u8" ;;
+                "SFaw.py") output_file="SFa.m3u8" ;;
                 "FILTER.py") output_file="S_FILTER.m3u" ;;
                 *) echo "Unknown script output for $key. Skipping execution and content processing." ; continue ;;
               esac
