@@ -162,7 +162,7 @@ jobs:
           
           # Use an ordered array to process files in a specific order
           ordered_keys=(
-            "FS.py" "PPL_SCRIPT.py" "Rox.py" "WC.py" "STB.py" "OVG.py" "ACEE.py" "FILTER.py" "SFaw.py" 
+            "FS.py" "PPL_SCRIPT.py" "Rox.py" "WC.py" "STB.py" "OVGG.py" "SFaw.py" "ACEE.py" "FILTER.py" 
             "FSC.m3u"
           )
 
