@@ -43,7 +43,7 @@ jobs:
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
           curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr" 
-          curl -L -o SFAw.py "https://bit.ly/49YuWv6"
+          curl -L -o SFaw.py "https://bit.ly/49YuWv6"
 
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
