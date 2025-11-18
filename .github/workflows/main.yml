@@ -43,6 +43,7 @@ jobs:
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
           curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr" 
+          curl -L -o SFAw.py "https://bit.ly/49YuWv6"
 
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
@@ -155,6 +156,7 @@ jobs:
             ["OVG.py"]="S7.m3u8 from OVG script"
             ["ACEE.py"]="ACEE.m3u8 from ACEE script"
             ["FILTER.py"]="S_FILTER.m3u from FILTER script"
+            ["SFaw.py"]="SFa.m3u from FILTER script"
             ["FSC.m3u"]="FSC.m3u from remote download"
           )
           
