@@ -33,17 +33,17 @@ jobs:
 
       - name: Download scripts and clean line endings
         run: |
-          curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
+          #curl -L -o FS.py "https://tinyurl.com/mv5ew6m5"
           curl -L -o Rox.py "https://tinyurl.com/2jwbswfy"
           curl -L -o WC.py "https://tinyurl.com/35jt8wtm"
           curl -L -o STB.py "https://tinyurl.com/37yajm8v"
-          curl -L -o OVG.py "https://tinyurl.com/r5re7n5t"
+          #curl -L -o OVG.py "https://tinyurl.com/r5re7n5t"
           curl -L -o ACEE.py "https://tinyurl.com/45yxvmmn"
           curl -L -o FILTER.py "https://tinyurl.com/8x4hkrvy"
           curl -L -o PPL_SCRIPT.py "https://tinyurl.com/muuurv94"
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
           curl -L -o PROCESS_PLAYLIST.py "https://tinyurl.com/2h4xsbcr" 
-          curl -L -o SFaw.py "https://bit.ly/49YuWv6"
+          #curl -L -o SFaw.py "https://bit.ly/49YuWv6"
 
           if [ -f "channels.txt" ]; then
             mv channels.txt channels.txt.tmp
