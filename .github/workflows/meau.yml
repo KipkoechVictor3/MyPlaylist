@@ -26,7 +26,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests tqdm
         shell: bash
 
       - name: Download Media4u Scraper script
