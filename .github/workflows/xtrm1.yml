@@ -1,66 +1,71 @@
-name: M3U XTRM1
+name: Scraper Script # Updated workflow name
 
-# Controls when the workflow will run
 on:
-  # Schedule the workflow to run automatically every 6 hours
+  # Runs once every 24 hours at midnight UTC
   schedule:
-    # Runs at minute 0, every 6th hour (0, 6, 12, 18) UTC
-    - cron: '0 */6 * * *'
-  
-  # Allows you to run this workflow manually from the Actions tab
+    - cron: '0 0 * * *'
+  # Allow manual runs too
   workflow_dispatch:
 
 jobs:
-  update_playlist:
+  run-media4u-script:
     runs-on: ubuntu-latest
-    
-    # Define environment variables for the Dropbox download step
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      # 1. UPDATED: Points to your new xtremeDowbloader.py script
-      SETUP_PY_URL: "https://www.dropbox.com/scl/fi/392dx1gx08yfy41a3vm0y/xtremeDowbloader.py?rlkey=nm8uwltes5c4pl0maa8ju0atx&st=xr8l0kks&dl=1"
-      # Mapping URL is kept as provided
-      MAPPINGS_TXT_URL: "https://www.dropbox.com/scl/fi/ow8s16pbppb2dnu3ernmp/channel_mappings.txt?rlkey=zu3a1voqbh3f17etup39h5svx&st=dobzxteg&dl=1"
+      HOME: /root
 
     steps:
-      # 1. Checkout your repository
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      # 3. Install Python dependencies
       - name: Install dependencies
         run: |
+          apt-get update
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          # Requests is for M3U download, dropbox is required for the intended upload step
-          pip install requests dropbox
+          # The script requires 'requests' and 'tqdm' (though tqdm is optional)
+          pip install requests tqdm
+        shell: bash
 
-      # 4. Download xtremeDowbloader.py from Dropbox
-      - name: Download xtremeDowbloader.py (The main script)
-        # Download the script using the user's specified filename
-        run: curl -L -o xtremeDowbloader.py "${{ env.SETUP_PY_URL }}"
-          
-      # 5. NEW STEP: Modify the script to use the desired M3U filename (MyPLaay.m3u)
-      - name: Configure Output Filename
+      - name: Download Xtreme Downloader script
         run: |
-          # Uses sed to replace the default filename in the script with MyPLaay.m3u
-          sed -i 's/FINAL_M3U_FILE = "MyPlaylistMark.m3u"/FINAL_M3U_FILE = "MyPLaay.m3u"/' xtremeDowbloader.py
-          echo "Configuration updated: Output will be MyPLaay.m3u"
+          echo "📥 Downloading xtremeDowbloader.py from Dropbox..."
+          # NOTE: The provided Python script saves the output as 'MyPlaylistMark.m3u'
+          curl -L -o xtremeDowbloader.py "https://www.dropbox.com/scl/fi/392dx1gx08yfy41a3vm0y/xtremeDowbloader.py?rlkey=nm8uwltes5c4pl0maa8ju0atx&st=xr8l0kks&dl=1"
+        shell: bash
 
-      # 6. Download channel_mappings.txt from Dropbox link
-      - name: Download channel_mappings.txt
-        run: curl -L -o channel_mappings.txt "${{ env.MAPPINGS_TXT_URL }}"
+      - name: Run Scraper and Measure Time ⏱️
+        run: |
+          source venv/bin/activate
+          
+          echo "::group::▶️ Running xtremeDowbloader.py..."
+          START_TIME=$(date +%s)
 
-      # 7. Execute your Python script
-      - name: Run M3U Filtering and Upload Script
-        # The DROPBOX_TOKEN secret MUST be configured in your GitHub repository settings.
-        env:
-          DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }} 
-        run: python xtremeDowbloader.py
-        
-      - name: Verify completion
-        run: echo "The script ran and attempted to upload the M3U content directly to Dropbox."
+          # Execute the downloaded script
+          python xtremeDowbloader.py
+
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ Script FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          # Rename output (MyPlaylistMark.m3u) to MyPLaay.m3u
+          if [ -f "MyPlaylistMark.m3u" ]; then
+              mv MyPlaylistMark.m3u MyPLaay.m3u
+              echo "✅ Renamed MyPlaylistMark.m3u to MyPLaay.m3u"
+          else
+              echo "⚠️ Expected output file **MyPlaylistMark.m3u** not found."
+          fi
+        shell: bash
+
+      - name: Upload MyPLaay.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: MyPLaay.m3u # Source is the newly renamed file
+          DEST_PATH: /MyStuff/MyPLaay.m3u # Destination is the desired path and name
