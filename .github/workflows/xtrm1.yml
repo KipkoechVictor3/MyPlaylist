@@ -1,4 +1,4 @@
-name: Scraper Script # Updated workflow name
+name: Scraper Script xtreme 1 # Updated workflow name
 
 on:
   # Runs once every 24 hours at midnight UTC
