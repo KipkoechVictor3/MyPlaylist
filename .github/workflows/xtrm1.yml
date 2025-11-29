@@ -1,0 +1,66 @@
+name: M3U XTRM1
+
+# Controls when the workflow will run
+on:
+  # Schedule the workflow to run automatically every 6 hours
+  schedule:
+    # Runs at minute 0, every 6th hour (0, 6, 12, 18) UTC
+    - cron: '0 */6 * * *'
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  update_playlist:
+    runs-on: ubuntu-latest
+    
+    # Define environment variables for the Dropbox download step
+    env:
+      # 1. UPDATED: Points to your new xtremeDowbloader.py script
+      SETUP_PY_URL: "https://www.dropbox.com/scl/fi/392dx1gx08yfy41a3vm0y/xtremeDowbloader.py?rlkey=nm8uwltes5c4pl0maa8ju0atx&st=xr8l0kks&dl=1"
+      # Mapping URL is kept as provided
+      MAPPINGS_TXT_URL: "https://www.dropbox.com/scl/fi/ow8s16pbppb2dnu3ernmp/channel_mappings.txt?rlkey=zu3a1voqbh3f17etup39h5svx&st=dobzxteg&dl=1"
+
+    steps:
+      # 1. Checkout your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # 3. Install Python dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Requests is for M3U download, dropbox is required for the intended upload step
+          pip install requests dropbox
+
+      # 4. Download xtremeDowbloader.py from Dropbox
+      - name: Download xtremeDowbloader.py (The main script)
+        # Download the script using the user's specified filename
+        run: curl -L -o xtremeDowbloader.py "${{ env.SETUP_PY_URL }}"
+          
+      # 5. NEW STEP: Modify the script to use the desired M3U filename (MyPLaay.m3u)
+      - name: Configure Output Filename
+        run: |
+          # Uses sed to replace the default filename in the script with MyPLaay.m3u
+          sed -i 's/FINAL_M3U_FILE = "MyPlaylistMark.m3u"/FINAL_M3U_FILE = "MyPLaay.m3u"/' xtremeDowbloader.py
+          echo "Configuration updated: Output will be MyPLaay.m3u"
+
+      # 6. Download channel_mappings.txt from Dropbox link
+      - name: Download channel_mappings.txt
+        run: curl -L -o channel_mappings.txt "${{ env.MAPPINGS_TXT_URL }}"
+
+      # 7. Execute your Python script
+      - name: Run M3U Filtering and Upload Script
+        # The DROPBOX_TOKEN secret MUST be configured in your GitHub repository settings.
+        env:
+          DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }} 
+        run: python xtremeDowbloader.py
+        
+      - name: Verify completion
+        run: echo "The script ran and attempted to upload the M3U content directly to Dropbox."
