@@ -1,77 +1,77 @@
 name: Scraper Script
 
 on:
-  # Runs once every 6 hours
-  schedule:
-    - cron: '0 */6 * * *'
-  # Allow manual runs too
-  workflow_dispatch:
+  # Runs once every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+  # Allow manual runs too
+  workflow_dispatch:
 
 jobs:
-  run-media4u-script:
-    runs-on: ubuntu-latest
-    # Using Playwright container is fine as it includes Python and common libs
-    container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
-    env:
-      HOME: /root
+  run-media4u-script:
+    runs-on: ubuntu-latest
+    # Using Playwright container is fine as it includes Python and common libs
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          echo "Installing Python dependencies (requests, tqdm)..."
-          apt-get update
-          apt-get install -y python3-venv curl
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          # Script dependencies for networking
-          pip install requests tqdm
-        shell: bash
+      - name: Install dependencies
+        run: |
+          echo "Installing Python dependencies (requests, tqdm)..."
+          apt-get update
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          # Script dependencies for networking
+          pip install requests tqdm
+        shell: bash
 
-      - name: Download Xtreme Downloader script
-        run: |
-          echo "📥 Downloading xtremeDowbloader.py from Dropbox..."
-          # Downloading the script you provided
-          curl -L -o xtremeDowbloader.py "https://www.dropbox.com/scl/fi/392dx1gx08yfy41a3vm0y/xtremeDowbloader.py?rlkey=nm8uwltes5c4pl0maa8ju0atx&st=xr8l0kks&dl=1"
-        shell: bash
+      - name: Download Xtreme Downloader script
+        run: |
+          echo "📥 Downloading xtremeDowbloader.py from Dropbox..."
+          # Downloading the script you provided
+          curl -L -o xtremeDowbloader.py "https://www.dropbox.com/scl/fi/392dx1gx08yfy41a3vm0y/xtremeDowbloader.py?rlkey=nm8uwltes5c4pl0maa8ju0atx&st=xr8l0kks&dl=1"
+        shell: bash
 
-      - name: Run Scraper and Verify Existence ⏱️
-        run: |
-          source venv/bin/activate
-          
-          echo "::group::▶️ Running xtremeDowbloader.py..."
-          START_TIME=$(date +%s)
+      - name: Run Scraper and Verify Existence ⏱️
+        run: |
+          source venv/bin/activate
+          
+          echo "::group::▶️ Running xtremeDowbloader.py..."
+          START_TIME=$(date +%s)
 
-          # Execute the script
-          python xtremeDowbloader.py
+          # Execute the script
+          python xtremeDowbloader.py
 
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
-          echo "::endgroup::"
-          echo "::notice title=Script Time Complete::**✅ Script FINISHED!** Time Taken: **${DURATION} seconds**"
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Script Time Complete::**✅ Script FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # We check for the file created by the script (MyPlaylistMark.m3u)
-          if [ -f "MyPlaylistMark.m3u" ]; then
-              echo "✅ Output file **MyPlaylistMark.m3u** found."
-          else
-              echo "❌ Expected output file **MyPlaylistMark.m3u** not found."
-              exit 1 # Fail the step if the source file is missing
-          fi
-          
-          # 🚨 DIAGNOSTIC CHECK: List directory contents
-          echo "### M3U File Check ###"
-          ls -l *.m3u
-        shell: bash
+          # Check for the file created by the script (MyPlaylistMark.m3u)
+          if [ -f "MyPlaylistMark.m3u" ]; then
+              echo "✅ Output file **MyPlaylistMark.m3u** found."
+          else
+              echo "❌ Expected output file **MyPlaylistMark.m3u** not found."
+              exit 1 # Fail the step if the source file is missing
+          fi
+          
+          # 🚨 DIAGNOSTIC CHECK: List directory contents
+          echo "### M3U File Check ###"
+          ls -l *.m3u
+        shell: bash
 
-      - name: Upload MyPlaylistMark.m3u to Dropbox (No Renaming) ⬆️
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyPlaylistMark.m3u # Local file name
-          DEST_PATH: /MyStuff/MyPlaylistMark.m3u # <<-- Corrected: Uses the original filename on Dropbox
+      - name: Upload MyPlaylistMark.m3u to Dropbox (No Renaming) ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: MyPlaylistMark.m3u # Local file name
+          DEST_PATH: /MyStuff/MyPlaylistMark.m3u # Target path and filename on Dropbox (no renaming)
