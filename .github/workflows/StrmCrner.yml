@@ -1,20 +1,19 @@
-name: Streamer Corner M3U Playlist Update 
+name: Streamer Corner M3U Playlist Update
 
 on:
   schedule:
     # Runs at the 30-minute mark of every hour (e.g., 01:30, 02:30, etc.)
-    - cron: '30 * * * *'  
+    - cron: '30 * * * *'
   workflow_dispatch:
 
 jobs:
   update-streamer-playlist:
     runs-on: ubuntu-latest
-    
+
     # Use the Playwright image which includes Python and browser dependencies
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
-      
-    # Set home directory for consistency
+
     env:
       HOME: /root
 
@@ -22,58 +21,64 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
-      # --- Setup & Dependencies ---
-      - name: 🐍 Install Python Dependencies
+      # Prevent the Docker config permission warning by ensuring the file exists with safe perms.
+      - name: 🔧 Ensure /root/.docker/config.json exists (silence permission warnings)
         run: |
-          # Install venv for isolated environment
+          mkdir -p /root/.docker
+          if [ ! -f /root/.docker/config.json ]; then
+            echo "{}" > /root/.docker/config.json
+            chmod 600 /root/.docker/config.json
+          fi
+        shell: bash
+
+      # --- Setup & Dependencies ---
+      - name: 🐍 Create venv and install Python dependencies
+        run: |
+          set -euo pipefail
           apt-get update
-          apt-get install -y python3-venv
+          apt-get install -y python3-venv python3-dev build-essential
           python3 -m venv venv
           source venv/bin/activate
-          python -m pip install --upgrade pip
-          # Only install playwright and aiohttp (which might be used internally)
-          pip install playwright==1.55.0 aiohttp beautifulsoup4
+          python -m pip install --upgrade pip setuptools wheel
+          # Install the libraries your script requires (bs4 -> beautifulsoup4, plus lxml and requests)
+          python -m pip install "playwright==1.55.0" "beautifulsoup4" "lxml" "requests" "aiohttp"
+          # Ensure Playwright browser binaries are installed for the venv-installed CLI.
+          # --with-deps is helpful inside many container setups; if it fails, try `playwright install`.
+          python -m playwright install --with-deps || python -m playwright install
         shell: bash
 
       # --- Script Download ---
       - name: 📥 Download StreamerCorner.py
         run: |
-          # The script we developed (assuming it saves to stream_corner_playlist.m3u)
-          curl -L -o StreamerCorner.py "https://www.dropbox.com/scl/fi/j5yqpq4qczuum4gskoz7j/StreamerCorner.py?rlkey=rl1kd87vgqm62rswja6sqg37a&st=jkbhj394&dl=1"
+          curl -fsSL -o StreamerCorner.py "https://www.dropbox.com/scl/fi/j5yqpq4qczuum4gskoz7j/StreamerCorner.py?rlkey=rl1kd87vgqm62rswja6sqg37a&st=jkbhj394&dl=1"
         shell: bash
 
       # --- Run Script ---
       - name: 🏃 Run StreamerCorner.py ⏱️
         run: |
+          set -euo pipefail
           source venv/bin/activate
           echo "::group::▶️ Running StreamerCorner.py..."
           START_TIME=$(date +%s)
-          
-          # Unbuffered mode for real-time logs (python -u)
+          # Unbuffered mode for real-time logs
           python -u StreamerCorner.py
-          
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
           echo "::endgroup::"
-          echo "::notice title=Script Time Complete::**✅ StreamerCorner.py FINISHED!** Time Taken: **${DURATION} seconds**"
-
-          # Check for the expected output file name
+          echo "::notice title=Script Time Complete::✅ StreamerCorner.py FINISHED! Time Taken: ${DURATION} seconds"
+          # Verify the expected output file
           if [ ! -f "stream_corner_playlist.m3u" ]; then
               echo "⚠️ Expected output file 'stream_corner_playlist.m3u' not found! Check script logs."
-              # Fail the step if the file is missing to prevent uploading nothing
-              exit 1 
+              exit 1
           fi
         shell: bash
 
       # --- Upload to Dropbox ---
       - name: 📤 Upload M3U Playlist to Dropbox
-        # Note: You must set up the 3 required secrets in your GitHub repository settings
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          # Source path matches the script's output file name
           source_path: stream_corner_playlist.m3u
-          # Destination path uses the new playlist name
           DEST_PATH: /Playlists/StreamerCorner.m3u
