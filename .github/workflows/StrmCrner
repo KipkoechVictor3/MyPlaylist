@@ -1,4 +1,4 @@
-name: 📺 Streamer Corner M3U Playlist Update 
+name: Streamer Corner M3U Playlist Update 
 
 on:
   schedule:
