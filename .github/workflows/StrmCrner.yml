@@ -1,4 +1,4 @@
-name: Streamer Corner M3U Playlist Update
+name: Strcrn M3U Playlist Update
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-streamer-playlist:
+  update-streC-playlist:
     runs-on: ubuntu-latest
 
     # Use the Playwright image which includes Python and browser dependencies
@@ -48,27 +48,27 @@ jobs:
         shell: bash
 
       # --- Script Download ---
-      - name: 📥 Download StreamerCorner.py
+      - name: 📥 Download StrmCrnr.py
         run: |
-          curl -fsSL -o StreamerCorner.py "https://www.dropbox.com/scl/fi/j5yqpq4qczuum4gskoz7j/StreamerCorner.py?rlkey=rl1kd87vgqm62rswja6sqg37a&st=jkbhj394&dl=1"
+          curl -fsSL -o StrmCrnr.py "https://www.dropbox.com/scl/fi/j5yqpq4qczuum4gskoz7j/StrmCrnr.py?rlkey=rl1kd87vgqm62rswja6sqg37a&st=jkbhj394&dl=1"
         shell: bash
 
       # --- Run Script ---
-      - name: 🏃 Run StreamerCorner.py ⏱️
+      - name: 🏃 Run StrmCrnr.py ⏱️
         run: |
           set -euo pipefail
           source venv/bin/activate
-          echo "::group::▶️ Running StreamerCorner.py..."
+          echo "::group::▶️ Running StrmCrnr.py..."
           START_TIME=$(date +%s)
           # Unbuffered mode for real-time logs
-          python -u StreamerCorner.py
+          python -u StrmCrnr.py
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
           echo "::endgroup::"
-          echo "::notice title=Script Time Complete::✅ StreamerCorner.py FINISHED! Time Taken: ${DURATION} seconds"
+          echo "::notice title=Script Time Complete::✅ StrmCrnr.py FINISHED! Time Taken: ${DURATION} seconds"
           # Verify the expected output file
-          if [ ! -f "stream_corner_playlist.m3u" ]; then
-              echo "⚠️ Expected output file 'stream_corner_playlist.m3u' not found! Check script logs."
+          if [ ! -f "StrmCrnr.m3u" ]; then
+              echo "⚠️ Expected output file 'StrmCrnr.m3u' not found! Check script logs."
               exit 1
           fi
         shell: bash
@@ -80,5 +80,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: stream_corner_playlist.m3u
-          DEST_PATH: /Playlists/StreamerCorner.m3u
+          source_path: StrmCrnr.m3u
+          DEST_PATH: /Playlists/StrmCrnyryr.m3u
