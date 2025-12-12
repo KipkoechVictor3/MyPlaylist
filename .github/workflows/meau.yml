@@ -1,9 +1,8 @@
 name: Scraper Script MeaU
 
 on:
-  # Runs once every 24 hours at midnight UTC
+  # Runs every 3 hours
   schedule:
-    #- cron: '0 0 * * *'
     - cron: '0 */3 * * *'
   # Allow manual runs too
   workflow_dispatch:
@@ -11,7 +10,10 @@ on:
 jobs:
   run-media4u-script:
     runs-on: ubuntu-latest
+    # Using Playwright container is fine as it includes Python and common libs
     container:
+      # Note: I am not using the Playwright-specific browser tools here, 
+      # but it's fine for the Python environment.
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -22,27 +24,35 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Installing Python dependencies (requests, tqdm)..."
+          # Install venv and curl
           apt-get update
           apt-get install -y python3-venv curl
+          
+          # Setup virtual environment
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
+          
+          # Script dependencies for networking
           pip install requests tqdm
         shell: bash
 
       - name: Download Media4u Scraper script
         run: |
           echo "📥 Downloading Meau.py from Dropbox..."
+          # Downloading the script you provided
           curl -L -o Meau.py "https://www.dropbox.com/scl/fi/v5nhpz243jcka7xh0818v/Meau.py?rlkey=tjkbjyrb60qvzrujd9pdygzhp&st=fx6hw6sr&dl=1"
         shell: bash
 
-      - name: Run craper and Measure Time ⏱️
+      - name: Run Scraper and Verify Output File ⏱️
         run: |
           source venv/bin/activate
           
           echo "::group::▶️ Running Meau.py..."
           START_TIME=$(date +%s)
 
+          # Execute the script (which is now configured to output Mediauu.m3u)
           python Meau.py
 
           END_TIME=$(date +%s)
@@ -50,21 +60,25 @@ jobs:
           echo "::endgroup::"
           echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # Rename output to Mediauu.m3u if needed
-          if [ -f "filP.m3u" ]; then
-              mv filP.m3u Mediauu.m3u
-          elif [ -f "Meau.m3u" ]; then
-              mv Meau.m3u Mediauu.m3u
+          # 🚨 CRITICAL CHECK: Verify Mediauu.m3u was created. 
+          # This replaces your old rename logic.
+          if [ -f "Mediauu.m3u" ]; then
+              echo "✅ Output file **Mediauu.m3u** found and ready for upload."
           else
-              echo "⚠️ No playlist file found — expected filP.m3u or Meau.m3u."
+              echo "❌ Expected output file **Mediauu.m3u** not found. Script likely failed to generate it."
+              exit 1 # FAIL the step if the file is missing
           fi
+          
+          # 🚨 DIAGNOSTIC CHECK: List directory contents
+          echo "### M3U File Check ###"
+          ls -l Mediauu.m3u
         shell: bash
 
-      - name: Upload Mediauu.m3u to Dropbox
+      - name: Upload Mediauu.m3u to Dropbox ⬆️
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: Mediauu.m3u
-          DEST_PATH: /MyStuff/Mediauu.m3u
+          source_path: Mediauu.m3u # Local file name
+          DEST_PATH: /MyStuff/Mediauu.m3u # Target path and filename on Dropbox
