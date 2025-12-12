@@ -10,10 +10,7 @@ on:
 jobs:
   run-media4u-script:
     runs-on: ubuntu-latest
-    # Using Playwright container is fine as it includes Python and common libs
     container:
-      # Note: I am not using the Playwright-specific browser tools here, 
-      # but it's fine for the Python environment.
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -25,53 +22,51 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing Python dependencies (requests, tqdm)..."
-          # Install venv and curl
           apt-get update
           apt-get install -y python3-venv curl
-          
-          # Setup virtual environment
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          
-          # Script dependencies for networking
           pip install requests tqdm
         shell: bash
 
       - name: Download Media4u Scraper script
         run: |
           echo "📥 Downloading Meau.py from Dropbox..."
-          # Downloading the script you provided
           curl -L -o Meau.py "https://www.dropbox.com/scl/fi/v5nhpz243jcka7xh0818v/Meau.py?rlkey=tjkbjyrb60qvzrujd9pdygzhp&st=fx6hw6sr&dl=1"
         shell: bash
 
-      - name: Run Scraper and Verify Output File ⏱️
+      - name: Run Scraper and Verify Both Output Files ⏱️
         run: |
           source venv/bin/activate
           
           echo "::group::▶️ Running Meau.py..."
           START_TIME=$(date +%s)
-
-          # Execute the script (which is now configured to output Mediauu.m3u)
           python Meau.py
-
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
           echo "::endgroup::"
           echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # 🚨 CRITICAL CHECK: Verify Mediauu.m3u was created. 
-          # This replaces your old rename logic.
+          # 🚨 CRITICAL CHECK 1: Verify Mediauu.m3u
           if [ -f "Mediauu.m3u" ]; then
-              echo "✅ Output file **Mediauu.m3u** found and ready for upload."
+              echo "✅ Output file **Mediauu.m3u** found."
           else
-              echo "❌ Expected output file **Mediauu.m3u** not found. Script likely failed to generate it."
-              exit 1 # FAIL the step if the file is missing
+              echo "❌ Expected output file **Mediauu.m3u** not found."
+              exit 1 # Fail the step
           fi
           
+          # 🚨 CRITICAL CHECK 2: Verify full_groups_list.txt
+          if [ -f "full_groups_list.txt" ]; then
+              echo "✅ Output file **full_groups_list.txt** found."
+          else
+              echo "❌ Expected output file **full_groups_list.txt** not found."
+              exit 1 # Fail the step
+          fi
+
           # 🚨 DIAGNOSTIC CHECK: List directory contents
-          echo "### M3U File Check ###"
-          ls -l Mediauu.m3u
+          echo "### Output Files Check ###"
+          ls -l Mediauu.m3u full_groups_list.txt
         shell: bash
 
       - name: Upload Mediauu.m3u to Dropbox ⬆️
@@ -80,5 +75,14 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: Mediauu.m3u # Local file name
-          DEST_PATH: /MyStuff/Mediauu.m3u # Target path and filename on Dropbox
+          source_path: Mediauu.m3u
+          DEST_PATH: /MyStuff/Mediauu.m3u
+          
+      - name: Upload full_groups_list.txt to Dropbox ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: full_groups_list.txt
+          DEST_PATH: /MyStuff/full_groups_list.txt
