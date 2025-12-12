@@ -1,9 +1,9 @@
-name: Scraper Script 1
+name: Scraper Script XTRMEEE
 
 on:
   # Runs once every 6 hours
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */3 * * *'
   # Allow manual runs too
   workflow_dispatch:
 
