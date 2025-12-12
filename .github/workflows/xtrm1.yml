@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-media4u-script:
+  run-XTREMEE-script:
     runs-on: ubuntu-latest
     # Using Playwright container is fine as it includes Python and common libs
     container:
