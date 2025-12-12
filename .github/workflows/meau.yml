@@ -1,4 +1,4 @@
-name: Scraper Script
+name: Scraper Script MeaU
 
 on:
   # Runs once every 24 hours at midnight UTC
