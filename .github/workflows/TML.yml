@@ -3,7 +3,6 @@ name: TML Playlist Updater
 on:
   workflow_dispatch:
   schedule:
-    # Run every 40 minutes
     - cron: '*/35 * * * *'
 
 jobs:
@@ -17,11 +16,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Built-in token
 
       - name: Set up Python and dependencies
         run: |
           apt-get update
-          apt-get install -y python3-venv
+          apt-get install -y python3-venv git
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
@@ -29,16 +30,11 @@ jobs:
           playwright install firefox
         shell: bash
 
-      - name: Download TML Scraper
-        run: |
-          echo "📥 Downloading TML script..."
-          curl -L -o TML.py "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
-        shell: bash
-
       - name: Run TML Scraper
         run: |
           source venv/bin/activate
-          echo "🚀 Running TML scraper..."
+          # Note: I am assuming your script is in the repo as TML.py
+          # If you still want to download it from Dropbox, add the curl step here
           python TML.py || echo "⚠️ TML scraper failed but continuing..."
         shell: bash
 
@@ -50,6 +46,21 @@ jobs:
           else
             echo "⚠️ No S4.m3u8 found; creating empty TML.m3u."
             echo "#EXTM3U" > TML.m3u
+          fi
+        shell: bash
+
+      - name: Commit and Push dynamic stream files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Safe add the streams directory
+          mkdir -p streams
+          git add streams/*.m3u8 TML.m3u
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Update dynamic streams [$(date)]"
+            git push
           fi
         shell: bash
 
