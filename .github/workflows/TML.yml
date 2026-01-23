@@ -17,12 +17,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Built-in token
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python and dependencies
         run: |
           apt-get update
-          apt-get install -y python3-venv git
+          apt-get install -y python3-venv git curl
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
@@ -30,11 +30,16 @@ jobs:
           playwright install firefox
         shell: bash
 
+      - name: Download TML Scraper
+        run: |
+          echo "📥 Downloading TML script from Dropbox..."
+          curl -L -o TML.py "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
+        shell: bash
+
       - name: Run TML Scraper
         run: |
           source venv/bin/activate
-          # Note: I am assuming your script is in the repo as TML.py
-          # If you still want to download it from Dropbox, add the curl step here
+          echo "🚀 Running TML scraper..."
           python TML.py || echo "⚠️ TML scraper failed but continuing..."
         shell: bash
 
@@ -49,18 +54,19 @@ jobs:
           fi
         shell: bash
 
-      - name: Commit and Push dynamic stream files
+      - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # Safe add the streams directory
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          # Ensure streams folder is included
           mkdir -p streams
           git add streams/*.m3u8 TML.m3u
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
             git commit -m "🔄 Update dynamic streams [$(date)]"
-            git push
+            git push origin main
           fi
         shell: bash
 
