@@ -19,8 +19,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Fetches all history to help avoid conflicts
 
-      - name: Set up Python
+      - name: Set up Environment
         run: |
           apt-get update
           apt-get install -y python3-venv git curl
@@ -38,18 +39,10 @@ jobs:
       - name: Run Scraper
         run: |
           source venv/bin/activate
-          python TML.py || echo "Scraper encountered issues..."
+          python TML.py || echo "Scraper finished with warnings."
         shell: bash
 
-      - name: Prepare Files
-        run: |
-          # Rename for Dropbox
-          if [ -f "S4.m3u8" ]; then mv S4.m3u8 TML.m3u; fi
-          # Ensure we don't accidentally track the main playlist in Git
-          rm -f S4.m3u8
-        shell: bash
-
-      - name: Push IDs to GitHub
+      - name: Commit and Force Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -57,17 +50,19 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           
-          # Delete any existing TML.m3u from repo to be safe
-          git rm -f TML.m3u || true
+          # Remove TML.m3u if it was ever accidentally committed
+          git rm -f TML.m3u S4.m3u8 || true
           
-          mkdir -p streams
+          # Add only the obscured stream files
           git add streams/*.m3u8
           
+          # Commit only if there are changes
           if git diff --staged --quiet; then
-            echo "No changes"
+            echo "No changes detected."
           else
-            git commit -m "🔄 Refresh IDs: $(date)"
-            git push origin main
+            git commit -m "🔄 Live Stream Update: $(date)"
+            # FORCE PUSH to solve the 'rejected' error
+            git push origin main --force
           fi
         shell: bash
 
@@ -77,5 +72,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: TML.m3u
+          source_path: S4.m3u8 # Uploading the generated file directly
           DEST_PATH: /MyStuff/TML.m3u
