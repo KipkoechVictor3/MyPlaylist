@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0 # Fetches all history to help avoid conflicts
+          fetch-depth: 0
 
       - name: Set up Environment
         run: |
@@ -31,18 +31,26 @@ jobs:
           playwright install firefox
         shell: bash
 
-      - name: Download Scraper
-        run: |
-          curl -L -o TML.py "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
-        shell: bash
-
       - name: Run Scraper
         run: |
           source venv/bin/activate
+          # We run the script present in the repo. 
+          # Ensure you have committed the TML.py code I gave you previously.
           python TML.py || echo "Scraper finished with warnings."
         shell: bash
 
-      - name: Commit and Force Push
+      - name: Verify File Generation
+        run: |
+          if [ -f "TML.m3u" ]; then
+            echo "✅ TML.m3u successfully generated."
+            ls -lh TML.m3u
+          else
+            echo "❌ ERROR: TML.m3u was not created!"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Commit Changes (Optional)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -50,18 +58,13 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           
-          # Remove TML.m3u if it was ever accidentally committed
-          git rm -f TML.m3u S4.m3u8 || true
-          
-          # Add only the obscured stream files
-          git add streams/*.m3u8
-          
-          # Commit only if there are changes
+          # We don't really need to commit the M3U to GitHub if we use Dropbox,
+          # but we can keep the repo clean.
+          git add .
           if git diff --staged --quiet; then
-            echo "No changes detected."
+            echo "No changes to commit."
           else
-            git commit -m "🔄 Live Stream Update: $(date)"
-            # FORCE PUSH to solve the 'rejected' error
+            git commit -m "🔄 Playlist Sync: $(date)"
             git push origin main --force
           fi
         shell: bash
@@ -72,5 +75,6 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: S4.m3u8 # Uploading the generated file directly
+          # Changed to match the output of the new TML.py script
+          source_path: TML.m3u 
           DEST_PATH: /MyStuff/TML.m3u
