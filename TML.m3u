@@ -1,34 +1,19 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Hornets @ Magic" tvg-logo="https://cdn.nba.com/manage/2026/01/cha_vs_orl_game_recap_012226_thumbnail.png" group-title="Timstreams Live - Basketball", Hornets @ Magic 
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="US Street Nationals at Bradenton Motorsports Park" tvg-logo="https://d2779tscntxxsw.cloudfront.net/695fda657b760.png" group-title="Timstreams Live - Motorsport", US Street Nationals at Bradenton Motorsports Park 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/hornetsmagic.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Warriors @ Mavericks" tvg-logo="https://cdn.nba.com/manage/2026/01/gsw-@-dal-game-card-rivals-week-01_22_26-full.png" group-title="Timstreams Live - Basketball", Warriors @ Mavericks 
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/usstreetnationalsatbradentonmotorsportspark.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Rockets @ 76ers" tvg-logo="https://cdn.nba.com/manage/2026/01/hou_vs_phi_game_recap_012226_thumbnail.png" group-title="Timstreams Live - Basketball", Rockets @ 76ers 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/warriorsmavericks.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Bulls @ Timberwolves" tvg-logo="https://cdn.nba.com/manage/2026/01/chi_vs_min_game_recap_012226_thumbnail-full.png" group-title="Timstreams Live - Basketball", Bulls @ Timberwolves 
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/rockets76ers.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Nuggets @ Wizards" tvg-logo="https://cdn.nba.com/manage/2026/01/den_vs_was_game_recap_012226_thumbnail.png" group-title="Timstreams Live - Basketball", Nuggets @ Wizards 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/bullstimberwolves.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Spurs @ Jazz" tvg-logo="https://cdn.nba.com/manage/2026/01/sas_vs_uta_game_recap_012226_thumbnail.png" group-title="Timstreams Live - Basketball", Spurs @ Jazz 
-#EXTVLCOPT:http-origin=https://justembeds.xyz
-#EXTVLCOPT:http-referrer=https://justembeds.xyz/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/spursjazz.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Lakers @ Clippers" tvg-logo="https://cdn.nba.com/manage/2026/01/lal-@-lac-game-card-rivals-week-01_22_26-full.png" group-title="Timstreams Live - Basketball", Lakers @ Clippers 
-#EXTVLCOPT:http-origin=https://justembeds.xyz
-#EXTVLCOPT:http-referrer=https://justembeds.xyz/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/lakersclippers.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Heat @ Trail Blazers" tvg-logo="https://cdn.nba.com/manage/2026/01/mia_vs_por_game_recap_012226_thumbnail.png" group-title="Timstreams Live - Basketball", Heat @ Trail Blazers 
-#EXTVLCOPT:http-origin=https://justembeds.xyz
-#EXTVLCOPT:http-referrer=https://justembeds.xyz/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/heattrailblazers.m3u8
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/nuggetswizards.m3u8
 #EXTINF:-1 tvg-id="WABC-DT.us_locals1" tvg-name="ABC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/abc_2.png" group-title="Timstreams 24/7", ABC 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
@@ -64,11 +49,6 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/fox.m3
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/foxdeportes.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Fox News" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-news-us.png" group-title="Timstreams 24/7", Fox News 
-#EXTVLCOPT:http-origin=https://justembeds.xyz
-#EXTVLCOPT:http-referrer=https://justembeds.xyz/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/foxnews.m3u8
 #EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Fox Soccer Plus" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/foxsoccp.png" group-title="Timstreams 24/7", Fox Soccer Plus 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
@@ -109,11 +89,11 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/foxspo
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/nbatv.m3u8
-#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="NBC GOLF" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nbc-golf-us.png?raw=true" group-title="Timstreams 24/7", NBC GOLF 
+#EXTINF:-1 tvg-id="MSNBC.HD.us2" tvg-name="NBC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/nbc.png" group-title="Timstreams 24/7", NBC 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/nbcgolf.m3u8
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/nbc.m3u8
 #EXTINF:-1 tvg-id="Live.Event.us" tvg-name="NBC Sports California" tvg-logo="https://i.imgur.com/Q9Uv160.jpeg" group-title="Timstreams 24/7", NBC Sports California 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
@@ -184,6 +164,11 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/skyspo
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/skysport8nz.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Sky Sport 9 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Timstreams 24/7", Sky Sport 9 NZ 
+#EXTVLCOPT:http-origin=https://justembeds.xyz
+#EXTVLCOPT:http-referrer=https://justembeds.xyz/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/skysport9nz.m3u8
 #EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Sky Sports+" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skyplus.png" group-title="Timstreams 24/7", Sky Sports+ 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
@@ -249,6 +234,16 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/skyspo
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/skysportstennis.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Spectrum Sportsnet Dodgers" tvg-logo="https://www.sportsvideo.org/wp-content/uploads/2025/03/spectrum-sportsnet-la-banner.png.webp" group-title="Timstreams 24/7", Spectrum Sportsnet Dodgers 
+#EXTVLCOPT:http-origin=https://justembeds.xyz
+#EXTVLCOPT:http-referrer=https://justembeds.xyz/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/spectrumsportsnetdodgers.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="Spectrum Sportsnet Lakers" tvg-logo="https://cdn.nba.com/teams/uploads/sites/1610612747/2023/10/2324_lal_product_ssn_generic_article_1130x635.jpg" group-title="Timstreams 24/7", Spectrum Sportsnet Lakers 
+#EXTVLCOPT:http-origin=https://justembeds.xyz
+#EXTVLCOPT:http-referrer=https://justembeds.xyz/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/spectrumsportsnetlakers.m3u8
 #EXTINF:-1 tvg-id="Live.Event.us" tvg-name="TNT" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tnt.png" group-title="Timstreams 24/7", TNT 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
@@ -289,6 +284,11 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/tsn2.m
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/tsn3.m3u8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-name="TSN 4" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Timstreams 24/7", TSN 4 
+#EXTVLCOPT:http-origin=https://justembeds.xyz
+#EXTVLCOPT:http-referrer=https://justembeds.xyz/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/streams/tsn4.m3u8
 #EXTINF:-1 tvg-id="Live.Event.us" tvg-name="TSN 5" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Timstreams 24/7", TSN 5 
 #EXTVLCOPT:http-origin=https://justembeds.xyz
 #EXTVLCOPT:http-referrer=https://justembeds.xyz/
