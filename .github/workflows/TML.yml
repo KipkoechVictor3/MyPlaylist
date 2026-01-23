@@ -31,40 +31,52 @@ jobs:
           playwright install firefox
         shell: bash
 
+      - name: Download Scraper
+        run: |
+          # Use the full path to ensure it's in the workspace
+          curl -L -o "$GITHUB_WORKSPACE/TML.py" "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
+        shell: bash
+
       - name: Run Scraper
         run: |
           source venv/bin/activate
-          # We run the script present in the repo. 
-          # Ensure you have committed the TML.py code I gave you previously.
-          python TML.py || echo "Scraper finished with warnings."
+          cd "$GITHUB_WORKSPACE"
+          # Run the scraper. If it fails, the workflow stops here (better for debugging)
+          python TML.py 
         shell: bash
 
       - name: Verify File Generation
         run: |
+          cd "$GITHUB_WORKSPACE"
           if [ -f "TML.m3u" ]; then
             echo "✅ TML.m3u successfully generated."
             ls -lh TML.m3u
           else
-            echo "❌ ERROR: TML.m3u was not created!"
+            echo "❌ ERROR: TML.m3u was not created by the script!"
+            # List files to see what actually happened
+            ls -R
             exit 1
           fi
         shell: bash
 
-      - name: Commit Changes (Optional)
+      - name: Commit and Force Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
           
-          # We don't really need to commit the M3U to GitHub if we use Dropbox,
-          # but we can keep the repo clean.
-          git add .
+          git rm -f TML.m3u S4.m3u8 || true
+          
+          # We only add the python script if you want it saved in the repo
+          git add TML.py
+          
           if git diff --staged --quiet; then
-            echo "No changes to commit."
+            echo "No changes detected."
           else
-            git commit -m "🔄 Playlist Sync: $(date)"
+            git commit -m "🔄 Live Stream Update: $(date)"
             git push origin main --force
           fi
         shell: bash
@@ -75,6 +87,6 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          # Changed to match the output of the new TML.py script
+          # Path corrected to the actual output file
           source_path: TML.m3u 
           DEST_PATH: /MyStuff/TML.m3u
