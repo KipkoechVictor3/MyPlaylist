@@ -1,12 +1,12 @@
-name: PlyTorr Playlist Updater
+name: TML Playlist Updater
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # Runs exactly every hour
+    - cron: '*/35 * * * *'
 
 jobs:
-  update-plytorr-playlist:
+  update-tml-playlist:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -24,32 +24,33 @@ jobs:
           apt-get install -y python3-venv curl
           python3 -m venv venv
           source venv/bin/activate
-          # Per your preference, installing without prompts
-          pip install playwright==1.55.0 httpx
+          # Installing required dependencies
+          pip install playwright==1.55.0 httpx aiohttp dropbox requests
           playwright install firefox
         shell: bash
 
       - name: Download Scraper
         run: |
-          # Downloads your script from Dropbox to the local runner workspace
-          curl -L -o "$GITHUB_WORKSPACE/PlyTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
+          curl -L -o "$GITHUB_WORKSPACE/TML.py" "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # This generates PlyTorr.m3u locally on the runner
-          python PlyTorr.py
+          # Run the scraper to generate TML.m3u
+          python TML.py 
         shell: bash
 
       - name: Verify File Generation
         run: |
           cd "$GITHUB_WORKSPACE"
-          if [ -f "PlyTorr.m3u" ]; then
-            echo "✅ PlyTorr.m3u successfully generated."
+          if [ -f "TML.m3u" ]; then
+            echo "✅ TML.m3u successfully generated."
+            ls -lh TML.m3u
           else
-            echo "❌ ERROR: PlyTorr.m3u was not created!"
+            echo "❌ ERROR: TML.m3u was not created!"
+            ls -R
             exit 1
           fi
         shell: bash
@@ -60,5 +61,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: PlyTorr.m3u 
-          DEST_PATH: /MyStuff/PlyTorr.m3u
+          source_path: TML.m3u 
+          DEST_PATH: /MyStuff/TML.m3u
