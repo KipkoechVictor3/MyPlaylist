@@ -1,0 +1,92 @@
+name: PlyTorr Playlist Updater
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'  # Runs exactly every hour
+
+jobs:
+  update-plytorr-playlist:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+      DOCKER_CONFIG: /tmp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Environment
+        run: |
+          apt-get update
+          apt-get install -y python3-venv git curl
+          python3 -m venv venv
+          source venv/bin/activate
+          # Installing required dependencies (Playwright, httpx)
+          pip install playwright==1.55.0 httpx
+          playwright install firefox
+        shell: bash
+
+      - name: Download Scraper
+        run: |
+          # Downloading your specific PlayT.py and naming it PlyTorr.py
+          curl -L -o "$GITHUB_WORKSPACE/PlyTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
+        shell: bash
+
+      - name: Run Scraper
+        run: |
+          source venv/bin/activate
+          cd "$GITHUB_WORKSPACE"
+          # Run the Playwright script
+          python PlyTorr.py 
+        shell: bash
+
+      - name: Verify File Generation
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          if [ -f "PlyTorr.m3u" ]; then
+            echo "✅ PlyTorr.m3u successfully generated."
+            ls -lh PlyTorr.m3u
+          else
+            echo "❌ ERROR: PlyTorr.m3u was not created!"
+            ls -R
+            exit 1
+          fi
+        shell: bash
+
+      - name: Commit and Force Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
+          
+          # Clean up any old naming conventions
+          git rm -f TML.m3u S4.m3u8 PlyTorr.m3u || true
+          
+          # Add the new script and the generated playlist
+          git add PlyTorr.py PlyTorr.m3u
+          
+          if git diff --staged --quiet; then
+            echo "No changes detected."
+          else
+            git commit -m "🔄 PlyTorr Stream Update: $(date)"
+            git push origin main --force
+          fi
+        shell: bash
+
+      - name: Upload Main Playlist to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: PlyTorr.m3u 
+          DEST_PATH: /MyStuff/PlyTorr.m3u
