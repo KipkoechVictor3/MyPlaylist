@@ -1,4 +1,4 @@
-name: PlyTorr Playlist Updater
+name: PLTorr Playlist Updater
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 * * * *'  # Runs exactly every hour
 
 jobs:
-  update-plytorr-playlist:
+  update-PLTorr-playlist:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -30,25 +30,25 @@ jobs:
 
       - name: Download Scraper
         run: |
-          curl -L -o "$GITHUB_WORKSPACE/PlyTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
+          curl -L -o "$GITHUB_WORKSPACE/PLTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # Run the Playwright script to generate PlyTorr.m3u
-          python PlyTorr.py
+          # Run the Playwright script to generate PLTorr.m3u
+          python PLTorr.py
         shell: bash
 
       - name: Verify File Generation
         run: |
           cd "$GITHUB_WORKSPACE"
-          if [ -f "PlyTorr.m3u" ]; then
-            echo "✅ PlyTorr.m3u successfully generated."
-            ls -lh PlyTorr.m3u
+          if [ -f "PLTorr.m3u" ]; then
+            echo "✅ PLTorr.m3u successfully generated."
+            ls -lh PLTorr.m3u
           else
-            echo "❌ ERROR: PlyTorr.m3u was not created!"
+            echo "❌ ERROR: PLTorr.m3u was not created!"
             ls -R
             exit 1
           fi
@@ -60,5 +60,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: PlyTorr.m3u 
-          DEST_PATH: /MyStuff/PlyTorr.m3u
+          source_path: PLTorr.m3u 
+          DEST_PATH: /MyStuff/PLTorr.m3u
