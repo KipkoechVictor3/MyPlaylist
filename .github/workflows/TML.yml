@@ -1,12 +1,12 @@
-name: TML Playlist Updater
+name: PlyTorr Playlist Updater
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/35 * * * *'
+    - cron: '0 * * * *'  # Runs exactly every hour
 
 jobs:
-  update-tml-playlist:
+  update-plytorr-playlist:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -17,67 +17,40 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Set up Environment
         run: |
           apt-get update
-          apt-get install -y python3-venv git curl
+          apt-get install -y python3-venv curl
           python3 -m venv venv
           source venv/bin/activate
-          pip install playwright==1.55.0 httpx aiohttp dropbox requests
+          # Per your preference, installing without prompts
+          pip install playwright==1.55.0 httpx
           playwright install firefox
         shell: bash
 
       - name: Download Scraper
         run: |
-          # Use the full path to ensure it's in the workspace
-          curl -L -o "$GITHUB_WORKSPACE/TML.py" "https://www.dropbox.com/scl/fi/e964mvuhtf5i7hm0be2f6/TIM_Scraper.py?rlkey=sr36si4z0cbdn2ojanzcz6dnv&st=sh2fvutx&dl=1"
+          # Downloads your script from Dropbox to the local runner workspace
+          curl -L -o "$GITHUB_WORKSPACE/PlyTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # Run the scraper. If it fails, the workflow stops here (better for debugging)
-          python TML.py 
+          # This generates PlyTorr.m3u locally on the runner
+          python PlyTorr.py
         shell: bash
 
       - name: Verify File Generation
         run: |
           cd "$GITHUB_WORKSPACE"
-          if [ -f "TML.m3u" ]; then
-            echo "✅ TML.m3u successfully generated."
-            ls -lh TML.m3u
+          if [ -f "PlyTorr.m3u" ]; then
+            echo "✅ PlyTorr.m3u successfully generated."
           else
-            echo "❌ ERROR: TML.m3u was not created by the script!"
-            # List files to see what actually happened
-            ls -R
+            echo "❌ ERROR: PlyTorr.m3u was not created!"
             exit 1
-          fi
-        shell: bash
-
-      - name: Commit and Force Push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          cd "$GITHUB_WORKSPACE"
-          
-          git rm -f TML.m3u S4.m3u8 || true
-          
-          # We only add the python script if you want it saved in the repo
-          git add TML.py
-          
-          if git diff --staged --quiet; then
-            echo "No changes detected."
-          else
-            git commit -m "🔄 Live Stream Update: $(date)"
-            git push origin main --force
           fi
         shell: bash
 
@@ -87,6 +60,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          # Path corrected to the actual output file
-          source_path: TML.m3u 
-          DEST_PATH: /MyStuff/TML.m3u
+          source_path: PlyTorr.m3u 
+          DEST_PATH: /MyStuff/PlyTorr.m3u
