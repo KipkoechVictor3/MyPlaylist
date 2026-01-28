@@ -26,6 +26,7 @@ jobs:
           apt-get install -y python3-venv curl git
           python3 -m venv venv
           source venv/bin/activate
+          # Installing required dependencies as per your preferences
           pip install playwright==1.55.0 httpx aiohttp dropbox requests
           playwright install firefox
         shell: bash
@@ -39,7 +40,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # This generates S4.m3u8 and the /streams/ folder
+          # This generates S4.m3u8 and the /streams/ folder with obscured names
           python TML.py 
         shell: bash
 
@@ -51,17 +52,29 @@ jobs:
             echo "✅ TMLMain.m3u8 prepared for Dropbox."
           else
             echo "❌ ERROR: S4.m3u8 was not created!"
+            ls -R
             exit 1
           fi
         shell: bash
 
       - name: Push Obscured Streams to GitHub
         run: |
+          # Fix for "dubious ownership" error in container
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add the streams folder containing the initials-based .m3u8 files
           git add streams/*.m3u8
-          # Only commit if there are changes to avoid workflow errors
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update obscured stream files" && git push)
+          
+          # Only commit and push if changes exist to avoid empty commit errors
+          if ! git diff --cached --quiet; then
+            git commit -m "Update obscured stream files"
+            git push
+          else
+            echo "No changes in stream files to commit."
+          fi
         shell: bash
 
       - name: Upload Main Playlist to Dropbox
