@@ -3,7 +3,7 @@ name: Scraper Script CATFT
 on:
   # Runs every 3 hours
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */6 * * *'
   # Allow manual runs too
   workflow_dispatch:
 
