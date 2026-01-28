@@ -1,4 +1,4 @@
-name: Scraper Script CATFt
+name: Scraper Script BluCast
 
 on:
   # Runs every 3 hours
@@ -8,11 +8,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-catft-script:
+  run-blucast-script:
     runs-on: ubuntu-latest
-    # Using a standard python image since CATFt.py doesn't require Firefox/Playwright
     container:
-      image: python:3.11-slim
+      # Using Playwright container as requested, ensuring Firefox compatibility
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
 
     steps:
       - name: Checkout repository
@@ -21,19 +23,25 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing Python dependencies (requests)..."
-          apt-get update && apt-get install -y curl
-          pip install --upgrade pip
+          apt-get update
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
           pip install requests
         shell: bash
 
-      - name: Download CATFt Script
+      - name: Download BluCast Script
         run: |
           echo "📥 Downloading CATFt.py from Dropbox..."
+          # Link updated to CATFt.py
           curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
         shell: bash
 
       - name: Run Scraper and Verify Output ⏱️
         run: |
+          source venv/bin/activate
+          
           echo "::group::▶️ Running CATFt.py..."
           START_TIME=$(date +%s)
           python CATFt.py
@@ -42,21 +50,21 @@ jobs:
           echo "::endgroup::"
           echo "::notice title=Script Complete::**✅ CATFt.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # Verify the specific output file defined in your script: Combined_Sports.m3u
+          # 🚨 CRITICAL CHECK: Verify the specific output file from our script
           if [ -f "Combined_Sports.m3u" ]; then
               echo "✅ Output file **Combined_Sports.m3u** found."
           else
               echo "❌ Expected output file **Combined_Sports.m3u** not found."
-              ls -R # Diagnostic
+              ls -R # Diagnostic: list all files to see what was actually created
               exit 1 
           fi
         shell: bash
 
-      - name: Upload Combined Sports Playlist to Dropbox ⬆️
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.0
+      - name: Upload Modified Playlist to Dropbox ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: "Combined_Sports.m3u"
-          dest_path: "/MyStuff/Combined_Sports.m3u"
+          DEST_PATH: /MyStuff/Combined_Sports.m3u
