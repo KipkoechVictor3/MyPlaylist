@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000
-https://storage.railway.app/organized-pierogi-ssnev8/7c8ec2f20d8194418415ad9e644ed3ac.m3u8?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=tid_Wzgsfcv_JTSuyvynvo_ERVPvp_zFPkylviswDZvLuepKWFpcJq%2F20260128%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260128T213455Z&X-Amz-Expires=3600&X-Amz-Signature=9a9fe80d90c2ac3145dd005bd9a694680558db40e8828039a969a2d517ef15bd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject
+https://storage.railway.app/organized-pierogi-ssnev8/7c8ec2f20d8194418415ad9e644ed3ac.m3u8?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=tid_Wzgsfcv_JTSuyvynvo_ERVPvp_zFPkylviswDZvLuepKWFpcJq%2F20260128%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260128T215801Z&X-Amz-Expires=3600&X-Amz-Signature=be01ba5157aa497a89030cdf8a640ab8f1c62437495720747625f28a8f386870&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject
