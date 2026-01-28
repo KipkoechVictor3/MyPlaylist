@@ -10,10 +10,9 @@ on:
 jobs:
   run-media4u-script:
     runs-on: ubuntu-latest
+    # Switched to a standard python image to avoid /root permission issues
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
-    env:
-      HOME: /root
+      image: python:3.11-slim
 
     steps:
       - name: Checkout repository
@@ -21,12 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "Installing Python dependencies (requests, tqdm)..."
           apt-get update
-          apt-get install -y python3-venv curl
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
+          apt-get install -y curl
+          pip install --upgrade pip
           pip install requests tqdm
         shell: bash
 
@@ -38,8 +34,6 @@ jobs:
 
       - name: Run Scraper and Verify Both Output Files ⏱️
         run: |
-          source venv/bin/activate
-          
           echo "::group::▶️ Running Meau.py..."
           START_TIME=$(date +%s)
           python Meau.py
@@ -48,41 +42,43 @@ jobs:
           echo "::endgroup::"
           echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # 🚨 CRITICAL CHECK 1: Verify Mediauu.m3u
+          # Verify Mediauu.m3u
           if [ -f "Mediauu.m3u" ]; then
-              echo "✅ Output file **Mediauu.m3u** found."
+              echo "✅ Output file Mediauu.m3u found."
           else
-              echo "❌ Expected output file **Mediauu.m3u** not found."
-              exit 1 # Fail the step
+              echo "❌ Expected output file Mediauu.m3u not found."
+              exit 1
           fi
           
-          # 🚨 CRITICAL CHECK 2: Verify full_groups_list.txt
+          # Verify full_groups_list.txt
+          # If this fails, ensure your Python script has:
+          # extract_all_groups_to_file(content, "full_groups_list.txt") 
+          # inside the main() function.
           if [ -f "full_groups_list.txt" ]; then
-              echo "✅ Output file **full_groups_list.txt** found."
+              echo "✅ Output file full_groups_list.txt found."
           else
-              echo "❌ Expected output file **full_groups_list.txt** not found."
-              exit 1 # Fail the step
+              echo "❌ Expected output file full_groups_list.txt not found."
+              exit 1
           fi
 
-          # 🚨 DIAGNOSTIC CHECK: List directory contents
           echo "### Output Files Check ###"
           ls -l Mediauu.m3u full_groups_list.txt
         shell: bash
 
       - name: Upload Mediauu.m3u to Dropbox ⬆️
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        uses: gomes042/gh-actions-dropbox/files/upload@v1.1.0
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: Mediauu.m3u
-          DEST_PATH: /MyStuff/Mediauu.m3u
+          dest_path: /MyStuff/Mediauu.m3u
           
       - name: Upload full_groups_list.txt to Dropbox ⬆️
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        uses: gomes042/gh-actions-dropbox/files/upload@v1.1.0
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: full_groups_list.txt
-          DEST_PATH: /MyStuff/full_groups_list.txt
+          dest_path: /MyStuff/full_groups_list.txt
