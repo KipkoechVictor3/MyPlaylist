@@ -11,7 +11,7 @@ jobs:
   run-media4u-script:
     runs-on: ubuntu-latest
     container:
-      image: python:3.11-slim
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
 
     steps:
       - name: Checkout repository
@@ -19,9 +19,12 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Installing Python dependencies (requests, tqdm)..."
           apt-get update
-          apt-get install -y curl
-          pip install --upgrade pip
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
           pip install requests tqdm
         shell: bash
 
@@ -31,8 +34,10 @@ jobs:
           curl -L -o Meau.py "https://www.dropbox.com/scl/fi/j4si6889xv9g0mn4v0n76/MEAU.py?rlkey=9wt4uegta8xq2vg4vj94bxh58&st=ch9qtdbc&dl=1"
         shell: bash
 
-      - name: Run Scraper and Verify Output ⏱️
+      - name: Run Scraper and Verify Output Files ⏱️
         run: |
+          source venv/bin/activate
+          
           echo "::group::▶️ Running Meau.py..."
           START_TIME=$(date +%s)
           python Meau.py
@@ -41,13 +46,17 @@ jobs:
           echo "::endgroup::"
           echo "::notice title=Script Time Complete::**✅ Meau.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # Verify Mediauu.m3u
+          # 🚨 CRITICAL CHECK 1: Verify Mediauu.m3u
           if [ -f "Mediauu.m3u" ]; then
-              echo "✅ Output file Mediauu.m3u found."
+              echo "✅ Output file **Mediauu.m3u** found."
           else
-              echo "❌ Expected output file Mediauu.m3u not found."
-              exit 1 
+              echo "❌ Expected output file **Mediauu.m3u** not found."
+              exit 1 # Fail the step
           fi
+          
+          # 🚨 DIAGNOSTIC CHECK: List directory contents
+          echo "### Output Files Check ###"
+          ls -l Mediauu.m3u
         shell: bash
 
       - name: Upload Mediauu.m3u to Dropbox ⬆️
