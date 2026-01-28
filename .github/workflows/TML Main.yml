@@ -1,0 +1,74 @@
+name: TML Main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/35 * * * *'
+
+jobs:
+  update-tml-playlist:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+      DOCKER_CONFIG: /tmp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Environment
+        run: |
+          apt-get update
+          apt-get install -y python3-venv curl git
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install playwright==1.55.0 httpx aiohttp dropbox requests
+          playwright install firefox
+        shell: bash
+
+      - name: Download Scraper
+        run: |
+          curl -L -o "$GITHUB_WORKSPACE/TML.py" "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=iqy9o1sa&dl=1"
+        shell: bash
+
+      - name: Run Scraper
+        run: |
+          source venv/bin/activate
+          cd "$GITHUB_WORKSPACE"
+          # This generates S4.m3u8 and the /streams/ folder
+          python TML.py 
+        shell: bash
+
+      - name: Rename and Verify Main Playlist
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          if [ -f "S4.m3u8" ]; then
+            mv S4.m3u8 TMLMain.m3u8
+            echo "✅ TMLMain.m3u8 prepared for Dropbox."
+          else
+            echo "❌ ERROR: S4.m3u8 was not created!"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Push Obscured Streams to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add streams/*.m3u8
+          # Only commit if there are changes to avoid workflow errors
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update obscured stream files" && git push)
+        shell: bash
+
+      - name: Upload Main Playlist to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: TMLMain.m3u8
+          DEST_PATH: /MyStuff/TMLMain.m3u8
