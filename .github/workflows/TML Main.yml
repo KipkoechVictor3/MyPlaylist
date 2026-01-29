@@ -3,11 +3,12 @@ name: TML Main
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/45 * * * *'
+    # Safety net: Restarts the loop every 2 hours if it fails/stops
+    - cron: '0 */2 * * *'
   repository_dispatch:
     types: [trigger-next-run]
 
-# --- Prevent multiple runs from overlapping ---
+# Ensures only one run happens at a time
 concurrency:
   group: tml-processing
   cancel-in-progress: false 
@@ -87,8 +88,8 @@ jobs:
       - name: Wait and Trigger Next Run
         if: always()
         run: |
-          echo "Waiting 20 minutes before triggering next run to avoid spam..."
-          sleep 1200 
+          echo "Waiting 45 minutes to maintain stream validity..."
+          sleep 2700 
           curl -X POST \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
