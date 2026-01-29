@@ -3,9 +3,11 @@ name: TML Main
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 45 minutes
     - cron: '*/45 * * * *'
+  repository_dispatch:
+    types: [trigger-next-run]
 
+# --- Prevent multiple runs from overlapping ---
 concurrency:
   group: tml-processing
   cancel-in-progress: false 
@@ -81,3 +83,15 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: TMLMain.m3u8
           DEST_PATH: /MyStuff/TMLMain.m3u8
+
+      - name: Wait and Trigger Next Run
+        if: always()
+        run: |
+          echo "Waiting 20 minutes before triggering next run to avoid spam..."
+          sleep 1200 
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type": "trigger-next-run"}'
+        shell: bash
