@@ -3,7 +3,7 @@ name: TML Main
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/35 * * * *'
+    - cron: '*/25 * * * *'
 
 jobs:
   update-tml-playlist:
