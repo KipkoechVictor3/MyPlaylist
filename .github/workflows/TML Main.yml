@@ -7,6 +7,11 @@ on:
   repository_dispatch:
     types: [trigger-next-run]
 
+# --- Prevent multiple runs from overlapping ---
+concurrency:
+  group: tml-processing
+  cancel-in-progress: false 
+
 jobs:
   update-tml-playlist:
     runs-on: ubuntu-latest
@@ -21,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0 # Fetches all history so git pull works correctly
+          fetch-depth: 0
 
       - name: Set up Environment
         run: |
@@ -50,10 +55,8 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           if [ -f "S4.m3u8" ]; then
             mv S4.m3u8 TMLMain.m3u8
-            echo "✅ TMLMain.m3u8 prepared for Dropbox."
           else
-            echo "❌ ERROR: S4.m3u8 was not created!"
-            ls -R
+            echo "❌ ERROR: S4.m3u8 not found"
             exit 1
           fi
         shell: bash
@@ -65,14 +68,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git add streams/*.m3u8
-          
           if ! git diff --cached --quiet; then
             git commit -m "Update obscured stream files"
-            # Pull latest changes and rebase to avoid 'rejected' errors
             git pull --rebase origin main
             git push
-          else
-            echo "No changes in stream files to commit."
           fi
         shell: bash
 
@@ -85,9 +84,11 @@ jobs:
           source_path: TMLMain.m3u8
           DEST_PATH: /MyStuff/TMLMain.m3u8
 
-      - name: Trigger Next Run (Contingency)
+      - name: Wait and Trigger Next Run
         if: always()
         run: |
+          echo "Waiting 20 minutes before triggering next run to avoid spam..."
+          sleep 1200 
           curl -X POST \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
