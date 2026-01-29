@@ -3,7 +3,9 @@ name: TML Main
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/25 * * * *'
+    - cron: '*/45 * * * *'
+  repository_dispatch:
+    types: [trigger-next-run]
 
 jobs:
   update-tml-playlist:
@@ -19,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Fetches all history so git pull works correctly
 
       - name: Set up Environment
         run: |
@@ -26,7 +29,6 @@ jobs:
           apt-get install -y python3-venv curl git
           python3 -m venv venv
           source venv/bin/activate
-          # Installing required dependencies as per your preferences
           pip install playwright==1.55.0 httpx aiohttp dropbox requests
           playwright install firefox
         shell: bash
@@ -40,7 +42,6 @@ jobs:
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # This generates S4.m3u8 and the /streams/ folder with obscured names
           python TML.py 
         shell: bash
 
@@ -59,18 +60,16 @@ jobs:
 
       - name: Push Obscured Streams to GitHub
         run: |
-          # Fix for "dubious ownership" error in container
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Add the streams folder containing the initials-based .m3u8 files
           git add streams/*.m3u8
           
-          # Only commit and push if changes exist to avoid empty commit errors
           if ! git diff --cached --quiet; then
             git commit -m "Update obscured stream files"
+            # Pull latest changes and rebase to avoid 'rejected' errors
+            git pull --rebase origin main
             git push
           else
             echo "No changes in stream files to commit."
@@ -85,3 +84,13 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: TMLMain.m3u8
           DEST_PATH: /MyStuff/TMLMain.m3u8
+
+      - name: Trigger Next Run (Contingency)
+        if: always()
+        run: |
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type": "trigger-next-run"}'
+        shell: bash
