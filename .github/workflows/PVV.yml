@@ -3,12 +3,13 @@ name: PPL Playlist Updater
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/40 * * * *'
+    - cron: '*/35 * * * *'
 
 jobs:
   update-tml-playlist:
     runs-on: ubuntu-latest
     container:
+      # Using the Noble version of Playwright's official image
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -24,15 +25,16 @@ jobs:
           apt-get install -y python3-venv curl
           python3 -m venv venv
           source venv/bin/activate
-          # Per preference, installing only necessary libs
-          pip install httpx aiohttp dropbox requests
-          # Only installing Firefox as per your preference
-          playwright install firefox
+          # Use python -m pip to ensure it's in the venv
+          python -m pip install --upgrade pip
+          python -m pip install playwright==1.55.0 httpx aiohttp dropbox requests
+          
+          # FIX: Call playwright as a python module
+          python -m playwright install firefox
         shell: bash
 
       - name: Download PPL Scraper
         run: |
-          # Downloading your specific PPL_SCRIPTProxied.py
           curl -L -o "$GITHUB_WORKSPACE/PPL_Scraper.py" "https://www.dropbox.com/scl/fi/kwnyqfprxbc3ds7gsvcaz/PPL_SCRIPTProxied.py?rlkey=dzlolascl09fzlqhvqqh9im5c&st=sfizkeb7&dl=1"
         shell: bash
 
@@ -40,18 +42,19 @@ jobs:
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # This runs your script which generates S3.m3u and S3_Proxied.m3u
+          # Running the downloaded script
           python PPL_Scraper.py 
         shell: bash
 
       - name: Verify File Generation
         run: |
           cd "$GITHUB_WORKSPACE"
+          # Your script generates S3.m3u and S3_Proxied.m3u
           if [ -f "S3.m3u" ] && [ -f "S3_Proxied.m3u" ]; then
             echo "✅ Both playlists successfully generated."
             ls -lh S3.m3u S3_Proxied.m3u
           else
-            echo "❌ ERROR: One or both files (S3.m3u / S3_Proxied.m3u) were not created!"
+            echo "❌ ERROR: Playlists were not created!"
             ls -R
             exit 1
           fi
