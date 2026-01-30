@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000
+https://storage.railway.app/organized-pierogi-ssnev8/fdec998228cccfcc05d7954671ddab2c.m3u8?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=tid_Wzgsfcv_JTSuyvynvo_ERVPvp_zFPkylviswDZvLuepKWFpcJq%2F20260130%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260130T033909Z&X-Amz-Expires=3600&X-Amz-Signature=abd311d1c18eea5802dae8901f92e9923832b3a6f8e4d39483cb7fcf99936042&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject
