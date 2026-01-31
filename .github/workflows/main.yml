@@ -3,7 +3,6 @@ name: Combined Remote Playlist
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 40 minutes
     - cron: '*/40 * * * *'
 
 jobs:
@@ -27,15 +26,16 @@ jobs:
 
       - name: Fetch Channels List
         run: |
-          # Downloading the provided channels list
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          # Clean invisible line endings (CRLF to LF)
           tr -d '\r' < channels.txt > channels_clean.txt
           mv channels_clean.txt channels.txt
         shell: bash
 
       - name: Process and Merge Remote Playlists
         run: |
+          # Prevent script from exiting immediately on a failed curl command
+          set +e 
+
           OUTPUT_FILE="MyStuffCLW.m3u"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
@@ -43,39 +43,40 @@ jobs:
           
           if [ -f "channels.txt" ]; then
             while read -r url || [ -n "$url" ]; do
-              # Skip empty lines or comments
               [[ -z "$url" || "$url" =~ ^# ]] && continue
               
               FRIENDLY_NAME=$(echo "$url" | awk -F'/' '{print $NF}' | cut -d'?' -f1 | sed 's/\.m3u8//g; s/\.m3u//g')
-              
-              if [[ "$FRIENDLY_NAME" == "a1xstream" || -z "$FRIENDLY_NAME" ]]; then
-                 FRIENDLY_NAME="Remote_Stream_Link"
-              fi
+              [ -z "$FRIENDLY_NAME" ] && FRIENDLY_NAME="Remote_Stream"
 
               temp_file="temp_dl.m3u"
               echo "Downloading: $FRIENDLY_NAME from $url"
               
-              # FIX: Added -k (insecure), --retry, and a Browser User-Agent to bypass port/firewall blocks
-              if curl -L -f -k -s \
+              # Added -4 to force IPv4 (helps with some DNS setups) and lowered connect-timeout
+              curl -L -f -k -s -4 \
                 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
-                --connect-timeout 30 \
-                --retry 3 \
-                --retry-delay 5 \
-                "$url" -o "$temp_file"; then
-                
+                --connect-timeout 15 \
+                --retry 2 \
+                "$url" -o "$temp_file"
+              
+              # Check if the file was actually created and has content
+              if [ -s "$temp_file" ]; then
                 if grep -qE '^(#EXTM3U|#EXTINF)' "$temp_file"; then
                   echo -e "\n\n######## SOURCE: $FRIENDLY_NAME ########" >> "$OUTPUT_FILE"
                   grep -v '^#EXTM3U' "$temp_file" >> "$OUTPUT_FILE"
                   echo "✅ Merged $FRIENDLY_NAME"
                 else
-                  echo "⚠️ $FRIENDLY_NAME has invalid content header. Skipping."
+                  echo "⚠️ $FRIENDLY_NAME is not a valid M3U. Skipping."
                 fi
               else
-                echo "❌ Failed to download $FRIENDLY_NAME after retries."
+                echo "❌ Failed to download $FRIENDLY_NAME (Link might be down or port 8081 is blocked)."
               fi
               rm -f "$temp_file"
             done < "channels.txt"
           fi
+          
+          # Re-enable exit on error for subsequent steps
+          set -e
+          exit 0
         shell: bash
 
       - name: Clean and Finalize Playlist
