@@ -22,25 +22,55 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install playwright==1.55.0 requests
+          python -m playwright install firefox
         shell: bash
 
-      - name: Fetch Channels List
+      - name: Fetch Remote Channels List
         run: |
           curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
           tr -d '\r' < channels.txt > channels_clean.txt
           mv channels_clean.txt channels.txt
         shell: bash
 
-      - name: Process and Merge Remote Playlists
+      - name: Run SS99 Scrapers (Channels & Events)
         run: |
-          # Prevent script from exiting immediately on a failed curl command
-          set +e 
+          source venv/bin/activate
+          
+          echo "--- Running SS99 Channels Scraper ---"
+          curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
+          python SS99_Channels.py
+          
+          echo "--- Running SS99 Events Scraper ---"
+          curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
+          python SS99_Events_Scraper.py
+        shell: bash
 
+      - name: Process and Merge All Playlists
+        run: |
+          set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          echo "--- Starting Download and Merge ---"
+          echo "--- Merging Scraped SS99 Content ---"
+          # Merge Channels
+          if [ -s "SSpo99.m3u8" ]; then
+            echo -e "\n######## SOURCE: SS99 CHANNELS ########" >> "$OUTPUT_FILE"
+            grep -v '^#EXTM3U' SSpo99.m3u8 >> "$OUTPUT_FILE"
+            echo "✅ Merged SS99 Channels"
+          fi
           
+          # Merge Events
+          if [ -s "SS99_Events.m3u8" ]; then
+            echo -e "\n######## SOURCE: SS99 EVENTS ########" >> "$OUTPUT_FILE"
+            grep -v '^#EXTM3U' SS99_Events.m3u8 >> "$OUTPUT_FILE"
+            echo "✅ Merged SS99 Events"
+          fi
+
+          echo "--- Downloading and Merging Remote Playlists ---"
           if [ -f "channels.txt" ]; then
             while read -r url || [ -n "$url" ]; do
               [[ -z "$url" || "$url" =~ ^# ]] && continue
@@ -49,34 +79,22 @@ jobs:
               [ -z "$FRIENDLY_NAME" ] && FRIENDLY_NAME="Remote_Stream"
 
               temp_file="temp_dl.m3u"
-              echo "Downloading: $FRIENDLY_NAME from $url"
-              
-              # Added -4 to force IPv4 (helps with some DNS setups) and lowered connect-timeout
+              echo "Downloading: $FRIENDLY_NAME"
               curl -L -f -k -s -4 \
                 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
                 --connect-timeout 15 \
                 --retry 2 \
                 "$url" -o "$temp_file"
               
-              # Check if the file was actually created and has content
-              if [ -s "$temp_file" ]; then
-                if grep -qE '^(#EXTM3U|#EXTINF)' "$temp_file"; then
-                  echo -e "\n\n######## SOURCE: $FRIENDLY_NAME ########" >> "$OUTPUT_FILE"
-                  grep -v '^#EXTM3U' "$temp_file" >> "$OUTPUT_FILE"
-                  echo "✅ Merged $FRIENDLY_NAME"
-                else
-                  echo "⚠️ $FRIENDLY_NAME is not a valid M3U. Skipping."
-                fi
-              else
-                echo "❌ Failed to download $FRIENDLY_NAME (Link might be down or port 8081 is blocked)."
+              if [ -s "$temp_file" ] && grep -qE '^(#EXTM3U|#EXTINF)' "$temp_file"; then
+                echo -e "\n######## SOURCE: $FRIENDLY_NAME ########" >> "$OUTPUT_FILE"
+                grep -v '^#EXTM3U' "$temp_file" >> "$OUTPUT_FILE"
+                echo "✅ Merged $FRIENDLY_NAME"
               fi
               rm -f "$temp_file"
             done < "channels.txt"
           fi
-          
-          # Re-enable exit on error for subsequent steps
           set -e
-          exit 0
         shell: bash
 
       - name: Clean and Finalize Playlist
@@ -84,10 +102,10 @@ jobs:
           tr -d '\r' < MyStuffCLW.m3u > final_temp.m3u
           sed -E 's/[[:space:]]+$//' final_temp.m3u | grep -v '^[[:space:]]*$' | tr -s '\n' > MyStuffCLW.m3u
           rm final_temp.m3u
-          echo "✅ Final cleanup complete."
+          echo "✅ Final cleanup complete. Total Lines: $(wc -l < MyStuffCLW.m3u)"
         shell: bash
 
-      - name: Upload to Dropbox
+      - name: Upload Master Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -95,3 +113,12 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
+
+      - name: Upload Individual SS99 Playlists (Optional Backup)
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: SSpo99.m3u8
+          DEST_PATH: /MyStuff/SSpo99.m3u8
