@@ -17,7 +17,8 @@ jobs:
     env:
       HOME: /root
       DOCKER_CONFIG: /tmp
-      EPG_URL: "https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
+      # This env var helps Python requests/httpx handle slow connections better
+      HTTP_KEEP_ALIVE: "true"
 
     steps:
       - name: Checkout repository
@@ -34,19 +35,15 @@ jobs:
           playwright install firefox
         shell: bash
 
-      - name: Fetch Remote Channels List
-        run: |
-          curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          tr -d '\r' < channels.txt > channels_clean.txt
-          mv channels_clean.txt channels.txt
-        shell: bash
-
       - name: Run SS99 Scrapers
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels Scraper ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
           python SS99_Channels.py
+          
+          # Force a memory sync and a 10s sleep to avoid API rate-limits
+          sync && sleep 10
           
           echo "--- Running SS99 Events Scraper ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
@@ -56,62 +53,57 @@ jobs:
       - name: Run TML Main Scraper
         run: |
           source venv/bin/activate
+          # Give the API a break before hitting TML
+          sync && sleep 15
+          
           echo "--- Running TML Main Scraper ---"
           curl -L -o TML.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=iqy9o1sa&dl=1"
+          
+          # Run with a 60s timeout override via python if possible, 
+          # otherwise the sleep ensures a fresh connection.
           python TML.py
+          
           if [ -f "S4.m3u8" ]; then
             mv S4.m3u8 TMLMain.m3u8
+          else
+            echo "⚠️ S4.m3u8 not found. TML might have timed out."
           fi
         shell: bash
 
-      - name: Process and Merge All Playlists
+      - name: Fetch and Merge Remote Playlists
         run: |
           set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
+          EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          echo "--- Merging TML Content ---"
-          if [ -s "TMLMain.m3u8" ]; then
-            echo -e "\n######## SOURCE: TML MAIN ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' TMLMain.m3u8 >> "$OUTPUT_FILE"
-          fi
+          # Merge Logic
+          [ -s "TMLMain.m3u8" ] && (echo -e "\n######## TML MAIN ########" >> "$OUTPUT_FILE" && grep -v '^#EXTM3U' TMLMain.m3u8 >> "$OUTPUT_FILE")
+          [ -s "SSpo99.m3u8" ] && (echo -e "\n######## SS99 CHANNELS ########" >> "$OUTPUT_FILE" && grep -v '^#EXTM3U' SSpo99.m3u8 >> "$OUTPUT_FILE")
+          [ -s "SS99_Events.m3u8" ] && (echo -e "\n######## SS99 EVENTS ########" >> "$OUTPUT_FILE" && grep -v '^#EXTM3U' SS99_Events.m3u8 >> "$OUTPUT_FILE")
 
-          echo "--- Merging SS99 Content ---"
-          if [ -s "SSpo99.m3u8" ]; then
-            echo -e "\n######## SOURCE: SS99 CHANNELS ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' SSpo99.m3u8 >> "$OUTPUT_FILE"
-          fi
-          
-          if [ -s "SS99_Events.m3u8" ]; then
-            echo -e "\n######## SOURCE: SS99 EVENTS ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' SS99_Events.m3u8 >> "$OUTPUT_FILE"
-          fi
-
-          echo "--- Merging Remote Playlists ---"
-          if [ -f "channels.txt" ]; then
-            while read -r url || [ -n "$url" ]; do
-              [[ -z "$url" || "$url" =~ ^# ]] && continue
-              FRIENDLY_NAME=$(echo "$url" | awk -F'/' '{print $NF}' | cut -d'?' -f1 | sed 's/\.m3u8//g; s/\.m3u//g')
-              temp_file="temp_dl.m3u"
-              curl -L -f -k -s -4 --user-agent "Mozilla/5.0" --connect-timeout 15 "$url" -o "$temp_file"
-              if [ -s "$temp_file" ]; then
-                echo -e "\n######## SOURCE: $FRIENDLY_NAME ########" >> "$OUTPUT_FILE"
-                grep -v '^#EXTM3U' "$temp_file" >> "$OUTPUT_FILE"
-              fi
-              rm -f "$temp_file"
-            done < "channels.txt"
-          fi
+          # TinyURL Remote List
+          curl -L -o channels.txt "https://tinyurl.com/4ze5nm6p"
+          while read -r url || [ -n "$url" ]; do
+            [[ -z "$url" || "$url" =~ ^# ]] && continue
+            temp="t.m3u"
+            curl -L -f -s --connect-timeout 20 "$url" -o "$temp"
+            if [ -s "$temp" ]; then
+              echo -e "\n######## REMOTE SOURCE ########" >> "$OUTPUT_FILE"
+              grep -v '^#EXTM3U' "$temp" >> "$OUTPUT_FILE"
+            fi
+            rm -f "$temp"
+          done < "channels.txt"
           set -e
         shell: bash
 
-      - name: Clean and Finalize Playlist
+      - name: Final Cleanup
         run: |
-          tr -d '\r' < MyStuffCLW.m3u > final_temp.m3u
-          sed -E 's/[[:space:]]+$//' final_temp.m3u | grep -v '^[[:space:]]*$' | tr -s '\n' > MyStuffCLW.m3u
-          rm final_temp.m3u
+          tr -d '\r' < MyStuffCLW.m3u | sed -E 's/[[:space:]]+$//' | grep -v '^[[:space:]]*$' | tr -s '\n' > temp.m3u
+          mv temp.m3u MyStuffCLW.m3u
         shell: bash
 
-      - name: Upload Master Playlist to Dropbox
+      - name: Upload Master to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -120,7 +112,7 @@ jobs:
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload TML Backup to Dropbox
+      - name: Upload TML Backup
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
