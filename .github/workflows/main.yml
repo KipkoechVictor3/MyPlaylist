@@ -34,33 +34,47 @@ jobs:
           playwright install firefox
         shell: bash
 
+      - name: Run CATFT Scraper
+        run: |
+          source venv/bin/activate
+          echo "--- Downloading CATFT Script ---"
+          curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
+          
+          echo "--- Running CATFT Scraper ---"
+          python CATFt.py || echo "⚠️ CATFT Script encountered an error, continuing..."
+          
+          if [ -f "Combined_Sports.m3u" ]; then
+             echo "✅ CATFT output generated."
+          else
+             echo "❌ CATFT output missing."
+          fi
+        shell: bash
+
       - name: Run SS99 Scrapers
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels Scraper ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
-          python SS99_Channels.py
+          python SS99_Channels.py || echo "⚠️ SS99 Channels failed."
           
-          sync && sleep 10
+          sync && sleep 5
           
           echo "--- Running SS99 Events Scraper ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
-          python SS99_Events_Scraper.py
+          python SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed."
         shell: bash
 
       - name: Run TML Main Scraper
         run: |
           source venv/bin/activate
-          sync && sleep 15
+          sync && sleep 5
           echo "--- Running TML Main Scraper ---"
           curl -L -o TML.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=iqy9o1sa&dl=1"
-          python TML.py
+          python TML.py || echo "⚠️ TML Script failed."
           
           if [ -f "S4.m3u8" ]; then
             mv S4.m3u8 TMLMain.m3u8
             echo "✅ TMLMain.m3u8 generated."
-          else
-            echo "⚠️ S4.m3u8 missing. TML script failed to output file."
           fi
         shell: bash
 
@@ -72,6 +86,14 @@ jobs:
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
           echo "--- Merging Scraper Results ---"
+          
+          # CATFT Merge
+          if [ -s "Combined_Sports.m3u" ]; then
+            echo "➕ Adding CATFT Content..."
+            echo -e "\n######## SOURCE: CATFT SPORTS ########" >> "$OUTPUT_FILE"
+            grep -v '^#EXTM3U' Combined_Sports.m3u >> "$OUTPUT_FILE"
+          fi
+
           # TML Merge
           if [ -s "TMLMain.m3u8" ]; then
             echo "➕ Adding TML Main Content..."
@@ -92,29 +114,21 @@ jobs:
             grep -v '^#EXTM3U' SS99_Events.m3u8 >> "$OUTPUT_FILE"
           fi
 
-          echo -e "\n--- Processing Remote Playlists (Verbosity On) ---"
+          echo -e "\n--- Processing Remote Playlists ---"
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          
-          # Clean CRLF just in case
           tr -d '\r' < channels.txt > channels_clean.txt
           
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            
             echo "📡 Fetching: $url"
             temp="t.m3u"
-            
-            # Use -w to capture HTTP Status Code
             STATUS=$(curl -L -f -w "%{http_code}" --connect-timeout 25 "$url" -o "$temp" -s)
             
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
-              LINES=$(wc -l < "$temp")
-              SIZE=$(du -h "$temp" | cut -f1)
-              echo "   ✅ Success: Status $STATUS | Size: $SIZE | Lines: $LINES"
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
               grep -v '^#EXTM3U' "$temp" >> "$OUTPUT_FILE"
             else
-              echo "   ❌ Failed: Status $STATUS or empty file."
+              echo "   ❌ Failed: Status $STATUS"
             fi
             rm -f "$temp"
           done < "channels_clean.txt"
@@ -137,7 +151,18 @@ jobs:
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
 
+      - name: Upload CATFT Standalone to Dropbox
+        if: hashFiles('Combined_Sports.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: Combined_Sports.m3u
+          DEST_PATH: /MyStuff/Combined_Sports.m3u
+
       - name: Upload TML Backup to Dropbox
+        if: hashFiles('TMLMain.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
