@@ -30,7 +30,8 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install playwright==1.55.0 httpx aiohttp dropbox requests
+          # Combined dependencies from all scrapers (Playwright + SPX extras)
+          pip install playwright==1.55.0 httpx aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4
           playwright install firefox
         shell: bash
 
@@ -64,17 +65,17 @@ jobs:
           python SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed."
         shell: bash
 
-      - name: Run TML Main Scraper
+      - name: Run SPX Scraper
         run: |
           source venv/bin/activate
-          sync && sleep 5
-          echo "--- Running TML Main Scraper ---"
-          curl -L -o TML.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=iqy9o1sa&dl=1"
-          python TML.py || echo "⚠️ TML Script failed."
+          echo "--- Downloading SPX Script ---"
+          curl -L -o SpX.py "https://www.dropbox.com/scl/fi/mec73is6zoc705tkbyjs2/SpX.py?rlkey=6xjaco9csn51zft4bvtqzv0y0&st=vwbo3jw8&dl=1"
           
-          if [ -f "S4.m3u8" ]; then
-            mv S4.m3u8 TMLMain.m3u8
-            echo "✅ TMLMain.m3u8 generated."
+          echo "--- Running SPX Scraper ---"
+          python -u SpX.py || echo "⚠️ SPX Script failed."
+          
+          if [ -f "spx.m3u" ]; then
+             echo "✅ spx.m3u generated."
           fi
         shell: bash
 
@@ -94,11 +95,11 @@ jobs:
             grep -v '^#EXTM3U' Combined_Sports.m3u >> "$OUTPUT_FILE"
           fi
 
-          # TML Merge
-          if [ -s "TMLMain.m3u8" ]; then
-            echo "➕ Adding TML Main Content..."
-            echo -e "\n######## SOURCE: TML MAIN ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' TMLMain.m3u8 >> "$OUTPUT_FILE"
+          # SPX Merge
+          if [ -s "spx.m3u" ]; then
+            echo "➕ Adding SPX Content..."
+            echo -e "\n######## SOURCE: SPX ########" >> "$OUTPUT_FILE"
+            grep -v '^#EXTM3U' spx.m3u >> "$OUTPUT_FILE"
           fi
 
           # SS99 Merges
@@ -128,7 +129,7 @@ jobs:
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
               grep -v '^#EXTM3U' "$temp" >> "$OUTPUT_FILE"
             else
-              echo "   ❌ Failed: Status $STATUS"
+              echo "    ❌ Failed: Status $STATUS"
             fi
             rm -f "$temp"
           done < "channels_clean.txt"
@@ -151,7 +152,19 @@ jobs:
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload CATFT Standalone to Dropbox
+      - name: Upload Standalone Playlists to Dropbox
+        run: |
+          # Helper to upload files only if they exist
+          upload_if_exists() {
+            if [ -f "$1" ]; then
+              echo "Uploading $1..."
+              # Note: We use the local bin if available or just assume the action logic
+            fi
+          }
+        shell: bash
+
+      # Separate Upload Steps for Standalone files
+      - name: Upload CATFT Standalone
         if: hashFiles('Combined_Sports.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -161,12 +174,12 @@ jobs:
           source_path: Combined_Sports.m3u
           DEST_PATH: /MyStuff/Combined_Sports.m3u
 
-      - name: Upload TML Backup to Dropbox
-        if: hashFiles('TMLMain.m3u8') != ''
+      - name: Upload SPX Standalone
+        if: hashFiles('spx.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: TMLMain.m3u8
-          DEST_PATH: /MyStuff/TMLMain.m3u8
+          source_path: spx.m3u
+          DEST_PATH: /MyStuff/spx.m3u
