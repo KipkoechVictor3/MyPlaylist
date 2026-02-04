@@ -37,38 +37,34 @@ jobs:
       - name: Run CATFT Scraper
         run: |
           source venv/bin/activate
-          echo "--- Downloading CATFT Script ---"
           curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
-          echo "--- Running CATFT Scraper ---"
-          python CATFt.py || echo "⚠️ CATFT Script encountered an error"
+          # Adding a timeout to the python execution to prevent "context canceled"
+          timeout 600s python CATFt.py || echo "⚠️ CATFT Script timed out or failed"
           sync
         shell: bash
 
       - name: Run SS99 Scrapers
         run: |
           source venv/bin/activate
-          echo "--- Running SS99 Channels Scraper ---"
+          echo "--- Running SS99 Channels ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
-          python SS99_Channels.py || echo "⚠️ SS99 Channels failed."
+          # Stricter timeout for SS99 to avoid total workflow cancellation
+          timeout 400s python SS99_Channels.py || echo "⚠️ SS99 Channels partial completion"
+          
           sync && sleep 2
-          echo "--- Running SS99 Events Scraper ---"
+          
+          echo "--- Running SS99 Events ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
-          python SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed."
+          timeout 400s python SS99_Events_Scraper.py || echo "⚠️ SS99 Events partial completion"
           sync
         shell: bash
 
       - name: Run SPX Scraper
         run: |
           source venv/bin/activate
-          echo "--- Downloading SPX Script ---"
           curl -L -o SpX.py "https://www.dropbox.com/scl/fi/mec73is6zoc705tkbyjs2/SpX.py?rlkey=6xjaco9csn51zft4bvtqzv0y0&st=vwbo3jw8&dl=1"
-          echo "--- Running SPX Scraper ---"
           python -u SpX.py || echo "⚠️ SPX Script failed."
           sync
-          if [ -f "spx.m3u" ]; then
-             echo "✅ spx.m3u exists and is ready for merging."
-             ls -lh spx.m3u
-          fi
         shell: bash
 
       - name: Process and Merge All Playlists
@@ -79,54 +75,53 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          echo "--- Merging Scraper Results ---"
+          echo "--- Merging Local Scraper Results ---"
           
-          # CATFT Merge
+          # 1. CATFT
           if [ -s "Combined_Sports.m3u" ]; then
-            echo "➕ Adding CATFT Content..."
+            echo "✅ Adding CATFT..."
             echo -e "\n######## SOURCE: CATFT SPORTS ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' Combined_Sports.m3u >> "$OUTPUT_FILE"
+            sed 's/\r$//' Combined_Sports.m3u | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
 
-          # SPX Merge - Added extra check and line endings fix
+          # 2. SPX
           if [ -s "spx.m3u" ]; then
-            echo "➕ Adding SPX Content..."
+            echo "✅ Adding SPX..."
             echo -e "\n######## SOURCE: SPX ########" >> "$OUTPUT_FILE"
-            # Ensure file is read as unix and remove header
             sed 's/\r$//' spx.m3u | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            echo "✅ SPX Merged Successfully"
-          else
-            echo "❌ SPX Content missing or empty at merge time"
           fi
 
-          # SS99 Merges
+          # 3. SS99 Channels
           if [ -s "SSpo99.m3u8" ]; then
-            echo "➕ Adding SS99 Channels..."
+            echo "✅ Adding SS99 Channels..."
             echo -e "\n######## SOURCE: SS99 CHANNELS ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' SSpo99.m3u8 >> "$OUTPUT_FILE"
+            sed 's/\r$//' SSpo99.m3u8 | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
           
+          # 4. SS99 Events
           if [ -s "SS99_Events.m3u8" ]; then
-            echo "➕ Adding SS99 Events..."
+            echo "✅ Adding SS99 Events..."
             echo -e "\n######## SOURCE: SS99 EVENTS ########" >> "$OUTPUT_FILE"
-            grep -v '^#EXTM3U' SS99_Events.m3u8 >> "$OUTPUT_FILE"
+            sed 's/\r$//' SS99_Events.m3u8 | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
 
-          echo -e "\n--- Processing Remote Playlists ---"
+          echo -e "\n--- Merging Remote Playlists ---"
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           tr -d '\r' < channels.txt > channels_clean.txt
           
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             echo "📡 Fetching: $url"
-            temp="t.m3u"
-            STATUS=$(curl -L -f -w "%{http_code}" --connect-timeout 25 "$url" -o "$temp" -s)
+            temp="remote_t.m3u"
+            STATUS=$(curl -L -f -k --connect-timeout 15 --max-time 30 "$url" -o "$temp" -s -w "%{http_code}")
             
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
-              grep -v '^#EXTM3U' "$temp" >> "$OUTPUT_FILE"
+              # Ensure we don't carry over headers from remotes
+              sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+              echo "   ✨ Success"
             else
-              echo "    ❌ Failed: Status $STATUS"
+              echo "   ❌ Failed (Status: $STATUS)"
             fi
             rm -f "$temp"
           done < "channels_clean.txt"
@@ -135,8 +130,9 @@ jobs:
 
       - name: Final Cleanup and Stats
         run: |
-          # Robust cleanup to remove empty lines and fix spacing
-          sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
+          # Remove duplicate empty lines and carriage returns
+          tr -d '\r' < MyStuffCLW.m3u | sed '/^[[:space:]]*$/d' > temp.m3u
+          mv temp.m3u MyStuffCLW.m3u
           echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
         shell: bash
 
@@ -148,6 +144,11 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
+
+      - name: Upload Individual Standalones
+        run: |
+          echo "Checking for standalone files to upload..."
+        shell: bash
 
       - name: Upload CATFT Standalone
         if: hashFiles('Combined_Sports.m3u') != ''
