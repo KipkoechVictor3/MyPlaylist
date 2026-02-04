@@ -17,7 +17,9 @@ jobs:
     env:
       HOME: /root
       DOCKER_CONFIG: /tmp
+      # Tighten connection behavior
       HTTP_KEEP_ALIVE: "true"
+      PYTHONUNBUFFERED: "1"
 
     steps:
       - name: Checkout repository
@@ -30,7 +32,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install playwright==1.55.0 httpx aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4
+          pip install playwright==1.55.0 httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4
           playwright install firefox
         shell: bash
 
@@ -38,24 +40,25 @@ jobs:
         run: |
           source venv/bin/activate
           curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
-          # Adding a timeout to the python execution to prevent "context canceled"
-          timeout 600s python CATFt.py || echo "⚠️ CATFT Script timed out or failed"
+          # Retry once on failure
+          python CATFt.py || (sleep 10 && python CATFt.py) || echo "⚠️ CATFT failed"
           sync
         shell: bash
 
-      - name: Run SS99 Scrapers
+      - name: Run SS99 Scrapers (With Retries)
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
-          # Stricter timeout for SS99 to avoid total workflow cancellation
-          timeout 400s python SS99_Channels.py || echo "⚠️ SS99 Channels partial completion"
+          # Increased timeout to 500s but added retry for API flakiness
+          timeout 500s python SS99_Channels.py || (sleep 15 && python SS99_Channels.py) || echo "⚠️ SS99 Channels partial completion"
           
-          sync && sleep 2
+          sync && sleep 5
           
           echo "--- Running SS99 Events ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
-          timeout 400s python SS99_Events_Scraper.py || echo "⚠️ SS99 Events partial completion"
+          # The API often times out; retry logic is crucial here
+          timeout 500s python SS99_Events_Scraper.py || (sleep 20 && python SS99_Events_Scraper.py) || echo "⚠️ SS99 Events partial completion"
           sync
         shell: bash
 
@@ -77,33 +80,16 @@ jobs:
           
           echo "--- Merging Local Scraper Results ---"
           
-          # 1. CATFT
-          if [ -s "Combined_Sports.m3u" ]; then
-            echo "✅ Adding CATFT..."
-            echo -e "\n######## SOURCE: CATFT SPORTS ########" >> "$OUTPUT_FILE"
-            sed 's/\r$//' Combined_Sports.m3u | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-          fi
-
-          # 2. SPX
-          if [ -s "spx.m3u" ]; then
-            echo "✅ Adding SPX..."
-            echo -e "\n######## SOURCE: SPX ########" >> "$OUTPUT_FILE"
-            sed 's/\r$//' spx.m3u | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-          fi
-
-          # 3. SS99 Channels
-          if [ -s "SSpo99.m3u8" ]; then
-            echo "✅ Adding SS99 Channels..."
-            echo -e "\n######## SOURCE: SS99 CHANNELS ########" >> "$OUTPUT_FILE"
-            sed 's/\r$//' SSpo99.m3u8 | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-          fi
-          
-          # 4. SS99 Events
-          if [ -s "SS99_Events.m3u8" ]; then
-            echo "✅ Adding SS99 Events..."
-            echo -e "\n######## SOURCE: SS99 EVENTS ########" >> "$OUTPUT_FILE"
-            sed 's/\r$//' SS99_Events.m3u8 | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-          fi
+          # Logic: Check if file exists AND has content before merging
+          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
+            if [ -s "$f" ]; then
+              echo "✅ Merging $f..."
+              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
+              sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            else
+              echo "❌ Skipping $f (Empty or Not Found)"
+            fi
+          done
 
           echo -e "\n--- Merging Remote Playlists ---"
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
@@ -113,15 +99,14 @@ jobs:
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             echo "📡 Fetching: $url"
             temp="remote_t.m3u"
-            STATUS=$(curl -L -f -k --connect-timeout 15 --max-time 30 "$url" -o "$temp" -s -w "%{http_code}")
+            # Tightened curl to 10s connect, 25s total to avoid hanging the whole run
+            STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 25 "$url" -o "$temp" -s -w "%{http_code}")
             
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
-              # Ensure we don't carry over headers from remotes
               sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-              echo "   ✨ Success"
             else
-              echo "   ❌ Failed (Status: $STATUS)"
+              echo "   ❌ Failed ($STATUS)"
             fi
             rm -f "$temp"
           done < "channels_clean.txt"
@@ -130,13 +115,13 @@ jobs:
 
       - name: Final Cleanup and Stats
         run: |
-          # Remove duplicate empty lines and carriage returns
-          tr -d '\r' < MyStuffCLW.m3u | sed '/^[[:space:]]*$/d' > temp.m3u
-          mv temp.m3u MyStuffCLW.m3u
+          # Robust formatting
+          sed -i 's/\r//g' MyStuffCLW.m3u
+          sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
           echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
         shell: bash
 
-      - name: Upload Master Playlist to Dropbox
+      - name: Upload to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -145,9 +130,13 @@ jobs:
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Individual Standalones
+      - name: Upload Standalones
+        if: always()
         run: |
-          echo "Checking for standalone files to upload..."
+          # Use a loop to check and report standalone availability
+          for f in "Combined_Sports.m3u" "spx.m3u" "TMLMain.m3u8"; do
+            [ -f "$f" ] && echo "Ready to upload: $f" || echo "Missing: $f"
+          done
         shell: bash
 
       - name: Upload CATFT Standalone
