@@ -1,0 +1,63 @@
+name: AV Auto Update
+
+on:
+  schedule:
+    - cron: '*/55 * * * *'  # Runs every 55 minutes
+  workflow_dispatch:
+
+jobs:
+  run-spx-updates:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          # Added pycryptodome for our AES decryption logic
+          pip install requests pycryptodome python-dateutil tqdm httpx beautifulsoup4
+        shell: bash
+
+      - name: Download SportzX Script
+        run: |
+          curl -L -o SpX.py "https://www.dropbox.com/scl/fi/mec73is6zoc705tkbyjs2/SpX.py?rlkey=6xjaco9csn51zft4bvtqzv0y0&st=vwbo3jw8&dl=1"
+        shell: bash
+
+      - name: Run SpX.py ⏱️
+        run: |
+          source venv/bin/activate
+          echo "::group::▶️ Running SportzX Sniper..."
+          START_TIME=$(date +%s)
+          
+          # Using -u for unbuffered output to see our 'flush=True' prints in real-time
+          python -u SpX.py
+          
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          echo "::notice title=Update Complete::**✅ SpX.py FINISHED!** Time Taken: **${DURATION} seconds**"
+
+          if [ ! -f "spx.m3u" ]; then
+              echo "⚠️ Error: spx.m3u was not generated!"
+              exit 1
+          fi
+        shell: bash
+
+      - name: Upload spx.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: spx.m3u
+          DEST_PATH: /MyStuff/spx.m3u
