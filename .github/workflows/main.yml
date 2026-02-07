@@ -36,6 +36,14 @@ jobs:
           playwright install firefox
         shell: bash
 
+      - name: Run TMLMain Scraper
+        run: |
+          source venv/bin/activate
+          curl -L -o TMLMain.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
+          python TMLMain.py || echo "⚠️ TMLMain failed"
+          sync
+        shell: bash
+
       - name: Run CATFT Scraper
         run: |
           source venv/bin/activate
@@ -76,7 +84,8 @@ jobs:
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
           echo "--- Merging Local Scraper Results ---"
-          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
+          # Added S4.m3u8 (TML) to the merge loop
+          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -109,7 +118,7 @@ jobs:
           echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
         shell: bash
 
-      - name: Upload to Dropbox
+      - name: Upload Master Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -117,6 +126,26 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
+
+      - name: Upload TML S4 (Primary)
+        if: hashFiles('S4.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: S4.m3u8
+          DEST_PATH: /MyStuff/S4.m3u8
+
+      - name: Upload TML S4 (Backup)
+        if: hashFiles('S4.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: S4.m3u8
+          DEST_PATH: /MyStuff/Backups/S4_backup.m3u8
 
       - name: Upload CATFT Standalone
         if: hashFiles('Combined_Sports.m3u') != ''
