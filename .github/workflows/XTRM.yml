@@ -1,54 +1,71 @@
-name: M3U XTRM
+name: Scraper Script MAgroup
 
-# Controls when the workflow will run
 on:
-  # Schedule the workflow to run automatically every 6 hours
   schedule:
-    # Runs at minute 0, every 6th hour (0, 6, 12, 18) UTC
-    - cron: '0 */3 * * *'
-  
-  # Allows you to run this workflow manually from the Actions tab
+    # Runs every 6 hours
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
-  update_playlist:
+  run-magroup-script:
     runs-on: ubuntu-latest
-    
-    # Define environment variables for the Dropbox download step
+    container:
+      # Using Playwright container as requested for Firefox-readiness
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      SETUP_PY_URL: "https://www.dropbox.com/scl/fi/yqthkouedpsg1jc32lu1v/setup.py?rlkey=n7c8ko1lgt4fnl96x2jyyrohh&st=6icih5j2&dl=1"
-      MAPPINGS_TXT_URL: "https://www.dropbox.com/scl/fi/ow8s16pbppb2dnu3ernmp/channel_mappings.txt?rlkey=zu3a1voqbh3f17etup39h5svx&st=dobzxteg&dl=1"
+      HOME: /root
 
     steps:
-      # 1. Checkout your repository
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      # 3. Install Python dependencies
       - name: Install dependencies
         run: |
+          echo "Installing Python dependencies..."
+          apt-get update
+          apt-get install -y python3-venv curl
+          python3 -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          # Need requests (for API), and dropbox (for upload)
-          pip install requests dropbox
+          # Added requests for portal communication
+          pip install requests
+        shell: bash
 
-      # 4. Download setup.py from Dropbox link (overwrite local if it exists)
-      - name: Download setup.py (The main script)
-        # We use curl with -L to follow the redirect from the Dropbox link
-        run: curl -L -o setup.py "${{ env.SETUP_PY_URL }}"
+      - name: Download MAgroup Script
+        run: |
+          echo "📥 Downloading MAgroup.py from Dropbox..."
+          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=tdx54yeh&dl=1"
+        shell: bash
+
+      - name: Run Scraper and Verify Output ⏱️
+        run: |
+          source venv/bin/activate
           
-      # 5. Download channel_mappings.txt from Dropbox link
-      - name: Download channel_mappings.txt
-        run: curl -L -o channel_mappings.txt "${{ env.MAPPINGS_TXT_URL }}"
+          echo "::group::▶️ Running MAgroup.py..."
+          START_TIME=$(date +%s)
+          # Ensuring the script runs with unbuffered output to see progress in real-time
+          python -u MAgroup.py
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "::endgroup::"
+          
+          echo "::notice title=Script Complete::**✅ MAgroup.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-      # 6. Execute your Python script
-      - name: Run M3U Filtering and Upload Script
-        run: python setup.py
-        
-      - name: Verify completion
-        run: echo "The script ran and attempted to upload the M3U content directly to Dropbox."
+          # Verification of your specific output file
+          if [ -f "macg.m3u" ]; then
+              echo "✅ Output file macg.m3u found."
+          else
+              echo "❌ Expected output file macg.m3u not found."
+              ls -la # Diagnostic check
+              exit 1 
+          fi
+        shell: bash
+
+      - name: Upload Modified Playlist to Dropbox ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "macg.m3u"
+          DEST_PATH: "/MyStuff/macg.m3u"
