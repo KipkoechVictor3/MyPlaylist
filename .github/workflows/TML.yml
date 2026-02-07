@@ -1,4 +1,4 @@
-name: PLTorr Playlist Updater
+name: TMLMain Playlist Updater
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 * * * *'  # Runs exactly every hour
 
 jobs:
-  update-PLTorr-playlist:
+  update-TML-playlist:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -30,25 +30,26 @@ jobs:
 
       - name: Download Scraper
         run: |
-          curl -L -o "$GITHUB_WORKSPACE/PLTorr.py" "https://www.dropbox.com/scl/fi/cum2szmskd5d3j2i4780y/PlayT.py?rlkey=4lazxrxj3w1446z4omar1l0m9&st=bdhont5f&dl=1"
+          # Downloading your specific TMLMain.py script
+          curl -L -o "$GITHUB_WORKSPACE/TMLMain.py" "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
           cd "$GITHUB_WORKSPACE"
-          # Run the Playwright script to generate PLTorr.m3u
-          python PLTorr.py
+          # Run the script. Headless is forced via the Python modification below for CI stability.
+          python TMLMain.py
         shell: bash
 
       - name: Verify File Generation
         run: |
           cd "$GITHUB_WORKSPACE"
-          if [ -f "PLTorr.m3u" ]; then
-            echo "✅ PLTorr.m3u successfully generated."
-            ls -lh PLTorr.m3u
+          if [ -f "S4.m3u8" ]; then
+            echo "✅ S4.m3u8 successfully generated."
+            ls -lh S4.m3u8
           else
-            echo "❌ ERROR: PLTorr.m3u was not created!"
+            echo "❌ ERROR: S4.m3u8 was not created!"
             ls -R
             exit 1
           fi
@@ -60,5 +61,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: PLTorr.m3u 
-          DEST_PATH: /MyStuff/PLTorr.m3u
+          source_path: S4.m3u8
+          DEST_PATH: /MyStuff/S4.m3u8
