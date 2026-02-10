@@ -12,12 +12,15 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
+      # This fixes the "Error loading config file" permission error
+      DOCKER_CONFIG: /tmp/.docker 
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Install dependencies
         run: |
@@ -30,17 +33,22 @@ jobs:
 
       - name: Download MAgroup Script
         run: |
+          # We use -L to follow redirects and -O to ensure it's treated as a file
           curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=vocki7vi&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
+          # Create directory if script doesn't
+          mkdir -p MAG
           python MAgroup.py
         shell: bash
 
       - name: Deploy MAG folder to GitHub
         run: |
+          # This line is CRITICAL to avoid "dubious ownership" errors in containers
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add MAG/
