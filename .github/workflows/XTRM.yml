@@ -28,7 +28,7 @@ jobs:
 
       - name: Download MAgroup Script
         run: |
-          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=tdx54yeh&dl=1"
+          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=n6q8wu99&dl=1"
         shell: bash
 
       - name: Run Scraper
