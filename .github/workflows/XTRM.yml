@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y python3-venv curl zip
+          apt-get install -y python3-venv curl
           python3 -m venv venv
           source venv/bin/activate
           pip install requests
@@ -34,12 +34,11 @@ jobs:
       - name: Run Scraper ⏱️
         run: |
           source venv/bin/activate
+          # -u ensures logs are unbuffered so you see the % progress in real-time
           python -u MAgroup.py
-          # Zip the folder to prevent EISDIR error during upload
-          zip -r MacG.zip MacG/
         shell: bash
 
-      - name: Upload Main Playlist
+      - name: Upload Main Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -47,21 +46,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: "macg.m3u"
           DEST_PATH: "/MyStuff/macg.m3u"
-
-      - name: Upload Dropbox Master Playlist
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: "macg_dropbox.m3u"
-          DEST_PATH: "/MyStuff/macg_dropbox.m3u"
-
-      - name: Upload Bridge Folder (as ZIP to avoid error)
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: "MacG.zip"
-          DEST_PATH: "/MyStuff/MacG.zip"
