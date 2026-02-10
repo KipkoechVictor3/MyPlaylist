@@ -16,11 +16,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y python3-venv curl
+          apt-get install -y python3-venv curl git
           python3 -m venv venv
           source venv/bin/activate
           pip install requests
@@ -28,13 +30,22 @@ jobs:
 
       - name: Download MAgroup Script
         run: |
-          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=n6q8wu99&dl=1"
+          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=zu3a1voqbh3f17etup39h5svx&st=th57uic2&dl=1"
         shell: bash
 
       - name: Run Scraper
         run: |
           source venv/bin/activate
           python MAgroup.py
+        shell: bash
+
+      - name: Deploy MAG folder to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add MAG/
+          git commit -m "Update MAG obfuscated links" || echo "No changes to commit"
+          git push origin main
         shell: bash
 
       - name: Upload Main Playlist to Dropbox
