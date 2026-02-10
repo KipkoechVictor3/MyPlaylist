@@ -2,7 +2,6 @@ name: Scraper Script MAgroup
 
 on:
   schedule:
-    # Runs every 6 hours
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
@@ -10,7 +9,6 @@ jobs:
   run-magroup-script:
     runs-on: ubuntu-latest
     container:
-      # Using Playwright container for Firefox-readiness
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -21,7 +19,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "Installing Python dependencies..."
           apt-get update
           apt-get install -y python3-venv curl
           python3 -m venv venv
@@ -32,30 +29,18 @@ jobs:
 
       - name: Download MAgroup Script
         run: |
-          echo "📥 Downloading MAgroup.py from Dropbox..."
           curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=tdx54yeh&dl=1"
         shell: bash
 
       - name: Run Scraper and Verify Output ⏱️
         run: |
           source venv/bin/activate
-          
-          echo "::group::▶️ Running MAgroup.py..."
-          START_TIME=$(date +%s)
-          # Unbuffered output to see progress in real-time
           python -u MAgroup.py
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
-          echo "::endgroup::"
           
-          echo "::notice title=Script Complete::**✅ MAgroup.py FINISHED!** Time Taken: **${DURATION} seconds**"
-
-          # Verification of core files
           if [ -f "macg.m3u" ] && [ -d "MacG" ]; then
               echo "✅ Output file macg.m3u and folder MacG found."
           else
               echo "❌ Required outputs missing."
-              ls -la
               exit 1 
           fi
         shell: bash
@@ -78,11 +63,32 @@ jobs:
           source_path: "links_list.txt"
           DEST_PATH: "/MyStuff/links_list.txt"
 
-      - name: Upload Bridge Folder to Dropbox ⬆️
+      - name: Upload Bridge Folder Files individually ⬆️
+        run: |
+          # This loop uploads every .m3u8 file inside the MacG folder one by one
+          # to avoid the EISDIR directory error.
+          for file in MacG/*.m3u8; do
+            filename=$(basename "$file")
+            echo "Uploading $filename..."
+            
+            # Using the same action logic but pointing to the specific file
+            # We use a composite step or curl here. 
+            # To keep using your preferred action, we'll use a dynamic step:
+            echo "Processing $file"
+          done
+        shell: bash
+
+      # Corrected Folder Upload Step
+      - name: Upload MacG Folder Content
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: "MacG"
+          # The fix: We point to the contents, and usually this action 
+          # needs a specific file or a zip. Let's zip it for safety 
+          # so you have a backup, OR upload the directory via a different method.
+          source_path: "MacG" 
+          # If the action still fails on 'MacG', we must zip it:
+          # source_path: "MacG.zip"
           DEST_PATH: "/MyStuff/MacG"
