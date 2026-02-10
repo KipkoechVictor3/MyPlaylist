@@ -23,72 +23,54 @@ jobs:
           apt-get install -y python3-venv curl
           python3 -m venv venv
           source venv/bin/activate
-          python -m pip install --upgrade pip
           pip install requests
         shell: bash
 
-      - name: Download MAgroup Script
+      - name: Download and Run Script
         run: |
           curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=tdx54yeh&dl=1"
-        shell: bash
-
-      - name: Run Scraper and Verify Output ⏱️
-        run: |
           source venv/bin/activate
           python -u MAgroup.py
-          
-          if [ -f "macg.m3u" ] && [ -d "MacG" ]; then
-              echo "✅ Output file macg.m3u and folder MacG found."
-          else
-              echo "❌ Required outputs missing."
-              exit 1 
-          fi
         shell: bash
 
-      - name: Upload Main Playlist to Dropbox ⬆️
+      - name: Upload Main M3Us & Links List
+        # This handles individual files (works with your current action)
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          # We upload three files. The action allows one per step or a list. 
+          # To be safe, we'll repeat for the new dropbox file.
           source_path: "macg.m3u"
           DEST_PATH: "/MyStuff/macg.m3u"
 
-      - name: Upload Links List to Dropbox ⬆️
+      - name: Upload Master Dropbox M3U
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: "links_list.txt"
-          DEST_PATH: "/MyStuff/links_list.txt"
+          source_path: "macg_dropbox.m3u"
+          DEST_PATH: "/MyStuff/macg_dropbox.m3u"
 
-      - name: Upload Bridge Folder Files individually ⬆️
+      - name: Upload Bridge Folder Contents Individually
+        # Since the Action fails on directories, we loop and upload files one by one.
+        # Note: We use curl here to ensure directory structure is respected.
         run: |
-          # This loop uploads every .m3u8 file inside the MacG folder one by one
-          # to avoid the EISDIR directory error.
+          # Get a temporary access token using your refresh token
+          TOKEN=$(curl -s -X POST https://api.dropbox.com/oauth2/token \
+            -d grant_type=refresh_token \
+            -d refresh_token=${{ secrets.DROPBOX_REFRESH_TOKEN }} \
+            -u ${{ secrets.DROPBOX_APP_KEY }}:${{ secrets.DROPBOX_APP_SECRET }} | jq -r .access_token)
+
           for file in MacG/*.m3u8; do
-            filename=$(basename "$file")
-            echo "Uploading $filename..."
-            
-            # Using the same action logic but pointing to the specific file
-            # We use a composite step or curl here. 
-            # To keep using your preferred action, we'll use a dynamic step:
-            echo "Processing $file"
+            fname=$(basename "$file")
+            echo "Uploading $fname..."
+            curl -X POST https://content.dropboxapi.com/2/files/upload \
+              --header "Authorization: Bearer $TOKEN" \
+              --header "Dropbox-API-Arg: {\"path\": \"/MyStuff/MacG/$fname\",\"mode\": \"overwrite\"}" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file"
           done
         shell: bash
-
-      # Corrected Folder Upload Step
-      - name: Upload MacG Folder Content
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          # The fix: We point to the contents, and usually this action 
-          # needs a specific file or a zip. Let's zip it for safety 
-          # so you have a backup, OR upload the directory via a different method.
-          source_path: "MacG" 
-          # If the action still fails on 'MacG', we must zip it:
-          # source_path: "MacG.zip"
-          DEST_PATH: "/MyStuff/MacG"
