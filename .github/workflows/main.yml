@@ -2,8 +2,32 @@ name: Combined Remote Playlist
 
 on:
   schedule:
-    # 7:00 AM to 11:30 PM (GMT+3) -> 4:00 AM to 8:30 PM (UTC)
-    - cron: '0,30 4-20 * * *'
+    # Times converted from GMT+3 to UTC (-3 Hours)
+    # 7:00, 7:40, 8:20 -> 4:00, 4:40, 5:20
+    - cron: '0,40 4 * * *'
+    - cron: '20 5 * * *'
+    # 9:00, 9:40, 10:10, 10:40 -> 6:00, 6:40, 7:10, 7:40
+    - cron: '0,40 6 * * *'
+    - cron: '10,40 7 * * *'
+    # 11:20, 12:00, 12:50 -> 8:20, 9:00, 9:50
+    - cron: '20 8 * * *'
+    - cron: '0,50 9 * * *'
+    # 1:40, 2:03, 2:40 -> 10:40, 11:03, 11:40
+    - cron: '40 10 * * *'
+    - cron: '3,40 11 * * *'
+    # 3:05, 3:33, 4:00, 4:35 -> 12:05, 12:33, 13:00, 13:35
+    - cron: '5,33 12 * * *'
+    - cron: '0,35 13 * * *'
+    # 5:05, 5:35, 6:03, 6:40 -> 14:05, 14:35, 15:03, 15:40
+    - cron: '5,35 14 * * *'
+    - cron: '3,40 15 * * *'
+    # 7:10, 7:30, 8:00, 8:40 -> 16:10, 16:30, 17:00, 17:40
+    - cron: '10,30 16 * * *'
+    - cron: '0,40 17 * * *'
+    # 9:00, 9:33, 10:05, 10:30, 11:03pm -> 18:00, 18:33, 19:05, 19:30, 20:03
+    - cron: '0,33 18 * * *'
+    - cron: '5,30 19 * * *'
+    - cron: '3 20 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -40,7 +64,7 @@ jobs:
         run: |
           source venv/bin/activate
           curl -L -o TMLMain.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
-          python TMLMain.py || echo "⚠️ TMLMain failed"
+          timeout 360s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
           sync
         shell: bash
 
@@ -48,22 +72,22 @@ jobs:
         run: |
           source venv/bin/activate
           curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
-          python CATFt.py || (sleep 10 && python CATFt.py) || echo "⚠️ CATFT failed"
+          timeout 360s python CATFt.py || echo "⚠️ CATFT timed out or failed, skipping..."
           sync
         shell: bash
 
-      - name: Run SS99 Scrapers (With Retries)
+      - name: Run SS99 Scrapers
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
-          timeout 500s python SS99_Channels.py || (sleep 15 && python SS99_Channels.py) || echo "⚠️ SS99 Channels partial completion"
+          timeout 360s python SS99_Channels.py || echo "⚠️ SS99 Channels timed out, skipping..."
           
-          sync && sleep 5
+          sync && sleep 2
           
           echo "--- Running SS99 Events ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
-          timeout 500s python SS99_Events_Scraper.py || (sleep 20 && python SS99_Events_Scraper.py) || echo "⚠️ SS99 Events partial completion"
+          timeout 360s python SS99_Events_Scraper.py || echo "⚠️ SS99 Events timed out, skipping..."
           sync
         shell: bash
 
@@ -71,7 +95,7 @@ jobs:
         run: |
           source venv/bin/activate
           curl -L -o SpX.py "https://www.dropbox.com/scl/fi/mec73is6zoc705tkbyjs2/SpX.py?rlkey=6xjaco9csn51zft4bvtqzv0y0&st=vwbo3jw8&dl=1"
-          python -u SpX.py || echo "⚠️ SPX Script failed."
+          timeout 360s python -u SpX.py || echo "⚠️ SPX Script timed out or failed, skipping..."
           sync
         shell: bash
 
@@ -84,12 +108,13 @@ jobs:
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
           echo "--- Merging Local Scraper Results ---"
-          # Added S4.m3u8 (TML) to the merge loop
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            else
+              echo "⚠️ Skipping $f (Empty or not generated)"
             fi
           done
 
@@ -100,7 +125,7 @@ jobs:
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             temp="remote_t.m3u"
-            STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 25 "$url" -o "$temp" -s -w "%{http_code}")
+            STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 20 "$url" -o "$temp" -s -w "%{http_code}")
             
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
@@ -113,9 +138,14 @@ jobs:
 
       - name: Final Cleanup and Stats
         run: |
-          sed -i 's/\r//g' MyStuffCLW.m3u
-          sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
-          echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
+          if [ -f MyStuffCLW.m3u ]; then
+            sed -i 's/\r//g' MyStuffCLW.m3u
+            sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
+            echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
+          else
+            echo "❌ MyStuffCLW.m3u was not created!"
+            exit 1
+          fi
         shell: bash
 
       - name: Upload Master Playlist to Dropbox
