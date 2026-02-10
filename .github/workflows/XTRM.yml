@@ -31,11 +31,10 @@ jobs:
           curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=tdx54yeh&dl=1"
         shell: bash
 
-      - name: Run Scraper ⏱️
+      - name: Run Scraper
         run: |
           source venv/bin/activate
-          # -u ensures logs are unbuffered so you see the % progress in real-time
-          python -u MAgroup.py
+          python MAgroup.py
         shell: bash
 
       - name: Upload Main Playlist to Dropbox
@@ -45,4 +44,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: "macg.m3u"
-          DEST_PATH: "/MyStuff/macg.m3u"
+          dest_path: "/MyStuff/macg.m3u"
