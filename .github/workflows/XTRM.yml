@@ -10,7 +10,7 @@ jobs:
   run-magroup-script:
     runs-on: ubuntu-latest
     container:
-      # Using Playwright container as requested for Firefox-readiness
+      # Using Playwright container for Firefox-readiness
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
       HOME: /root
@@ -27,7 +27,6 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
-          # Added requests for portal communication
           pip install requests
         shell: bash
 
@@ -43,7 +42,7 @@ jobs:
           
           echo "::group::▶️ Running MAgroup.py..."
           START_TIME=$(date +%s)
-          # Ensuring the script runs with unbuffered output to see progress in real-time
+          # Unbuffered output to see progress in real-time
           python -u MAgroup.py
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
@@ -51,17 +50,17 @@ jobs:
           
           echo "::notice title=Script Complete::**✅ MAgroup.py FINISHED!** Time Taken: **${DURATION} seconds**"
 
-          # Verification of your specific output file
-          if [ -f "macg.m3u" ]; then
-              echo "✅ Output file macg.m3u found."
+          # Verification of core files
+          if [ -f "macg.m3u" ] && [ -d "MacG" ]; then
+              echo "✅ Output file macg.m3u and folder MacG found."
           else
-              echo "❌ Expected output file macg.m3u not found."
-              ls -la # Diagnostic check
+              echo "❌ Required outputs missing."
+              ls -la
               exit 1 
           fi
         shell: bash
 
-      - name: Upload Modified Playlist to Dropbox ⬆️
+      - name: Upload Main Playlist to Dropbox ⬆️
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -69,3 +68,21 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: "macg.m3u"
           DEST_PATH: "/MyStuff/macg.m3u"
+
+      - name: Upload Links List to Dropbox ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "links_list.txt"
+          DEST_PATH: "/MyStuff/links_list.txt"
+
+      - name: Upload Bridge Folder to Dropbox ⬆️
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "MacG"
+          DEST_PATH: "/MyStuff/MacG"
