@@ -1,4 +1,4 @@
-name: Scraper Script VPKGN
+name: Scraper Script VPNGN
 
 on:
   schedule:
@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,26 +18,12 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          pip install requests
+        run: pip install requests
 
-      - name: Download kilatliveNet Script
+      - name: Run Scraper Directly
         run: |
-          # Downloads the script from your Dropbox link and saves it as MAgroup.py
-          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/4c2i95nllxw75e39bsdw9/kilatliveNet.py?rlkey=turn2i3ixkcga0patdu1duarv&st=ujjz3vl1&dl=1"
-
-      - name: Run Scraper
-        run: |
-          mkdir -p MAG
-          python MAgroup.py
-
-      - name: Deploy MAG folder to GitHub
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add MAG/
-          git commit -m "Update MAG obfuscated links" || echo "No changes to commit"
-          git push origin main
+          # Download and run in a single command without creating a permanent file
+          curl -L "https://www.dropbox.com/scl/fi/4c2i95nllxw75e39bsdw9/kilatliveNet.py?rlkey=turn2i3ixkcga0patdu1duarv&st=ujjz3vl1&dl=1" | python3
 
       - name: Upload knnn.m3u to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
