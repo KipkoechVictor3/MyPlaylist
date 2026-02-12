@@ -1,0 +1,51 @@
+name: Scraper Script MAgroup
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-magroup-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Download kilatliveNet Script
+        run: |
+          # Downloads the script from your Dropbox link and saves it as MAgroup.py
+          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/4c2i95nllxw75e39bsdw9/kilatliveNet.py?rlkey=turn2i3ixkcga0patdu1duarv&st=ujjz3vl1&dl=1"
+
+      - name: Run Scraper
+        run: |
+          mkdir -p MAG
+          python MAgroup.py
+
+      - name: Deploy MAG folder to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add MAG/
+          git commit -m "Update MAG obfuscated links" || echo "No changes to commit"
+          git push origin main
+
+      - name: Upload knnn.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@v2
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "knnn.m3u"
+          dest_path: "/MyStuff/knnn.m3u"
