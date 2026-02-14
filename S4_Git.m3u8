@@ -6,7 +6,7 @@
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/mcvsc1.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="OKTAGON 84: PARADEISER vs. BRITO" tvg-logo="https://i.imgur.com/l3SXBKM.jpeg" group-title="Tims Live ✦ Git", OKTAGON 84: PARADEISER vs. BRITO
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-origin=https://grand-s-v2.faggotsports.tv
 #EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/o8pvb2.m3u8
 #EXTINF:-1 tvg-id="WABC-DT.us_locals1" tvg-name="ABC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/abc_2.png" group-title="Tims 24/7 ✦ Git", ABC
@@ -24,11 +24,6 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/bsu6.m3u8
 #EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
 #EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/c7.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbssports.png" group-title="Tims 24/7 ✦ Git", CBS Sports Network
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
-#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
-#EXTVLCOPT:http-referrer=https://timstreams.lol/
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/csn8.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="CBS Sports Golazo Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbsgolazo.png" group-title="Tims 24/7 ✦ Git", CBS Sports Golazo Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 #EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
@@ -184,6 +179,11 @@ https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t359.m3u8
 #EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
 #EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t460.m3u8
+#EXTINF:-1 tvg-id="TSN.5.ca2" tvg-name="TSN 5" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 5
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t561.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="USA Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/usanetwork.png" group-title="Tims 24/7 ✦ Git", USA Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
 #EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
