@@ -1,0 +1,6 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/92399eaa937b3e8386b43ed0e15150e2/video.m3u8?token=6968dc78f29d3dbf5629e0b2dfff627015a9acc8-2b0c2cb147a4744e5bf535b7f10fb2e9-1771099918-1771089118&remote=no_check_ip
