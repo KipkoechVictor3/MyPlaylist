@@ -57,7 +57,6 @@ jobs:
       - name: Run TMLMain Scraper
         run: |
           source venv/bin/activate
-          # We manually create the TMS folder just in case
           mkdir -p TMS
           curl -L -o TMLMain.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
           timeout 450s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
@@ -93,6 +92,20 @@ jobs:
           sync
         shell: bash
 
+      - name: Deploy TMS and Git Playlist to GitHub
+        run: |
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add the TMS directory and the Git-based playlist
+          git add TMS/
+          if [ -f "S4_Git.m3u8" ]; then git add S4_Git.m3u8; fi
+          
+          git commit -m "Update TMS files and Git-based playlist" || echo "No changes to commit"
+          git push origin main
+        shell: bash
+
       - name: Process and Merge All Playlists
         run: |
           set +e 
@@ -101,7 +114,8 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8"; do
+          # Added S4_Git.m3u8 to the merge list
+          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "S4_Git.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -124,23 +138,6 @@ jobs:
             rm -f "$temp"
           done < "channels_clean.txt"
           set -e
-        shell: bash
-
-      - name: Deploy TMS folder to GitHub
-        run: |
-          # Critical for container environments to permit git operations
-          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Add the TMS directory and its contents
-          if [ -d "TMS" ]; then
-            git add TMS/
-            git commit -m "Update TMS obfuscated stream files" || echo "No changes to commit"
-            git push origin main
-          else
-            echo "⚠️ TMS directory not found, skipping deploy."
-          fi
         shell: bash
 
       - name: Final Cleanup and Stats
