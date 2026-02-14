@@ -97,10 +97,22 @@ jobs:
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 1. Stash changes (the newly generated files) to clean the workspace
+          git add .
+          git stash
+          
+          # 2. Pull latest changes from remote
           git pull origin main --rebase
+          
+          # 3. Bring the generated files back
+          git stash pop || echo "No stashed changes to apply"
+          
+          # 4. Add specific files and commit
           git add TMS/
           if [ -f "S4_Git.m3u8" ]; then git add S4_Git.m3u8; fi
-          git commit -m "Update TMS files and Git-based playlist" || echo "No changes to commit"
+          
+          git commit -m "Update TMS files and Git-based playlist [skip ci]" || echo "No changes to commit"
           git push origin main
         shell: bash
 
@@ -109,7 +121,9 @@ jobs:
           set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
+          
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
+          
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "S4_Git.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
@@ -117,9 +131,11 @@ jobs:
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
+
           echo -e "\n--- Merging Remote Playlists ---"
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           tr -d '\r' < channels.txt > channels_clean.txt
+          
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             temp="remote_t.m3u"
