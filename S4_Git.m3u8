@@ -1,115 +1,191 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="" tvg-name="Burton Albion vs West Ham United" tvg-logo="https://www.thesportsdb.com/images/media/event/thumb/50g61a1770969284.jpg" group-title="Tims Live Git", Burton Albion vs West Ham United (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/bavwhu1.m3u8
-#EXTINF:-1 tvg-id="WABC-DT.us_locals1" tvg-name="ABC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/abc_2.png" group-title="Tims 247 Git", ABC (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Manchester City vs Salford City" tvg-logo="https://www.thesportsdb.com/images/media/event/thumb/8h289z1770969325.jpg" group-title="Tims Live ✦ Git", Manchester City vs Salford City
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://grand-s-v2.faggotsports.tv
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/mcvsc1.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="OKTAGON 84: PARADEISER vs. BRITO" tvg-logo="https://i.imgur.com/l3SXBKM.jpeg" group-title="Tims Live ✦ Git", OKTAGON 84: PARADEISER vs. BRITO
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/o8pvb2.m3u8
+#EXTINF:-1 tvg-id="WABC-DT.us_locals1" tvg-name="ABC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/abc_2.png" group-title="Tims 24/7 ✦ Git", ABC
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/a5.m3u8
-#EXTINF:-1 tvg-id="beIN.Sports.USA.HD.us2" tvg-name="Bein Sports USA" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/beinsport.png" group-title="Tims 247 Git", Bein Sports USA (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="beIN.Sports.USA.HD.us2" tvg-name="Bein Sports USA" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/beinsport.png" group-title="Tims 24/7 ✦ Git", Bein Sports USA
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/bsu6.m3u8
-#EXTINF:-1 tvg-id="WCBS-DT.us_locals1" tvg-name="CBS" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbs.png" group-title="Tims 247 Git", CBS (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="WCBS-DT.us_locals1" tvg-name="CBS" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbs.png" group-title="Tims 24/7 ✦ Git", CBS
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/c7.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbssports.png" group-title="Tims 247 Git", CBS Sports Network (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbssports.png" group-title="Tims 24/7 ✦ Git", CBS Sports Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/csn8.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Golazo Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbsgolazo.png" group-title="Tims 247 Git", CBS Sports Golazo Network (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Golazo Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbsgolazo.png" group-title="Tims 24/7 ✦ Git", CBS Sports Golazo Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/csgn9.m3u8
-#EXTINF:-1 tvg-id="WNYW-DT.us_locals1" tvg-name="FOX" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox.png" group-title="Tims 247 Git", FOX (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="WNYW-DT.us_locals1" tvg-name="FOX" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox.png" group-title="Tims 24/7 ✦ Git", FOX
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/f10.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fox Deportes" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-sports-deportes-flat-us.png" group-title="Tims 247 Git", Fox Deportes (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Fox Deportes" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-sports-deportes-flat-us.png" group-title="Tims 24/7 ✦ Git", Fox Deportes
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/fd11.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fox News" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-news-us.png" group-title="Tims 247 Git", Fox News (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Fox News" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-news-us.png" group-title="Tims 24/7 ✦ Git", Fox News
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/fn12.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fox Sports 501" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox501.png" group-title="Tims 247 Git", Fox Sports 501 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Fox Sports 501" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox501.png" group-title="Tims 24/7 ✦ Git", Fox Sports 501
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/fs514.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fubo Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fubo.png" group-title="Tims 247 Git", Fubo Sports Network (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Fubo Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fubo.png" group-title="Tims 24/7 ✦ Git", Fubo Sports Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/fsn20.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Nickelodeon" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nickelodeon-us.png?raw=true" group-title="Tims 247 Git", Nickelodeon (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Nickelodeon" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nickelodeon-us.png?raw=true" group-title="Tims 24/7 ✦ Git", Nickelodeon
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/n21.m3u8
-#EXTINF:-1 tvg-id="Nicktoons.us2" tvg-name="Nicktoons" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nick-toons-us.png?raw=true" group-title="Tims 247 Git", Nicktoons (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Nicktoons.us2" tvg-name="Nicktoons" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nick-toons-us.png?raw=true" group-title="Tims 24/7 ✦ Git", Nicktoons
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/n23.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 1 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier1.png" group-title="Tims 247 Git", Premier Sports 1 IE (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 1 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier1.png" group-title="Tims 24/7 ✦ Git", Premier Sports 1 IE
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ps1i24.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 2 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier2.png" group-title="Tims 247 Git", Premier Sports 2 IE (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 2 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier2.png" group-title="Tims 24/7 ✦ Git", Premier Sports 2 IE
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ps2i25.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.1.nz" tvg-name="Sky Sport 1 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 1 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.1.nz" tvg-name="Sky Sport 1 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 1 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss1n26.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.2.nz" tvg-name="Sky Sport 2 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 2 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.2.nz" tvg-name="Sky Sport 2 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 2 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss2n27.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.3.nz" tvg-name="Sky Sport 3 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 3 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.3.nz" tvg-name="Sky Sport 3 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 3 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss3n28.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.4.nz" tvg-name="Sky Sport 4 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 4 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.4.nz" tvg-name="Sky Sport 4 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 4 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss4n29.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.5.nz" tvg-name="Sky Sport 5 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 5 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.5.nz" tvg-name="Sky Sport 5 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 5 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss5n30.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.6.nz" tvg-name="Sky Sport 6 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 6 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.6.nz" tvg-name="Sky Sport 6 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 6 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss6n31.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.7.nz" tvg-name="Sky Sport 7 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 7 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.7.nz" tvg-name="Sky Sport 7 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 7 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss7n32.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.8.nz" tvg-name="Sky Sport 8 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 8 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.8.nz" tvg-name="Sky Sport 8 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 8 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss8n33.m3u8
-#EXTINF:-1 tvg-id="Sky.Sport.9.nz" tvg-name="Sky Sport 9 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport 9 NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="Sky.Sport.9.nz" tvg-name="Sky Sport 9 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport 9 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ss9n34.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sky Sport Select NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 247 Git", Sky Sport Select NZ (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Sky Sport Select NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7 ✦ Git", Sky Sport Select NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/sssn35.m3u8
-#EXTINF:-1 tvg-id="SkySp.Cricket.uk" tvg-name="Sky Sports Cricket" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skycricket.png" group-title="Tims 247 Git", Sky Sports Cricket (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="SkySp.Cricket.uk" tvg-name="Sky Sports Cricket" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skycricket.png" group-title="Tims 24/7 ✦ Git", Sky Sports Cricket
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ssc39.m3u8
-#EXTINF:-1 tvg-id="SkySp.F1.uk" tvg-name="Sky Sports F1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skyf1.png" group-title="Tims 247 Git", Sky Sports F1 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="SkySp.F1.uk" tvg-name="Sky Sports F1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skyf1.png" group-title="Tims 24/7 ✦ Git", Sky Sports F1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ssf41.m3u8
-#EXTINF:-1 tvg-id="SkySpMainEvHD.uk" tvg-name="Sky Sports Main Event" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skymainevent.png" group-title="Tims 247 Git", Sky Sports Main Event (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="SkySpMainEvHD.uk" tvg-name="Sky Sports Main Event" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skymainevent.png" group-title="Tims 24/7 ✦ Git", Sky Sports Main Event
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ssme43.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sky Sports Tennis" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skytennis.png" group-title="Tims 247 Git", Sky Sports Tennis (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
-https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/sst48.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Teen Nick" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/teen-nick-us.png?raw=true" group-title="Tims 247 Git", Teen Nick (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="Teen Nick" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/teen-nick-us.png?raw=true" group-title="Tims 24/7 ✦ Git", Teen Nick
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/tn51.m3u8
-#EXTINF:-1 tvg-id="TNT.HD.us2" tvg-name="TNT" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tnt.png" group-title="Tims 247 Git", TNT (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TNT.HD.us2" tvg-name="TNT" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tnt.png" group-title="Tims 24/7 ✦ Git", TNT
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t52.m3u8
-#EXTINF:-1 tvg-id="TNT.Sports.2.HD.uk" tvg-name="TNT Sports 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tntsport.png" group-title="Tims 247 Git", TNT Sports 2 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TNT.Sports.2.HD.uk" tvg-name="TNT Sports 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tntsport.png" group-title="Tims 24/7 ✦ Git", TNT Sports 2
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/ts254.m3u8
-#EXTINF:-1 tvg-id="TSN.1.ca2" tvg-name="TSN 1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 247 Git", TSN 1 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TSN.1.ca2" tvg-name="TSN 1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t157.m3u8
-#EXTINF:-1 tvg-id="TSN.2.ca2" tvg-name="TSN 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 247 Git", TSN 2 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TSN.2.ca2" tvg-name="TSN 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 2
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t258.m3u8
-#EXTINF:-1 tvg-id="TSN.3.ca2" tvg-name="TSN 3" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 247 Git", TSN 3 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TSN.3.ca2" tvg-name="TSN 3" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 3
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t359.m3u8
-#EXTINF:-1 tvg-id="TSN.4.ca2" tvg-name="TSN 4" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 247 Git", TSN 4 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TSN.4.ca2" tvg-name="TSN 4" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 4
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t460.m3u8
-#EXTINF:-1 tvg-id="TSN.5.ca2" tvg-name="TSN 5" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 247 Git", TSN 5 (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="TSN.5.ca2" tvg-name="TSN 5" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7 ✦ Git", TSN 5
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/t561.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="USA Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/usanetwork.png" group-title="Tims 247 Git", USA Network (Git)
-#EXTVLCOPT:http-referrer=https://github.com/
+#EXTINF:-1 tvg-id="" tvg-name="USA Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/usanetwork.png" group-title="Tims 24/7 ✦ Git", USA Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
 https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/TMS/un62.m3u8

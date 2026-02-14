@@ -1,0 +1,301 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/astro-football.webp" group-title="Soccer ✦ SS Live", Burton Albion vs West Ham United ✦ Astro Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-astro-football/playlist.m3u8?token=936ebc49ff850954438c1503d9b281b7115c1a14da3dc6d7660eb3097e225d7d.1771083420.5b89694eb75a446fb12f9f182bedbda3.b8b3d19aa47f7a7a138e988c17a37cde.63eb4af11824e28e9b2b027f748ec6ab&signature=d65f2fdbedd54628339b1eeb4de504069a190c5ece298900597b3811a1d551f5
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/tnt-sport-1.png" group-title="Soccer ✦ SS Live", Burton Albion vs West Ham United ✦ TNT Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-tnt-sports-1/playlist.m3u8?token=975b50067ce56991fc44d48b271a56b0bff6eeccb919fe9a8df9ce290c182f1d.1771083420.ac60bb4f9ffcee3948ae9053bc2a1932.461bcc9fb98d7cbd5c469273b5b0627f.5a54d48a848e0f711982743d0f79fafd&signature=404ad138c6e22c9b1da70bc4e1b44a3b923691689a138f3fe58c97f385f4d413
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-maximo-1.webp" group-title="Soccer ✦ SS Live", Burton Albion vs West Ham United ✦ SuperSport Maximo 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-maximo-1/playlist.m3u8?token=5c2de24a26d191fcb347c3c415cd0061d5f07e7e38b8fb164540b272346475e2.1771083420.f34d582361f017dfca37c680fb1f616b.775003d442bd4d91c1816c85d983d60a.9b36c8b7c0c35119c5507412ec3e4e80&signature=1a5a609b163e00dfeb27a118726d8e03d4825086cc361645491bec2c848e672d
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-premier-league.webp" group-title="Soccer ✦ SS Live", Burton Albion vs West Ham United ✦ SuperSport Premier League
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-premier-league/playlist.m3u8?token=56c4048f48e1faea0dc56ddada44bccf15f145e549590ff74c5923416a61565f.1771083420.3c95b2cf48b229989b211d4c68c2f0fd.6ebc3137c8bc11b0bbbf1b64631aae78.2478cf9dd452218e77865eebf6c24f5d&signature=4a30cb626ad3ff67a9b38b7731644de28d03c4e4db1beb49448ced6f605902b7
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports-1.svg" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ beIN SPORTS 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports-1/playlist.m3u8?token=4ba2771433681f0da06d0c5946f15c9269e8deb13f47f0f135cd406e6f2ac321.1771083420.e0f9118d541989b757e0af5dd6065684.2d1b4307e38082cb83e9c886b79542e5.46bfa0f334afdb9c65db7843537118e7&signature=1f398522bd3e3ed7b25ff0019576779354cfdf4bf3bb6ebfb7f1daa621e32c0d
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/espn-deportes.png" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ ESPN Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-espn-deportes/playlist.m3u8?token=0362bb7f9ad793a729f533646db79d0b6837fbc798ac8cdc35ed772baa82963a.1771083424.a387e61e1e5dcb6c590de8082813a4ce.f02efd961e19dda719e4cd6159c1d87f.4714578170e53b428ef7b3de069038bf&signature=1a078922ff4898dcf807d96670315eea57dbe93de5329a5639ce43a1e0598b88
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/la-liga-tv.svg" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ LaLiga TV
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-laliga-tv/playlist.m3u8?token=f67ae3efd188e633dc00ff7942cf228ea4519f285bafdfd7a0fd9fc16f0e35ef.1771083424.0827d4a8bdba54ae01b2b5752249a802.76d54f6dc91f2dc583699de20ed71722.97fb3db008d93ed2863c039fb7998691&signature=f39cd5e107470259068463dd7d704c4ea59f4f5afd7c25c310ffd29b40c28330
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/viaplay-sports-1.png" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ Viaplay Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-viaplay-sports-1/playlist.m3u8?token=253ee9fb3a176d468d711a4ec5b03dd53ef45433f7f1ed5b5335d7bcec180075.1771083424.1a55e18edd06975501d75ccf22f660f7.eddd29380ee5f600b2d21ab1a19a195b.f3faa2ae760b2e5942aeae774848e497&signature=b7587c2a115962211b0f78bf88091277e2ccde2de284e33940df8619cac0c8fe
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/premier-sports-1.svg" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ Premier Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-premier-sports-1/playlist.m3u8?token=08e07f037ba8e71665c4300fcaca1ff9952ea4ddde90ddb17c5537d0a01ee377.1771083424.31c67f92a0e9f3efce1b93e331094054.02fb5612b463f7028c8637bf8463697d.ab7e3a3c2f22852e085d2e1d119df45f&signature=bfd2046436074ea4cf2bdb8d966257ff01cd648fbd6d3ff75086f3049c8a3ebb
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-laliga.webp" group-title="Soccer ✦ SS Live", Espanyol vs Celta de Vigo ✦ SuperSport LaLiga
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-laliga/playlist.m3u8?token=e18918b2f854ed6e4266524dbd52153a6f9f6a8ac3411c6e522fb908ce9a824e.1771083424.206871aa6f8593ef1115310883b6fbed.7f4c3a90864e800b103cd533959b0d52.123d6a511ecbedf85336221db67b4ed8&signature=d6d540a54d2a4844c5ba5b7ea012d7dea387f7020d71532479492091ecd29fcf
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/fox-deportes.svg" group-title="Soccer ✦ SS Live", Como vs Fiorentina ✦ FOX Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-fox-deportes/playlist.m3u8?token=39ffb7517ccd8fc616c0539196e765975516abf6ed29c6d2fa924301c71382b2.1771083427.d1f8570f555e1ec64fe179fb88e04ccb.ef2051d853238d0b10df43f8108719bf.630159977e58853274467b289abe12cc&signature=59209713a54df25a8f94c5d14fcd6f2bbc29d9b1d85bb30f735a94f7e01c583b
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-football.webp" group-title="Soccer ✦ SS Live", Como vs Fiorentina ✦ SuperSport Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-football/playlist.m3u8?token=bb298a75ea5b1d860244bf74e417ee12c4445377ce6d7b73d1b79f35c45f96fb.1771083427.806ce0f9c03ec105f8d5b4089e1eeb3e.3ede0f8db160dec761a3f6dce5afece8.93f814a33badf8e5fbeab36dedc4e64c&signature=09df8180d2665b89e7be0f1e95d98af969ccecde739fd0e6c5b9707af409aae3
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/fox-soccer-plus.svg" group-title="Soccer ✦ SS Live", Sampdoria vs Calcio Padova ✦ FOX Soccer Plus
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-fox-soccer-plus/playlist.m3u8?token=cd696d6110019c5cdc4e55c08452c0183b74f22d55de5b8b1b901a81979028db.1771083427.a9496ab8b4adb2f768f4a21bcddedfce.2dab85fe5ffae3f7483b029de4fdc052.1b3c2e135eb53ff61897553baf255dcf&signature=58c275b8b793bef89b5a473bbde7bb0ad65ae8406c52de6b0fa736f8cda7bdc8
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/astro-grandstand.webp" group-title="Soccer ✦ SS Live", Southampton vs Leicester City ✦ Astro Grandstand
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-astro-grandstand/playlist.m3u8?token=d32bcf18a8956a1e2013401403733777bc6508b816574921c2aa5e1f666e12bc.1771083427.9aa7c6fff86d3d74434a907758255100.e4dc22a7d96c3efa10084435dac4b066.5a7dddfc137124828b8b486734ddc719&signature=b0774bb41c2ec8c7a49d85a07366a5c2db9ec613bb78e42f6adda5548b372318
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-maximo-1.webp" group-title="Soccer ✦ SS Live", Southampton vs Leicester City ✦ SuperSport Maximo 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-maximo-1/playlist.m3u8?token=9bd4b9096862175e3425950b4488182f686968054deb514615c2090dfeb6a591.1771083427.ad2e8d801b0e5f2bb9ad57d4f3f1d229.62134afe43415ee423897e85697a04d3.addb8ef075c6775c370e398a233b4baf&signature=0ffbde6885f229629acf2beef472bb7b775e73f6206b8abb00915c71320c4661
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-action.webp" group-title="Soccer ✦ SS Live", Southampton vs Leicester City ✦ SuperSport Action
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-action/playlist.m3u8?token=8b0c450218dc996b339f2c46619022a10a616c5bdab0852c9abafe7914099f09.1771083430.36914a71562eaf12f4ec08024d9ed663.7ea922e3348b99d103d6eab08367d2b3.a7c77eba92c8859a765a7a80b0b19580&signature=633fd8930f5e2ce1f2fd84322c7b61f474a5b48c947a5437e35b18fe97b2380a
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-variety-3.webp" group-title="Soccer ✦ SS Live", Burnley vs Mansfield Town ✦ SuperSport Variety 3
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-variety-3/playlist.m3u8?token=f2673d0c4ed38d9a0d7cfac24541d0116e614d99f567ff54bc853c4074ac70a1.1771083430.7c25abc4384d1b376a4df94cbea14167.20f4843951cfe62bbc1979ca608b02a2.250dc775abfd265f5533ef8a6549bb24&signature=eac021da04a3c983e99bef3c09a559ce6735dbb8a3bfd4057b3f1d39d93ca2f2
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/astro-football.webp" group-title="Soccer ✦ SS Live", Manchester City vs Salford City ✦ Astro Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-astro-football/playlist.m3u8?token=ac5583e2fa7ab0a4f9f5efefc449c4c5736b444cd1ac8beac5e1d383301eaf58.1771083430.1ef8d9eb6899d35923beaa57f9889557.934d9776c77b3ed728432a12c2b69295.7e4a6168f528d2769253eca8dec350eb&signature=56f25ca7fd859497442fee043f673d08367591a0405979114eee1bea27700474
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/espn-deportes.png" group-title="Soccer ✦ SS Live", Manchester City vs Salford City ✦ ESPN Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-espn-deportes/playlist.m3u8?token=b8f39a62563cacfbc8384d02015ebf14fbb5a38a28c308be8ae3c166f1aab2b5.1771083430.9773bc2c599780d74b0724f8348b4763.2a7fc0cf6f4f5dee0440e1563b4921e3.27e2945a4547764a613da618217de511&signature=d5e297550be79f8f5f7c396220e19893d3e4441da9e2811487adfa22c9d5e500
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-premier-league.webp" group-title="Soccer ✦ SS Live", Manchester City vs Salford City ✦ SuperSport Premier League
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-premier-league/playlist.m3u8?token=f9d8ad08baf9fe352b9aef52e83e7efc6ba28b8982e8cbff0582e61f715531ff.1771083430.ac0d7c757438ec457813bac6b428b619.4291b93ee710f5a41ee418b024e6a97e.20cd82b8bfcb5c6746834ea0621ae04a&signature=1dfed94bf38bc3956517d1a348f4768a36637941a36b2ff6a51120a5c36b6756
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/cbs-sports-network.svg" group-title="Soccer ✦ SS Live", Derby County vs Swansea City ✦ CBS Sports Network
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-cbs-sports-network/playlist.m3u8?token=dead63aebf4ed8a51fa19dba137ca6c68be09dbf9cb13780d072b4cc6757104f.1771083434.48534e74275282e944dccae94baf9671.b49789306179bb08a363159aa706520c.14e7ea666d58fd58fa3e0134d7cf8e65&signature=1ce39ae1ad5c4f66402c87cf4935b7aac4179f3083dbdadc18f9ae83119a1542
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports-1.svg" group-title="Soccer ✦ SS Live", Getafe vs Villarreal ✦ beIN SPORTS 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports-1/playlist.m3u8?token=1e4d75e2a802131a3290fc219232d5f9752886c52ba7ba4ac4cd9ae24cd5ad7f.1771083433.185db1e2ffdcf0c47248aaa4ec407849.bd010177f375acac4d7b4642e1b53a83.1f9c052ea63147617c2d222009d034d2&signature=f0873ebecec3f8a2901bc686d64b92754f5f450f6c05e8d22947f868d4a96a2c
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/la-liga-tv.svg" group-title="Soccer ✦ SS Live", Getafe vs Villarreal ✦ LaLiga TV
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-laliga-tv/playlist.m3u8?token=d355c1be25d10cb9ba3d56d877f47c94c305035d006233df6864a12269dd570a.1771083433.7e7daf7340557951010f6002d84aa0b8.8e5c0277b014a3bae098d85b28496bbc.0595ba4bd801d9ea72d8adb75ffa2958&signature=31d88f079ba257daa55f71b36740c79144a9c2893a936e73d7618f38ae7b1881
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/premier-sports-2.svg" group-title="Soccer ✦ SS Live", Getafe vs Villarreal ✦ Premier Sports 2
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-premier-sports-2/playlist.m3u8?token=677741c85f517d8836add289ab190c42704b82e042684aed91647973e5ad7a82.1771083434.7cd274f012f8e0afd76a8c5dc86f9f87.e4377a85c12ace06a8258c1c22236a1d.1c3b5f8415907d9e0968727c973dc29f&signature=59454865371badfbe3055e456d5e591c2db7ec85023518aac9b1342752270f2e
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-laliga.webp" group-title="Soccer ✦ SS Live", Getafe vs Villarreal ✦ SuperSport LaLiga
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-laliga/playlist.m3u8?token=1826d661ad688423b684a08ee31b0b701aa553d3d96c01c750bedad21617e86b.1771083434.4de76234cb479fa5ab08ef12826b83ad.4f0447e2a39e2e8aea5acd0435f73bb1.92c1c408f6610abb6978baafa1d19d51&signature=0c44751a7d220f8ebc57111724e5a7ea6b1c7d9ea8f9a1ed14f16d493cb9f64f
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-pls.webp" group-title="Soccer ✦ SS Live", Polokwane City vs Siwelele ✦ SuperSport PSL
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-psl/playlist.m3u8?token=8f4510b7b2b697fb3a2792084ec7d41fcc2bf30dcd6017a710564abaf2c0ceed.1771083437.60abb7beada41de277d2d9a5ec2e8f02.ebd412f4ab32009a15a84eb43fa8cddc.1467d507cad9b33007831b760a3bdcc8&signature=04fd7cce92d28a13450936640262f9cd3cbb36019b45d3cceb5934d238937310
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports.webp" group-title="Soccer ✦ SS Live", Olympique Marseille vs Strasbourg ✦ beIN SPORTS
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports/playlist.m3u8?token=f697339238b99917b8bcf36ab28e48515c7559c96aedfea4d7eed0c795f8d360.1771083437.8d3e72387634b34b80023815a4940b5a.ee77a223355225246bb0fe4b12545e77.3b2aa65e68d33f284f69f44f9f9d395d&signature=97810ed38633191af388c73bad3083b58b51317bafb104f1285d5e890ba98b2a
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/fox-deportes.svg" group-title="Soccer ✦ SS Live", Lazio vs Atalanta ✦ FOX Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-fox-deportes/playlist.m3u8?token=e1f4abdfeddd49e4fd155c386384a5915e851f2a23813d8512f2a27439bbd572.1771083437.9585d9221da151c831a853ca9418057b.e9089c77c3d17f170165edf1b7d70e98.d81a77ec3b151b54cbfcafc45dc2add6&signature=ba701d8e7cc7326d0f08c99760d910c17f2d2c4059ae2cbeba2f777fac1a0137
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-football.webp" group-title="Soccer ✦ SS Live", Lazio vs Atalanta ✦ SuperSport Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-football/playlist.m3u8?token=abe0a43cf388e859d5095558c8909ce677a28c003994a45bcd5c9f539e5cc476.1771083437.73c1dd13d319c151575312fe406d88b0.1ca562de695e5b3cdb2a69d78b2bac15.25de16e37f4faf78ba9a99114c62cb0f&signature=6c12eae676310755ffd452d5bf817fe12b397c6018c0485cd62b45f8829d56c7
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports-2.svg" group-title="Soccer ✦ SS Live", Trabzonspor vs Fenerbahçe ✦ beIN SPORTS 2
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports-2/playlist.m3u8?token=bc6d417956c551f0bd2c6a28971f25340f209d43e86baaeee145daa7a883fd16.1771083437.b9eeb13f71e49be7f2f6405dab39ff1d.2f802cff68b002c4a278fb9170da7af6.bfebc8668bf9a10b10d5039455e9e96b&signature=df34c5c5e8c1e1f531f25d2d701a5e1d9a09fed61b483b17af800833e24f984a
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/espn-deportes.png" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ ESPN Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-espn-deportes/playlist.m3u8?token=c8514e2ede5bc656bb68ec6dd81735b0b545a183ccdc08849147617963356936.1771083440.d72ea35c8fd38aa1371cf08d31ef13be.25edb7c7ccc4a9e4e04d2a2953bd27f1.1fb2d923b69002b5950b683c2d04aee6&signature=bc0cf6d4ad6cea821f0241b000bbcf17ef958bedeca4bd63762d36fba8993f57
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports-1.svg" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ beIN SPORTS 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports-1/playlist.m3u8?token=dd91b66cfd3b86332a36a421f3104ad441bdfbb519939e7f6d27a760d97e1474.1771083440.e2be2645a3069304fcf12eb7b4405b44.ed8432a0da4f3574fc9434fbe98a535a.a830f77a95bd0e00e9905334b169d7c3&signature=00acaddb744deb19c64049e2d07807b6d1f7fa1dfe3482a4974d93cc5fb63065
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/la-liga-tv.svg" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ LaLiga TV
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-laliga-tv/playlist.m3u8?token=2a6cfc3a2e74a1cd2c69aa3b9ee844e348a1474e6ce2ed949e90d17e9f28fa99.1771083440.cf07a2386e60addce900ae157abdf3be.7746aa120e35a92c3e47527856c9519b.9e0078cc9a6d255eabab3b8f8fcc1e14&signature=a11f8043606b15629a15694ac1f94e3a84918778db5b4887416db6e0e7c37d2a
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/viaplay-sports-1.png" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ Viaplay Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-viaplay-sports-1/playlist.m3u8?token=89a80c101f705dc0abaf6c7874d580758bd0c9af00d9b1678baf65cae8eae622.1771083440.daff6b2dc2840774ae8dff5a599680dc.02923093f36e82ad5a182ba717cc0e18.8441652e3b345ef1d03e7ab93f41cbdc&signature=ad57947e186bc7a35d4e70a493c3ea328cf39bbe2bf891ee676d28e4590ef412
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/premier-sports-1.svg" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ Premier Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-premier-sports-1/playlist.m3u8?token=23f92ea2cf9ac42aec06b88f1feb42086c6e2f4914f0b142006f263fd6589f22.1771083440.fc104df5c0c956e11eb0b0b0b4c99cde.d9287bda4647d690942cf5e02e12df1a.bb423415faf4f85f21458ae2b27ae56b&signature=9d6b6f4c4fa3c596157c8966867599cf29bb4df389daf6b76b19cbec42db5d18
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-laliga.webp" group-title="Soccer ✦ SS Live", Sevilla vs Deportivo Alavés ✦ SuperSport LaLiga
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-laliga/playlist.m3u8?token=f2c2162fb669472ec1239b28123080b24088e8369ee2c7afcf251cb1bd4ef0e8.1771083444.12d8b16948d5c2c4a158364047414ce5.5de3c90bd507b116e3816cba243aca93.24c56d85366d4ebdb3a0940538d259e1&signature=42c7d9277ec4c3a629d11aa03517a33e287c7077c4910c3ae2dbb08396ac3188
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/sky-sport-football.svg" group-title="Soccer ✦ SS Live", Stuttgart vs Köln ✦ Sky Sports Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-sky-sports-football/playlist.m3u8?token=dc0a5237358af7ca673391b555d95b3c876fe4334bd88b1edd2819e03cef91bc.1771083444.63d18e5c27ae073a6700b242a683d85e.b7dbe4383c0928cc203ee26723301f4b.67b981c75c28c819701b47408fa618b1&signature=b92045d2f45d5464671be2f7f51e6d984db20242dadff596ee9801d0fa2ea6e4
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/fox-soccer-plus.svg" group-title="Soccer ✦ SS Live", Al Fateh vs Al Nassr ✦ FOX Soccer Plus
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-fox-soccer-plus/playlist.m3u8?token=03a3fcd832cb20fe4d71a71aa9c0be607c93e16e4f8c50e273a15373a45a0b4e.1771083444.911858dbf875fd8a63d6cc754936ade3.db8d54354516e633bdcf53f5b81e7fd5.c9e4afea67da5c94ce5e0fedfa6b5f93&signature=de323f280b46d1371886d8f212d298198c031cb95e84c893a79bd3540f0ca794
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/astro-grandstand.webp" group-title="Soccer ✦ SS Live", Aston Villa vs Newcastle United ✦ Astro Grandstand
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-astro-grandstand/playlist.m3u8?token=c8d011d2ccb4a48d7be0a0572f8623a66af13776c387a3c593dc6ceb4baf7bb2.1771083444.ebd9a3927849306e8342e4efed15f6f7.4a87ac1e8f8d32e08df5230101e73566.3416b545417f79c693617ebb6dcc55e4&signature=0dab5310ee006550c2454379af77fbd2fe829392ec15819a877457e0dfd46ed3
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/tnt-sport-3.png" group-title="Soccer ✦ SS Live", Aston Villa vs Newcastle United ✦ TNT Sports 3
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-tnt-sports-3/playlist.m3u8?token=cbf0446318c3b10a3d2c86345b94bc358ee9605dc4cba276ee3c1c9e1a98185e.1771083444.6fce71d2579b0ce9fe449cfd00a11c1b.1b63b38e4dada820962ea7ce5e8d9caf.51d7ccf422cfa5ea011aca47962338e6&signature=48e9d35affc2b21f12f0a7e2085b8f60c0a39bde245304a51d89a79e20f45cd0
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/bbc-one.svg" group-title="Soccer ✦ SS Live", Aston Villa vs Newcastle United ✦ BBC One
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-bbc-one/playlist.m3u8?token=0af66344de94fe1b9d01aba15047b53162e0397e7c0c1c8802600c1289c8d766.1771083447.d9767a834626a9a0b596183dab112328.ec49c1489e12b1286d40640ccd735a9d.a015f43331175c4c08024fc5735f6fd6&signature=fe361fa70631851186d6da3915255a5029d1bba80783f380b08a5d335f2940d6
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-maximo-1.webp" group-title="Soccer ✦ SS Live", Aston Villa vs Newcastle United ✦ SuperSport Maximo 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-maximo-1/playlist.m3u8?token=a2c7ca94643b295509cf18c8f162d605a66013f7c709af0fa003f95952ada644.1771083447.2f73cb46eed988062d4eaac8c7446208.0b1a8ed3cb8ff15cc57dca8be6664fce.ab3fbaab1dd2a521de20fa834b298981&signature=d2294f0ce4ae4a0590b7c69949011133d0d14d3a880156cb3855fd73c8a93fe1
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-premier-league.webp" group-title="Soccer ✦ SS Live", Aston Villa vs Newcastle United ✦ SuperSport Premier League
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-premier-league/playlist.m3u8?token=56d2d430dc35da7d0e5b6224021dfd5cd60c030e8521a4c1a4d0c02d972d6602.1771083447.9b6c6fc3a38828255fe36079d3c3be99.88bf41aea43ed3f4694020e50337546b.1b4ea9aea2e67563baadbf1fb013550f&signature=74cc9c9b37b683f905836d71edd350f6034a918de470673c08abf49bde610e69
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports.webp" group-title="Soccer ✦ SS Live", Lille vs Brest ✦ beIN SPORTS
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports/playlist.m3u8?token=66376592dc1a5bd42dcb7fc719e3dd74d4556250611307ee7e92e3362bff4685.1771083447.823e65703f00cfacf3fbab5104a23493.28f8adbc3ff13cfd22f821b1071d6315.923cd03468553e54252a582ec657c12d&signature=293de2ddd42c8a5460087a60776931d16b85a51873792e5f2f2425c2614172b4
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-pls.webp" group-title="Soccer ✦ SS Live", Chippa United vs Richards Bay ✦ SuperSport PSL
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-psl/playlist.m3u8?token=20484af90f208178b2d22d0d7928d1ba01771748dff55e6a58e8d60f5c34bb49.1771083447.fbe37ccc490501105cf0dbf131fa4ede.1f6ad883f70f9d0445939ea22ce32396.28337ea19dc38e47586d6deea04b58a4&signature=bb7867275e19296fb56af3b81d0bf3eea329842f447a0254d5668f05e6dca3dd
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/tnt-sport-3.png" group-title="Soccer ✦ SS Live", Internazionale vs Juventus ✦ TNT Sports 3
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-tnt-sports-3/playlist.m3u8?token=4b397086262704d8001bf166921cd442497ff4b701cdd571557f1a7832e32c4a.1771083450.1d2d3bbd8ebab23f17ecc8e27fe0b5ab.ef4ff4fd9124764a93e033bc1de6b4e6.92e7773c5340fb7330ef7b9eadd4e667&signature=68aafff6fe3d8666c560be238829a2f4d08ad24276cc5a670f518b2d12e9db73
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-football.webp" group-title="Soccer ✦ SS Live", Internazionale vs Juventus ✦ SuperSport Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-football/playlist.m3u8?token=4f3c90998c69375724258216cc47c134dfef7ca87d5376bc1d4443ffbc62704a.1771083450.9c5308d7c8f1f846de78f541b5c13ee7.6cce726c99818e1052d5d9d623f9cbff.bd4036dc5ed8b43aeb7e053a3a0f92f3&signature=2e2fe5f871f687527f21e93ead118b295e78e082e4c83a1c172fde339da8448c
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/astro-football.webp" group-title="Soccer ✦ SS Live", Liverpool vs Brighton & Hove Albion ✦ Astro Football
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-astro-football/playlist.m3u8?token=6ec5aba2dbe359c60fcea9392527101ab26fade90b5d165339a3beae8a4b7b5f.1771083450.15c54eefb3443cd0dff86fe1c1598cb0.d0b4ea9e070fc116a20ffa12e5e4c9ac.536ea0f09d0bddca68def4b3d57f8dc6&signature=80feac21bc942dd6e85a3e21bbb86a08083f45f85a75a1b0dd8e361302641115
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/tnt-sport-1.png" group-title="Soccer ✦ SS Live", Liverpool vs Brighton & Hove Albion ✦ TNT Sports 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-tnt-sports-1/playlist.m3u8?token=a0bc723fb429c5c2aee73f9b7bffdc05205c703333a544f71782431a033b2735.1771083450.bba1c49557500f2afd0b694bf3c3b3e5.17f1fa549a721e098d95d395fc9db753.45ae2776da6db8068678a86d53f7730d&signature=513c5e9bcb815f13f577beabc8ec2d584af51c03614755d964f8a9ea11c06628
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-maximo-1.webp" group-title="Soccer ✦ SS Live", Liverpool vs Brighton & Hove Albion ✦ SuperSport Maximo 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-maximo-1/playlist.m3u8?token=c04e9253054dc8a0e50adcda6c79f490a2eb56227ec1f6b456732a86e98e3dea.1771083450.d5727f2a1c558fd1026eb07ff153647d.3d50d3d6f0027dab87adf5e5d0a8a149.0192cf20696cf2c579853de3d146fd6b&signature=d48fdc057f47bf79fa06224711d8b1b04c2b20f0baed5b02f1b12c974c2b78f2
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-premier-league.webp" group-title="Soccer ✦ SS Live", Liverpool vs Brighton & Hove Albion ✦ SuperSport Premier League
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-premier-league/playlist.m3u8?token=6cd39c3d7293cdcac4a7f23c20120d9001c571881dd2160b9df1a0a8159cea3c.1771083454.c58749fe598fd37cca5aea85580acf7b.1b4f1eb50d45b2f614a773ac5b9ce837.07f144f132859470c3ca8ffccc8095b1&signature=b92178351d81f7ae7385aef859495a911fbf07482a5bf0613dbc53a2456b6a03
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports-1.svg" group-title="Soccer ✦ SS Live", Real Madrid vs Real Sociedad ✦ beIN SPORTS 1
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports-1/playlist.m3u8?token=ab8235053d8ff269cd78157f35ddea8ed2a76969681d2b2ddb12466bdcfd245d.1771083454.62eb6777f252121c366ec7ff337835f6.1c2e53dfd47c2daf3975f17ae932071e.da77b7229ed2fa23b9a33abcb7ecc6f7&signature=3da4352973ac101fb7e7a24222173e9a2686c42d92270ca1e1ee16c72e005693
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/espn-deportes.png" group-title="Soccer ✦ SS Live", Real Madrid vs Real Sociedad ✦ ESPN Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-espn-deportes/playlist.m3u8?token=54a61fcda017d3a38ce4a756dbbf180fccc2c75c15ad2e52d88ed06443c23dd3.1771083454.b9536f04ae36e788fc4a0d7792bc9a0b.7aa7d50626642a199f7ab4e06ced1045.5063f58ff35f4bd98755dd8f22fc93de&signature=e01fd2ea79db0608693e45580e8d382498e10046b0b46529231a7cf52872320c
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-kingdom/la-liga-tv.svg" group-title="Soccer ✦ SS Live", Real Madrid vs Real Sociedad ✦ LaLiga TV
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/gb-laliga-tv/playlist.m3u8?token=7df4d6406bbd9f5affff7e44585e498d7d8abc89d5d7b6e6540ab1a30390c136.1771083454.5b7f3c6bd7c8fc0c3e1277c0f098b8e5.61347a444ecc8a79873a85c409161280.58d8d3ab5382d7e819995d6a5f56a9b3&signature=5fc693f2ee0fd621b09b7775bbc24e88ad8529761ca9030a02b9b5fa069c9694
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/south-africa/supersport-laliga.webp" group-title="Soccer ✦ SS Live", Real Madrid vs Real Sociedad ✦ SuperSport LaLiga
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-laliga/playlist.m3u8?token=e2447dcf579049e0e3d8d87163f3284f5bb24c4d296d82ea12694df6c95bb779.1771083454.aacf35cae55cd3cde37bf3f7de82bac8.4c2ddd3d0690aa815251da0ff95224c4.b5eeb006b8752a055438040f5f27ab3d&signature=1b995d9e06b3a3945c94c7e785e134f4882793a0d250e07c545ca1af576bbdc2
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/bein-sports.webp" group-title="Soccer ✦ SS Live", Paris vs Lens ✦ beIN SPORTS
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-bein-sports/playlist.m3u8?token=5d86175f54795ca35c7694934746135732f64f3bff2a01ceccb874b1364f6e0f.1771083457.8c5176bc175855215ba7c257e8c62929.a60eddc21a3bb0ac73237234b6c27b58.a396b31697d786df810595d57ae2f16e&signature=780fcf49b7759c8aa2aa529a466ba905be7358463b6240d89ee2145a67cb511a
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/fox-deportes.svg" group-title="Soccer ✦ SS Live", Juárez vs Necaxa ✦ FOX Deportes
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-fox-deportes/playlist.m3u8?token=e9d6937c3cf9310b47fafdf389c7dc478c1255201a935a1952d991433632acc7.1771083457.16ba6e31844a2366794c5d01a565cc31.78c9c43aaa3fb6d167aae465efaf8412.3b9cf7332ab9039e89b1c23902aae46b&signature=9dda8562a404b8d19d91cb03d07d124428b38c42e92f17abe62c92dce17cfc80
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/tudn.svg" group-title="Soccer ✦ SS Live", Monterrey vs León ✦ TUDN
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-tudn/playlist.m3u8?token=d47bcfeb2bb8b66ea5796bc17c9423d00a99cce9d7dfc9cce055d6c4a04c7aa3.1771083457.aeab64642758a2925ac0fcbdb49692b4.0a61842a6642adfabd1a6f3215ca1b4a.5ed198a3ce45b62a735c11a4473d3f75&signature=87cc9184bca4f4c988eeac2cdcdab92653098a2c5f0f3132399f40a3922367cf
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/nbc_universo.png" group-title="Soccer ✦ SS Live", Guadalajara vs América ✦ NBC Universo
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-nbc-universo/playlist.m3u8?token=779a0bd3f0c1e963a29137f846034f5a8176448ffd240673917f329392a5dc2d.1771083457.425e7c5bc8d9dbfe2089e6bd71f4157b.d938d257a378b140e37a58fc389b4682.45f7fb745378ff991054e4c46bb80e98&signature=d642fa3b919d504bcb1c9b7095694f2e5624e3f6d6a04e63e844b7660b557794
+#EXTINF:-1 tvg-id="Live.Event.us" tvg-logo="https://api.cdn-live.tv/api/v1/channels/images6318/united-states/telemundo.svg" group-title="Soccer ✦ SS Live", Guadalajara vs América ✦ Telemundo
+#EXTVLCOPT:http-origin=https://cdn-live.tv
+#EXTVLCOPT:http-referrer=https://cdn-live.tv/
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+https://edge.cdn-live.ru/secure/api/v1/us-telemundo/playlist.m3u8?token=e70f260c4b34b9920fa75f7c4cca3868e5e8b2d63979a48115c3528294eb3dc4.1771083457.049a1cc4088ecee6769fe3c2baab2c45.edeac3fb5526888be6ff9110694df6d5.a3e1bab95b5748a21dfecbae5fb140a6&signature=9ae68e569e0af64165947c2bff12f9f9f91263782eb6dd1debfaf1fa581ec119

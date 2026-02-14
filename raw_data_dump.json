@@ -1,0 +1,1600 @@
+[
+    {
+        "event": {
+            "id": "368",
+            "title": "ICC T20 WC - 03",
+            "image": "o",
+            "cat": "ICC Mens T20 WC",
+            "eventInfo": {
+                "teamA": "NZ",
+                "teamB": "SA",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/187755/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/187747/image",
+                "eventName": "New Zealand vs South Africa",
+                "eventType": "null",
+                "isHot": "1",
+                "startTime": "2026/02/14 13:30:00 +0000",
+                "endTime": "2026/02/14 17:15:00 +0000"
+            },
+            "adsLimit": "1",
+            "publish": "1",
+            "formats": [
+                "PRIME VIDEO",
+                "WILLOW [Ad Free]",
+                "ICC TV [ENG]",
+                "ICC TV [HIN]",
+                "JIO HOTSTAR",
+                "SportzX Live",
+                "WILLOW HD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "1fc04170e5671d37c8286afcfeb505f7:9751880fa496d361d780019bdcd91d8a",
+                "link": "https://otte.live.cf.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/kq9asei23n/out/v1/12e4e39869014ef19f3c30f0d598191b/cenc.mpd",
+                "title": "WILLOW FHD",
+                "type": "1"
+            },
+            {
+                "api": "7e9239c1982d984a002df3ed049d0756:1b8a17598129a3618535c8fb05f103fe",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+                "title": "Fancode FHD",
+                "type": "1"
+            },
+            {
+                "api": "709c812e1b4174002605df1d17d34a4c:0bbee6c9c20a0f065bf8369d54cbf83e",
+                "link": "https://a166aivottlinear-a.akamaihd.net/OTTB/sin-nitro/live/clients/dash/enc/qddnwqthpp/out/v1/6c25cddab58043a6ace0ac64d97983f0/cenc-sd.mpd",
+                "title": "FANCODE SD",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://stream.snexus.co/live/SN_WILDLIFE/main_stream.m3u8",
+                "title": "Solhsports HD",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://bd-mc-fdlive.fancode.com/mumbai/138946_english_hls_32955a282b57487_1ta-di_h264/index.m3u8|User-Agent=ReactNativeVideo/8.4.0 (Linux;Android 13) AndroidXMedia3/1.1.1&referer=https://fancode.com/",
+                "title": "FANCODE (BD)",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://in-mc-fdlive.fancode.com/mumbai/138946_english_hls_32955a282b57487_1ta-di_h264/index.m3u8|User-Agent=ReactNativeVideo/8.4.0 (Linux;Android 13) AndroidXMedia3/1.1.1&referer=https://fancode.com/",
+                "title": "FANCODE (IND)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "401",
+            "title": "Olympic Games",
+            "image": "o",
+            "cat": "Olympics Winter",
+            "eventInfo": {
+                "teamA": "Olympic",
+                "teamB": "Olympic",
+                "teamAFlag": "https://gstatic.olympics.com/s3/mc2026/emblems/mico2026-emblem-oly.png",
+                "teamBFlag": "https://gstatic.olympics.com/s3/mc2026/emblems/mico2026-emblem-oly.png",
+                "eventName": "Olympic - Milano Cortina 2026",
+                "eventType": "null",
+                "startTime": "2026/02/14 11:00:00 +0000",
+                "endTime": "2026/02/14 16:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "GER vs LAT",
+                "WO11",
+                "WO12",
+                "WO1",
+                "WO8",
+                "W10",
+                "SPX - Olympics",
+                "NBC SPORTS",
+                "SPX - 1",
+                "USA TV FHD",
+                "TNT SPORTS 2",
+                "TNT SPORTS 4",
+                "Eurosport 1 PE",
+                "Eurosport 2 PE"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45085/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "GER vs LAT",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45087/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "WO11",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45088/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "WO12",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45080/load-playlist?|Referer=https://gooz.aapmains.net",
+                "title": "WO1",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45085/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "WO8",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red4.voyagerover.shop/playlist/45086/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "W10",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://daffodil.xn--1000-ugoa0hsb9a0hb.com/olympics.m3u8",
+                "title": "SPX - Olympics",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://daffodil.xn--1000-ugoa0hsb9a0hb.com/nbc.m3u8",
+                "title": "NBC SPORTS",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red6.lumenglide.shop/playlist/44654/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "SPX - 1",
+                "type": "0"
+            },
+            {
+                "api": "6fe4b567ec9b467a888a089600c93f55:b8612265451c8c462fb6b55ad3a6b6d8",
+                "link": "https://usanetwork.mt.linear.viewlift.com/v1/dash/dfe581e0a446a1e548014078b2d81b62b917979d/usanetwork-linear-external-dash-primary-v1/Content/DASH_DASH_ENC/Live/channel(4e41f6af-4b86-2aac-c351-c1250b14b344)/master.mpd",
+                "title": "USA TV FHD",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://daffodil.xn--1000-ugoa0hsb9a0hb.com/olympics.m3u8",
+                "title": "TNT SPORTS 2",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://daffodil.xn--1000-ugoa0hsb9a0hb.com/tnt4.m3u8",
+                "title": "TNT SPORTS 4",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "http://178.23.88.55/Eurosport_1/index.m3u8",
+                "title": "Eurosport 1 PE",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "http://178.23.88.55/Eurosport_2/index.m3u8",
+                "title": "Eurosport 2 PE",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "402",
+            "title": "Al-Riyadh vs Al-Khaleej",
+            "image": "o",
+            "cat": "Pro League 🇸🇦",
+            "eventInfo": {
+                "teamA": "Al-Riyadh",
+                "teamB": "Al-Khaleej",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/168088/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/167228/image",
+                "eventName": "Al-Riyadh vs Al-Khaleej",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 13:55:00 +0000",
+                "endTime": "2026/02/14 15:55:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Thmanyah - FHD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD6737/index.mpd",
+                "title": "Thmanyah - FHD",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "404",
+            "title": "Al-Fateh vs Al-Nassr",
+            "image": "o",
+            "cat": "Pro League 🇸🇦",
+            "eventInfo": {
+                "teamA": "Al-Fateh",
+                "teamB": "Al-Nassr",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/56023/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/23400/image",
+                "eventName": "Al-Fateh vs Al-Nassr",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:30:00 +0000",
+                "endTime": "2026/02/14 19:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Thmanyah - FHD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD1451/index.mpd",
+                "title": "Thmanyah - FHD",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "406",
+            "title": "Getafe vs Villarreal",
+            "image": "o",
+            "cat": "LaLiga 🇪🇸",
+            "eventInfo": {
+                "teamA": "Getafe",
+                "teamB": "Villarreal",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2859/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2819/image",
+                "eventName": "Getafe vs Villarreal",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:15:00 +0000",
+                "endTime": "2026/02/14 17:15:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ESPANYOL",
+                "Laliga TV FHD",
+                "FANCODE FHD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "dbd06f7148784945c0ef1a980cbf26ff:8f0144dcc6bcbc5cb773f43ca251a5a9",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/8gne00uh41/out/v1/2ab2062b59824b80a399e9440d2d3f3e/cenc.mpd",
+                "title": "DAZN ESPANYOL",
+                "type": "1"
+            },
+            {
+                "api": "620e51b82596475517a27aa425c52280:2b9ba811e9c5aeafc8ae1b71cdca4d6a",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/clients/dash/enc/k0duzgfejg/out/v1/70a50b1bda944628b8e7e66ab4069419/cenc.mpd",
+                "title": "Laliga TV FHD",
+                "type": "1"
+            },
+            {
+                "api": "065051b99bf5cf8d9a3bde5cbde6aaf9:214bd176832872339ce184338320f9a2",
+                "link": "https://a135aivottepl-a.akamaihd.net/iad-nitro/live/clients/dash/enc/h35gev6jft/out/v1/c64004e114c245a4ab84bb570275a4a9/cenc.mpd",
+                "title": "FANCODE FHD",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "407",
+            "title": "Sevilla vs Deportivo Alavés",
+            "image": "o",
+            "cat": "LaLiga 🇪🇸",
+            "eventInfo": {
+                "teamA": "Sevilla",
+                "teamB": "Alavés",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2833/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2885/image",
+                "eventName": "Sevilla vs Deportivo Alavés",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:30:00 +0000",
+                "endTime": "2026/02/14 19:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga TV FHD",
+                "beIN ENGLISH",
+                "Premier Sports"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "620e51b82596475517a27aa425c52280:2b9ba811e9c5aeafc8ae1b71cdca4d6a",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/clients/dash/enc/k0duzgfejg/out/v1/70a50b1bda944628b8e7e66ab4069419/cenc.mpd",
+                "title": "Laliga TV FHD",
+                "type": "1"
+            },
+            {
+                "api": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8",
+                "link": "https://aba5sdmaaaaaaaamdwujas5g6mg4r.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "1444f4235529f183f0a5a486befe9cdb:e5e3fec67a1bb3472a2089c8a0a2557f",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/m6sqanvm2m/out/v1/f6beb46c6e9a4132ad739f3ca27df6aa/cenc.mpd",
+                "title": "Premier Sports",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "408",
+            "title": "Real Madrid vs Real Sociedad",
+            "image": "o",
+            "cat": "LaLiga 🇪🇸",
+            "eventInfo": {
+                "teamA": "Real Madrid",
+                "teamB": "Real Sociedad",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2829/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2824/image",
+                "eventName": "Real Madrid vs Real Sociedad",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 20:00:00 +0000",
+                "endTime": "2026/02/14 22:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga TV FHD",
+                "beIN ENGLISH"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "620e51b82596475517a27aa425c52280:2b9ba811e9c5aeafc8ae1b71cdca4d6a",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/clients/dash/enc/k0duzgfejg/out/v1/70a50b1bda944628b8e7e66ab4069419/cenc.mpd",
+                "title": "Laliga TV FHD",
+                "type": "1"
+            },
+            {
+                "api": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8",
+                "link": "https://aba5sdmaaaaaaaamdwujas5g6mg4r.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "409",
+            "title": "Como vs Fiorentina",
+            "image": "o",
+            "cat": "Serie A 🇮🇹",
+            "eventInfo": {
+                "teamA": "Como",
+                "teamB": "Fiorentina",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2704/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2693/image",
+                "eventName": "Como vs Fiorentina",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:00:00 +0000",
+                "endTime": "2026/02/14 16:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "PARAMOUNT+ AQ",
+                "DAZN ENGLISH",
+                "DAZN ITALIAN",
+                "beIN ENGLISH",
+                "Fox Deportes"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "9e14a851287d12d3a915af8b82ffb469:04e3e8c3de798e703446d0d763e3fe1e",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/ldxihp11nw/out/v1/3988f4abbeec4bdab66bb2a2cdebde94/cenc.mpd",
+                "title": "PARAMOUNT+ AQ",
+                "type": "1"
+            },
+            {
+                "api": "ace70df3bf3cd7fdcdd42e25d5e70153:55cae875bf9bbbfac64d5171a5edb1fe",
+                "link": "https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/live/clients/dash/enc/bdmciqnnsi/out/v1/04cf94ac32c544029e51a3e26e2a8bdf/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "3cab9e616591c10261fd31e0dec9e681:892034d802e8ad8f231cda88aeddfd1b",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/xf32wmwjxu/out/v1/790accd61dfb4e78b561c92070b36fdd/cenc.mpd",
+                "title": "DAZN ITALIAN",
+                "type": "1"
+            },
+            {
+                "api": "7995c724a13748ed970840a8ab5bb9b3:67bdaf1e2175b9ff682fcdf0e2354b1e",
+                "link": "https://aba5sdmaaaaaaaamhq2w5oosrf5ae.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/q4u5nwaogz/out/v1/18de6d3e65934f3a8de4358e69eab86c/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd",
+                "title": "Fox Deportes",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "410",
+            "title": "Lazio vs Atalanta",
+            "image": "o",
+            "cat": "Serie A 🇮🇹",
+            "eventInfo": {
+                "teamA": "Lazio",
+                "teamB": "Atalanta",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2699/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2686/image",
+                "eventName": "Lazio vs Atalanta",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:00:00 +0000",
+                "endTime": "2026/02/14 19:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "beIN ENGLISH",
+                "CBS Golazo",
+                "Fox Deportes"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "7995c724a13748ed970840a8ab5bb9b3:67bdaf1e2175b9ff682fcdf0e2354b1e",
+                "link": "https://aba5sdmaaaaaaaamhq2w5oosrf5ae.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/q4u5nwaogz/out/v1/18de6d3e65934f3a8de4358e69eab86c/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "d9623774ac5c8c351aafe97c5fe70267:5164e6d05164a2d65fa8fcc962aa4861",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/rbem8rorcw/out/v1/5318821e2c3c44c2a439681b9aa86e9b/cenc.mpd",
+                "title": "CBS Golazo",
+                "type": "1"
+            },
+            {
+                "api": "d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd",
+                "title": "Fox Deportes",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "411",
+            "title": "Inter vs Juventus",
+            "image": "o",
+            "cat": "Serie A 🇮🇹",
+            "eventInfo": {
+                "teamA": "Inter",
+                "teamB": "Juventus",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2697/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2687/image",
+                "eventName": "Inter vs Juventus",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 19:45:00 +0000",
+                "endTime": "2026/02/14 21:45:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "beIN ENGLISH"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "7995c724a13748ed970840a8ab5bb9b3:67bdaf1e2175b9ff682fcdf0e2354b1e",
+                "link": "https://aba5sdmaaaaaaaamhq2w5oosrf5ae.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/q4u5nwaogz/out/v1/18de6d3e65934f3a8de4358e69eab86c/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "412",
+            "title": "Bremen vs Bayern München",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "Bremen",
+                "teamB": "Bayern",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2534/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2672/image",
+                "eventName": "Werder Bremen vs Bayern München",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:30:00 +0000",
+                "endTime": "2026/02/14 16:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ENGLISH",
+                "SKY BUNDESLIGA",
+                "SonyLiv (Asia)"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "50b1e7f19a4c4797d178246ac49cac8f:82ea8892820de1e1d9dab05e6d4783d4",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/viwauwwpqr/out/v1/63855b6fe0de40bea9560cabf1aba498/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/8r59wy2BRApK/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://sonymtmnew.akamaized.net/hls/live/2022317/DAI13ME-V3/master.m3u8?hdnea=exp=1771115411~acl=/*~id=9451002c7f2eee9de00641d8f32303a5-1771072200374~hmac=98835ac84fe5f417aca22b9c66efb242cb38b2e65993d0c62a6fbb294e472d72|User-Agent=com.sonyliv/6.22.4 (Android 16; en_GB; Pixel 6a; Build/BP2A.250705.008)&Referer=https://www.sonyliv.com/&Origin=https://www.sonyliv.com&x-playback-session-id=f79f01102d9869e148be5694c1401e25-1771078200331",
+                "title": "SonyLiv (Asia)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "413",
+            "title": "Bayer Leverkusen vs St. Pauli",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "Leverkusen",
+                "teamB": "St. Pauli",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2681/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2526/image",
+                "eventName": "Bayer Leverkusen vs St. Pauli",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:30:00 +0000",
+                "endTime": "2026/02/14 16:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ENGLISH",
+                "SKY BUNDESLIGA",
+                "SonyLiv (Asia)"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "4e743c87d41b46c90f142ee2c2a250e9:ae2b682354af841b59729721c03c487a",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/toe5y1jogd/out/v1/063ddbe0d6244d28ac9ff5999543c146/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/6v8yVbveVz4/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://sonymtmnew.akamaized.net/hls/live/2094589/DAI05ME-V3/master.m3u8?hdnea=exp=1771115411~acl=/*~id=9451002c7f2eee9de00641d8f32303a5-1771072200374~hmac=98835ac84fe5f417aca22b9c66efb242cb38b2e65993d0c62a6fbb294e472d72|User-Agent=com.sonyliv/6.22.4 (Android 15; en_GB; NE2211; Build/AP3A.240617.008)&Referer=https://www.sonyliv.com/&Origin=https://www.sonyliv.com&x-playback-session-id=f79f01102d9869e148be5694c1401e25-1771078200331",
+                "title": "SonyLiv (Asia)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "414",
+            "title": "Frankfurt vs Borussia M'gladbach",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "Frankfurt",
+                "teamB": "M'gladbach",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2674/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2527/image",
+                "eventName": "Frankfurt vs Borussia M'gladbach",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:30:00 +0000",
+                "endTime": "2026/02/14 16:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ENGLISH",
+                "SKY BUNDESLIGA",
+                "SonyLiv (Asia)"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "87eaa4fffdc03c8edddcc4c30263a2cf:b3d0b899f5412dd6ba8d9b678de0c6aa",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/mmb0ttshcf/out/v1/f9464a968af045eb9eb5f88f902ce607/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/kjzxkCIqkhtb/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://sonymtmnew.akamaized.net/hls/live/2105079/DAI08ME-V3/master.m3u8?hdnea=exp=1771115411~acl=/*~id=9451002c7f2eee9de00641d8f32303a5-1771072200374~hmac=98835ac84fe5f417aca22b9c66efb242cb38b2e65993d0c62a6fbb294e472d72|User-Agent=com.sonyliv/6.22.4 (Android 15; en_GB; SM-S921B; Build/AP3A.240905.015.A2)&Referer=https://www.sonyliv.com/&Origin=https://www.sonyliv.com&x-playback-session-id=f79f01102d9869e148be5694c1401e25-1771078200331",
+                "title": "SonyLiv (Asia)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "415",
+            "title": "Hamburger vs Union Berlin",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "HSV",
+                "teamB": "Union Berlin",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2676/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2547/image",
+                "eventName": "Hamburger vs Union Berlin",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:30:00 +0000",
+                "endTime": "2026/02/14 16:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ENGLISH",
+                "SKY BUNDESLIGA",
+                "SonyLiv (Asia)"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "dc19342aee20bcdb5ab182761787831f:7b6ca294b566fc82aa5e3da1941bc82b",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/i78cihqkj3/out/v1/01ec3d91690f4b948a398f33dbbf06a6/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/Mhe8gotoGQlu/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://sonymtmnew.akamaized.net/hls/live/2018457/DAI09ME-V3/master.m3u8?hdnea=exp=1771115411~acl=/*~id=9451002c7f2eee9de00641d8f32303a5-1771072200374~hmac=98835ac84fe5f417aca22b9c66efb242cb38b2e65993d0c62a6fbb294e472d72|User-Agent=com.sonyliv/6.22.4 (Android 11; en_GB; IMPEX evoQ 4K; Build/RTM8.240226.001)&Referer=https://www.sonyliv.com/&Origin=https://www.sonyliv.com&x-playback-session-id=f79f01102d9869e148be5694c1401e25-1771078200331",
+                "title": "SonyLiv (Asia)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "416",
+            "title": "Hoffenheim vs Freiburg",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "Hoffenheim",
+                "teamB": "Freiburg",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2569/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2538/image",
+                "eventName": "TSG Hoffenheim vs Freiburg",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:30:00 +0000",
+                "endTime": "2026/02/14 16:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN ENGLISH",
+                "SKY BUNDESLIGA",
+                "SonyLiv (Asia)"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "44193eceb7065c5c618e33b033abb3d6:5a5ceb239946b180f1e1daf5809a9c2f",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/pfdjbglcxd/out/v1/5ad49e7b4f0f49feb538c883133c17cd/cenc.mpd",
+                "title": "DAZN ENGLISH",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/9gSZoyFska/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://sonymtmnew.akamaized.net/hls/live/2018457/DAI09ME-V3/master.m3u8?hdnea=exp=1771115411~acl=/*~id=9451002c7f2eee9de00641d8f32303a5-1771072200374~hmac=98835ac84fe5f417aca22b9c66efb242cb38b2e65993d0c62a6fbb294e472d72|User-Agent=com.sonyliv/6.22.4 (Android 11; en_GB; IMPEX evoQ 4K; Build/RTM8.240226.001)&Referer=https://www.sonyliv.com/&Origin=https://www.sonyliv.com&x-playback-session-id=f79f01102d9869e148be5694c1401e25-1771078200331",
+                "title": "SonyLiv (Asia)",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "417",
+            "title": "VfB Stuttgart vs Köln",
+            "image": "o",
+            "cat": "Bundesliga 🇩🇪",
+            "eventInfo": {
+                "teamA": "Stuttgart",
+                "teamB": "Köln",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2677/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2671/image",
+                "eventName": "VfB Stuttgart vs Köln",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:30:00 +0000",
+                "endTime": "2026/02/14 19:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "SKY BUNDESLIGA"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/8r59wy2BRApK/index.m3u8",
+                "title": "SKY BUNDESLIGA",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "418",
+            "title": "Marseille vs Strasbourg",
+            "image": "o",
+            "cat": "Ligue 1 🇫🇷",
+            "eventInfo": {
+                "teamA": "Marseille",
+                "teamB": "Strasbourg",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/1641/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/1659/image",
+                "eventName": "Marseille vs Strasbourg",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 16:00:00 +0000",
+                "endTime": "2026/02/14 18:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Ligue1+"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD2083/index.mpd",
+                "title": "Ligue1+",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "419",
+            "title": "Lille vs Stade Brestois",
+            "image": "o",
+            "cat": "Ligue 1 🇫🇷",
+            "eventInfo": {
+                "teamA": "Lille",
+                "teamB": "Brest",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/1643/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/1715/image",
+                "eventName": "Lille vs Stade Brestois",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 18:00:00 +0000",
+                "endTime": "2026/02/14 20:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Ligue1+"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD2083/index.mpd",
+                "title": "Ligue1+",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "420",
+            "title": "Paris FC vs RC Lens",
+            "image": "o",
+            "cat": "Ligue 1 🇫🇷",
+            "eventInfo": {
+                "teamA": "Paris",
+                "teamB": "Lens",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/6070/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/1648/image",
+                "eventName": "Paris FC vs RC Lens",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 20:05:00 +0000",
+                "endTime": "2026/02/14 22:05:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Ligue1+"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD2083/index.mpd",
+                "title": "Ligue1+",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "421",
+            "title": "Excelsior vs AZ Alkmaar",
+            "image": "o",
+            "cat": "Eredivisie",
+            "eventInfo": {
+                "teamA": "Excelsior",
+                "teamB": "AZ",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2967/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2950/image",
+                "eventName": "Excelsior vs AZ Alkmaar",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:45:00 +0000",
+                "endTime": "2026/02/14 19:45:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "ESPN NL"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/uSPCfTgzHQY3/index.m3u8",
+                "title": "ESPN NL",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "422",
+            "title": "Ajax vs Fortuna Sittard",
+            "image": "o",
+            "cat": "Eredivisie",
+            "eventInfo": {
+                "teamA": "Ajax",
+                "teamB": "Fortuna",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2953/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2957/image",
+                "eventName": "AFC Ajax vs Fortuna Sittard",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 19:00:00 +0000",
+                "endTime": "2026/02/14 21:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "SportDigital Fussball",
+                "ESPN NL"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0ad4080cdff8c60b1233b22087f0b340:285f129c5eca01dd08a5d5a14ad801c8",
+                "link": "https://abd5xpeaaaaaaaamn2tirj37mzzps.ottb.live.cf.ww.aiv-cdn.net/fra-nitro/live/clients/dash/enc/ssdefyhkkr/out/v1/cf01290cb7f64525bdf861580a016ca8/cenc.mpd",
+                "title": "SportDigital Fussball",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/DzazxOvS3QE1/index.m3u8",
+                "title": "ESPN NL",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "423",
+            "title": "Trabzonspor vs Fenerbahçe",
+            "image": "o",
+            "cat": "Super Lig",
+            "eventInfo": {
+                "teamA": "Trabzonspor",
+                "teamB": "Fenerbahçe",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/3051/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/3052/image",
+                "eventName": "Trabzonspor vs Fenerbahçe",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:00:00 +0000",
+                "endTime": "2026/02/14 19:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "beIN SPORTS"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://smarthard.click/hls/hhx33tWwGEeW/index.m3u8",
+                "title": "beIN SPORTS",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "424",
+            "title": "Córdoba vs Leganés",
+            "image": "o",
+            "cat": "LaLiga 2",
+            "eventInfo": {
+                "teamA": "Córdoba",
+                "teamB": "Leganés",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2850/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2845/image",
+                "eventName": "Córdoba vs Leganés",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 13:00:00 +0000",
+                "endTime": "2026/02/14 15:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga Hypermotion ES"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "d69894c7b729c5d1e85893e5e6cfcb0f:db0d53f871f5d2ef91d3a112c7ec9f30",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/dash/enc/tcninbbnt5/out/v1/7668f47d28e345979c072e361f3d3ce3/cenc.mpd",
+                "title": "Laliga Hypermotion ES",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "425",
+            "title": "Burgos vs Cádiz",
+            "image": "o",
+            "cat": "LaLiga 2",
+            "eventInfo": {
+                "teamA": "Burgos",
+                "teamB": "Cádiz",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2854/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/4488/image",
+                "eventName": "Burgos vs Cádiz",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:15:00 +0000",
+                "endTime": "2026/02/14 17:15:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga Hypermotion ES"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "d69894c7b729c5d1e85893e5e6cfcb0f:db0d53f871f5d2ef91d3a112c7ec9f30",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/dash/enc/tcninbbnt5/out/v1/7668f47d28e345979c072e361f3d3ce3/cenc.mpd",
+                "title": "Laliga Hypermotion ES",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "426",
+            "title": "Cultural Leonesa vs Zaragoza",
+            "image": "o",
+            "cat": "LaLiga 2",
+            "eventInfo": {
+                "teamA": "Cultural Leonesa",
+                "teamB": "Real Zaragoza",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2868/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2815/image",
+                "eventName": "Cultural Leonesa vs Real Zaragoza",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:30:00 +0000",
+                "endTime": "2026/02/14 19:30:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga Hypermotion ES"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "d69894c7b729c5d1e85893e5e6cfcb0f:db0d53f871f5d2ef91d3a112c7ec9f30",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/dash/enc/tcninbbnt5/out/v1/7668f47d28e345979c072e361f3d3ce3/cenc.mpd",
+                "title": "Laliga Hypermotion ES",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "427",
+            "title": "Granada vs Valladolid",
+            "image": "o",
+            "cat": "LaLiga 2",
+            "eventInfo": {
+                "teamA": "Granada",
+                "teamB": "Real Valladolid",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/33779/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/2831/image",
+                "eventName": "Granada vs Real Valladolid",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 20:00:00 +0000",
+                "endTime": "2026/02/14 22:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Laliga Hypermotion ES"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "d69894c7b729c5d1e85893e5e6cfcb0f:db0d53f871f5d2ef91d3a112c7ec9f30",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/dub-nitro/live/dash/enc/tcninbbnt5/out/v1/7668f47d28e345979c072e361f3d3ce3/cenc.mpd",
+                "title": "Laliga Hypermotion ES",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "432",
+            "title": "Manchester City vs Salford City",
+            "image": "o",
+            "cat": "FA Cup",
+            "eventInfo": {
+                "teamA": "Man City",
+                "teamB": "Salford",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/17/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/37998/image",
+                "eventName": "Manchester City vs Salford City",
+                "eventType": "null",
+                "isHot": "1",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN SPORTS",
+                "HUB SPORTS FHD",
+                "HD SERVER",
+                "STAN SPORTS HD",
+                "ESPN DEPORTES"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "7efb54ac2f53db68826173c10a8c31aa:13cda5ca72ef8094298447bf97708755",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/vjlw9ncpih/out/v1/ec5ad80302854a9e868d882c87c6199a/cenc.mpd",
+                "title": "DAZN SPORTS",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://grand-s-v2.faggotsports.tv/pl_120/207676-6808260-1/chunklist.m3u8",
+                "title": "HUB SPORTS FHD",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://gametimes.plus/1111.php",
+                "title": "HD SERVER",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red9.lumenlyra.space/playlist/45140/load-playlist?|Referer=https://gooz.aapmains.net/",
+                "title": "STAN SPORTS HD",
+                "type": "0"
+            },
+            {
+                "api": "",
+                "link": "https://red6.lumenglide.shop/playlist/45144/load-playlist?|Referer=https://gooz.aapmains.net",
+                "title": "ESPN DEPORTES",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "433",
+            "title": "Southampton vs Leicester City",
+            "image": "o",
+            "cat": "FA Cup",
+            "eventInfo": {
+                "teamA": "Southampton",
+                "teamB": "Leicester",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/45/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/31/image",
+                "eventName": "Southampton vs Leicester City",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "DAZN SPORTS",
+                "SportzX Live"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "94150c6f44a75a20dadec51b23b93bd3:97fc6221ad9cb615fc2914c20ce84ffa",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/61e7qocrjb/out/v1/6b8cc642d4a74634b55687912feb1be0/cenc.mpd",
+                "title": "DAZN SPORTS",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://pfl6.ioniszenith.space/playlist/45142/load-playlist?|Referer=https://gooz.aapmains.net",
+                "title": "SportzX Live",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "434",
+            "title": "Aston Villa vs Newcastle United",
+            "image": "o",
+            "cat": "FA Cup",
+            "eventInfo": {
+                "teamA": "Aston Villa",
+                "teamB": "Newcastle",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/40/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/39/image",
+                "eventName": "Aston Villa vs Newcastle United",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 17:45:00 +0000",
+                "endTime": "2026/02/14 19:45:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "SportzX Live"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://video.twimg.com/amplify_video/1919602814160125952/pl/t5p2RHLI21i-hXga.m3u8?variant_version=1&tag=14",
+                "title": "SportzX Live",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "435",
+            "title": "Liverpool vs Brighton",
+            "image": "o",
+            "cat": "FA Cup",
+            "eventInfo": {
+                "teamA": "Liverpool",
+                "teamB": "Brighton",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/44/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/30/image",
+                "eventName": "Liverpool vs Brighton",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 20:00:00 +0000",
+                "endTime": "2026/02/14 22:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "SportzX Live"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "",
+                "link": "https://video.twimg.com/amplify_video/1919602814160125952/pl/t5p2RHLI21i-hXga.m3u8?variant_version=1&tag=14",
+                "title": "SportzX Live",
+                "type": "0"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "437",
+            "title": "Ireland vs Italy",
+            "image": "o",
+            "cat": "Rugby",
+            "eventInfo": {
+                "teamA": "Ireland",
+                "teamB": "Italy",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/4228/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/7057/image",
+                "eventName": "Ireland vs Italy",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:10:00 +0000",
+                "endTime": "2026/02/14 16:10:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "ITV 1"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "a0763c867523cdae498b2ad5a8ed66c4:fbca9fa0d6d784be974170f82c155938",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/yfsmgtnygz/out/v1/272d43358d1f41feb4dc2e9c61733628/cenc.mpd",
+                "title": "ITV 1",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "438",
+            "title": "Scotland vs England",
+            "image": "o",
+            "cat": "Rugby",
+            "eventInfo": {
+                "teamA": "Scotland",
+                "teamB": "England",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/4230/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/4226/image",
+                "eventName": "Scotland vs England",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 16:40:00 +0000",
+                "endTime": "2026/02/14 18:40:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "ITV 1",
+                "Ziggo Sports"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "a0763c867523cdae498b2ad5a8ed66c4:fbca9fa0d6d784be974170f82c155938",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/yfsmgtnygz/out/v1/272d43358d1f41feb4dc2e9c61733628/cenc.mpd",
+                "title": "ITV 1",
+                "type": "1"
+            },
+            {
+                "api": "ef34ae91b4f2415e8439b2ad105e7488:243248d8de1ff8c7c587ee2057317523",
+                "link": "https://mag03.tvx.prd.tv.odido.nl/wh7f454c46tw75168188_-627298088/PLTV/86/224/3221241590/3221241590.mpd?zoneoffset=0&devkbps=1-7000&servicetype=1&icpid=86&accounttype=1&limitflux=-1&limitdur=-1&tenantId=3103&accountinfo=%7E%7EV2.0%7EqbcsJh_jU5C9BcZc959e_wae44b4867b3417aa76b5db2da20fe46c%7EKZzTWjB8qD1zdgbJjRPVLJX-tV0qiN9RBHC_iseGrsmTSRjj06oGDtGlpSCRGOwF3626cf085c08d024c7e4aafc18c32440%7EExtInfo5Ro3VppWiUusj2ippqUPkQ%3D%3D4a2d2c8ce133f43026d0e31b822b8474%3A20240601012829%3AUTC%2C10001003329222%2C87.212.140.171%2C20240601012829%2C3103_SP1S%2C10001003329222%2C-1%2C0%2C1%2C%2C%2C2%2C3103_Sport1%2C%2C%2C2%2C10000044444303%2C0%2C10000025050255%2CNDEzODg2NTY3MzEwMzI2NzMwNjMwNTY%3D%2C%2C%2C5%2C1%2CEND&GuardEncType=2&RTS=1717205309&from=11&hms_devid=1008&online=1717205309&mag_hms=1008,311,305&_=1717205322621|User-Agent=Mozila",
+                "title": "Ziggo Sports",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "440",
+            "title": "FC Goa vs Inter Kashi FC",
+            "image": "o",
+            "cat": "ISL",
+            "eventInfo": {
+                "teamA": "FC Goa",
+                "teamB": "Inter Kashi FC",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/174594/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/494686/image",
+                "eventName": "FC Goa vs Inter Kashi FC",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 14:00:00 +0000",
+                "endTime": "2026/02/14 16:15:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "FANCODE FHD",
+                "FANCODE - SD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "7e9239c1982d984a002df3ed049d0756:1b8a17598129a3618535c8fb05f103fe",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+                "title": "FANCODE FHD",
+                "type": "1"
+            },
+            {
+                "api": "709c812e1b4174002605df1d17d34a4c:0bbee6c9c20a0f065bf8369d54cbf83e",
+                "link": "https://a166aivottlinear-a.akamaihd.net/OTTB/sin-nitro/live/clients/dash/enc/qddnwqthpp/out/v1/6c25cddab58043a6ace0ac64d97983f0/cenc-sd.mpd",
+                "title": "FANCODE - SD",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "441",
+            "title": "Al-Najma SC vs Al-Kholood",
+            "image": "o",
+            "cat": "Pro League 🇸🇦",
+            "eventInfo": {
+                "teamA": "Al-Najma",
+                "teamB": "Al-Kholood",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/395831/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/269199/image",
+                "eventName": "Al-Najma SC vs Al-Kholood",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:35:00 +0000",
+                "endTime": "2026/02/14 17:35:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "Thmanyah - FHD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "0:0",
+                "link": "https://bbb.exoadash.com/TVD1403/index.mpd",
+                "title": "Thmanyah - FHD",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "444",
+            "title": "Derby County vs Swansea",
+            "image": "o",
+            "cat": "Championship 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "eventInfo": {
+                "teamA": "Derby",
+                "teamB": "Swansea",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/27/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/74/image",
+                "eventName": "Derby County vs Swansea",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "PARAMOUNT+ AQ",
+                "beIN ENGLISH"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "4f72cd124c3cf1f8acaae744c99614cf:1866e03991f5b525d9bb394070a4bb9d",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/wehzd9zxbu/out/v1/2331486a501040c083c35b79be2c544f/cenc.mpd",
+                "title": "PARAMOUNT+ AQ",
+                "type": "1"
+            },
+            {
+                "api": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8",
+                "link": "https://aba5sdmaaaaaaaamdwujas5g6mg4r.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
+                "title": "beIN ENGLISH",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "445",
+            "title": "Preston NE vs Watford",
+            "image": "o",
+            "cat": "Championship 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "eventInfo": {
+                "teamA": "Preston",
+                "teamB": "Watford",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/21/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/24/image",
+                "eventName": "Preston NE vs Watford",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "PARAMOUNT+ AQ",
+                "CBS Golazo"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "4d28516f4d90350a38b47c67460fe3d6:340db1d732a5b58ae22f5bacf628ef5e",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/i5r7ymr0pu/out/v1/ae081230948a437d93f41ecab671188f/cenc.mpd",
+                "title": "PARAMOUNT+ AQ",
+                "type": "1"
+            },
+            {
+                "api": "d9623774ac5c8c351aafe97c5fe70267:5164e6d05164a2d65fa8fcc962aa4861",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/rbem8rorcw/out/v1/5318821e2c3c44c2a439681b9aa86e9b/cenc.mpd",
+                "title": "CBS Golazo",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "446",
+            "title": "Portsmouth vs Sheffield United",
+            "image": "o",
+            "cat": "Championship 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "eventInfo": {
+                "teamA": "Portsmouth",
+                "teamB": "Sheffield Utd",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/2/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/15/image",
+                "eventName": "Portsmouth vs Sheffield United",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "PARAMOUNT+ AQ"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "7695bc4608f80b0188905edd2b5f1d90:4a41b8b62a2878f0680b17bbc76ca2fe",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/uamymwefxm/out/v1/5df4ebd8ea5c4a039c74d4136ef3cd23/cenc.mpd",
+                "title": "PARAMOUNT+ AQ",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "447",
+            "title": "QPR vs Blackburn",
+            "image": "o",
+            "cat": "Championship 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            "eventInfo": {
+                "teamA": "QPR",
+                "teamB": "Blackburn",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/1/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/46/image",
+                "eventName": "QPR vs Blackburn",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "PARAMOUNT+ AQ"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "33ca47e896e7857320af8fae5edc078c:29a106244ff941a8769904957544f732",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/6ivt4v95kf/out/v1/038f2f2cdffb4f749b056f04a69393a9/cenc.mpd",
+                "title": "PARAMOUNT+ AQ",
+                "type": "1"
+            }
+        ]
+    },
+    {
+        "event": {
+            "id": "450",
+            "title": "Norwich City vs West Bromwich Albion",
+            "image": "o",
+            "cat": "FA Cup",
+            "eventInfo": {
+                "teamA": "Norwich City",
+                "teamB": "West Bromwich",
+                "teamAFlag": "https://img.sofascore.com/api/v1/team/263/image",
+                "teamBFlag": "https://img.sofascore.com/api/v1/team/8/image",
+                "eventName": "Norwich City vs West Bromwich Albion",
+                "eventType": "null",
+                "isHot": "0",
+                "startTime": "2026/02/14 15:00:00 +0000",
+                "endTime": "2026/02/14 17:00:00 +0000"
+            },
+            "adsLimit": "0",
+            "publish": "1",
+            "formats": [
+                "SportzX LIVE",
+                "STAN SPORTS HD"
+            ]
+        },
+        "decrypted_channels": [
+            {
+                "api": "1cba4e440a1e288c434ab2625b132a29:3b420f0f29a8d7e672f91b275918ede0",
+                "link": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/9itijrn3dn/out/v1/609ec62a8ee54f5b9e248a510cf40d63/cenc.mpd",
+                "title": "SportzX LIVE",
+                "type": "1"
+            },
+            {
+                "api": "",
+                "link": "https://red1.wecanfix6.space/playlist/45139/load-playlist?|Referer=https://gooz.aapmains.net",
+                "title": "STAN SPORTS HD",
+                "type": "0"
+            }
+        ]
+    }
+]

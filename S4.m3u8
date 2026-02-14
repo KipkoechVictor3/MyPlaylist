@@ -1,0 +1,191 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="" tvg-name="Manchester City vs Salford City" tvg-logo="https://www.thesportsdb.com/images/media/event/thumb/8h289z1770969325.jpg" group-title="Tims Live", Manchester City vs Salford City
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://grand-s-v2.faggotsports.tv
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://grand-s-v2.faggotsports.tv/pl_120/207676-6808260-1/chunklist.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="OKTAGON 84: PARADEISER vs. BRITO" tvg-logo="https://i.imgur.com/l3SXBKM.jpeg" group-title="Tims Live", OKTAGON 84: PARADEISER vs. BRITO
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/f167562f182ec850b710a3b8bf639c0e/video.m3u8?token=e3ad9c731f498c1b13029688faaed6e9658fd084-cfed69989fcdd2008d17116c06744c47-1771093792-1771082992&remote=no_check_ip
+#EXTINF:-1 tvg-id="WABC-DT.us_locals1" tvg-name="ABC" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/abc_2.png" group-title="Tims 24/7", ABC
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/wffwehg9yklo7k3dmabqxi70sbws5w4q/video.m3u8?token=c358036d9919bce408dd3d721b005a71fd4061a0-9c761dc39b91c3a0485f2abbc9746741-1771093793-1771082993&remote=no_check_ip
+#EXTINF:-1 tvg-id="beIN.Sports.USA.HD.us2" tvg-name="Bein Sports USA" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/beinsport.png" group-title="Tims 24/7", Bein Sports USA
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/afdb73c451239369681c5e34207bf17a/video.m3u8?token=79928ce0f615a966d223a263fa3be3ed578d7c4b-c5b3d298bcd6ad8a621704f64c4a4ba8-1771093794-1771082994&remote=no_check_ip
+#EXTINF:-1 tvg-id="WCBS-DT.us_locals1" tvg-name="CBS" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbs.png" group-title="Tims 24/7", CBS
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/v3weufn13faamb6eqbgd8myxv7zqe314/video.m3u8?token=3deba235ed32287bea9dff0d110a16067f1b8e86-120293f9ec351f7b8516fb7f67fe560a-1771093794-1771082994&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbssports.png" group-title="Tims 24/7", CBS Sports Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/kd4hg2fw9pa7un1bs8ml5yq0cx6ozr/video.m3u8?token=ebeda91b5170464101b2eebbacf20588361d6279-2b8a4ee47744aceadfef0e680ece4cf6-1771093796-1771082996&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="CBS Sports Golazo Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/cbsgolazo.png" group-title="Tims 24/7", CBS Sports Golazo Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/ceswuphe1islp6ray6nemozltr4x7w4b/video.m3u8?token=42d7f0da10a5caace040699de48a71229ab2c347-fa28e45c7dd341c4488713170c73ca42-1771093796-1771082996&remote=no_check_ip
+#EXTINF:-1 tvg-id="WNYW-DT.us_locals1" tvg-name="FOX" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox.png" group-title="Tims 24/7", FOX
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/o282ztvzyz2nv82nowu477d4zriul8ji/video.m3u8?token=4f722b33f60e73ba9e614ee20c4be4267ee9f9da-44ba658ffe1b118d6d6ba77dc3b99c40-1771093797-1771082997&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Fox Deportes" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-sports-deportes-flat-us.png" group-title="Tims 24/7", Fox Deportes
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/26f350e4a688a9a15a10f1c76712551f/video.m3u8?token=9fe120995c0d75f3bc2250a1b64604f6dfcd79a1-9523df7713998ea60ffeb50d6796f298-1771093798-1771082998&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Fox News" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/countries/united-states/fox-news-us.png" group-title="Tims 24/7", Fox News
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/7c8ec2f20d8194418415ad9e644ed3ac/video.m3u8?token=60c67f5ccad2094ff02451c96f40c1a63cf7e8c8-8cd6a2ff866095f89fd3a0dbdcad6932-1771093798-1771082998&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Fox Sports 501" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fox501.png" group-title="Tims 24/7", Fox Sports 501
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/2460d86d3892c5f73fb23a159ec07a73/video.m3u8?token=959094530e6ce2b410ea05280acd121167f19a43-791a9dca86a455f08f8d9a604550aee3-1771093799-1771082999&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Fubo Sports Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/fubo.png" group-title="Tims 24/7", Fubo Sports Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/92399eaa937b3e8386b43ed0e15150e2/video.m3u8?token=e22684cb0a14806eaf64882c7acd4c1c79db6803-444a97ff3fe72860691eed26dcec22bd-1771093808-1771083008&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Nickelodeon" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nickelodeon-us.png?raw=true" group-title="Tims 24/7", Nickelodeon
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/e07a573f0a6ea861a83fc63aa1fdf2cb/video.m3u8?token=bed7603681245b8e28d6e97207d872b052d02182-f8d132554a979353634575d827aa6b4b-1771093809-1771083009&remote=no_check_ip
+#EXTINF:-1 tvg-id="Nicktoons.us2" tvg-name="Nicktoons" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nick-toons-us.png?raw=true" group-title="Tims 24/7", Nicktoons
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/eff5b3158442c734ab5e1ec6dc11960b/video.m3u8?token=543059c22b629478d2b6f4b285680f2da0fba4dc-b09269cdb9b8cfbbe788358e58e0743e-1771093809-1771083009&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 1 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier1.png" group-title="Tims 24/7", Premier Sports 1 IE
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/ae5dt9yh2uj8gp1zwn7fk4ol6mv3cb/video.m3u8?token=6548d211e32d912d2ffb9a77774dc846b47fb918-a805bd091f532cfb5021c061aad8b000-1771093809-1771083009&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Premier Sports 2 IE" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/permier2.png" group-title="Tims 24/7", Premier Sports 2 IE
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/sy1bx6ca8rm3wq7in9jv2pe5hu0lgf/video.m3u8?token=376644494c3023065d316ed9ac220e1266ebf69a-708779c28a1860e49f4b82c4644cae0f-1771093810-1771083010&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.1.nz" tvg-name="Sky Sport 1 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 1 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/8f9b6c2d1e4a7890f3a5b1c8d7e6f4a3/video.m3u8?token=da0fa01ba94160bee88fca13af8f0bac6bea6fff-a7dc6398e97d04109cbe5a9c21d09087-1771093810-1771083010&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.2.nz" tvg-name="Sky Sport 2 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 2 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6/video.m3u8?token=1b420ec18487ea0b5f302362d76b5323d8932880-138505df44d57be86f5c418b19ce20ff-1771093810-1771083010&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.3.nz" tvg-name="Sky Sport 3 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 3 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b/video.m3u8?token=1543fcbb357ece8b130cba0a302ee3f7351fd3f4-72cb1cbea09ed2dfe7e3e9baea833097-1771093811-1771083011&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.4.nz" tvg-name="Sky Sport 4 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 4 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/67f5bf81544d442bd7c1f29d822ac19b/video.m3u8?token=e801cc95a7f3daa8c685874ce0890c0dbd592564-c6aeed7cc23321671102f47ad7bcf30c-1771093813-1771083013&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.5.nz" tvg-name="Sky Sport 5 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 5 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d/video.m3u8?token=530ac7c3a54a4c986f58811e01f79dd3f969b28e-3526ea8871b99aa0990e8657b7a75be1-1771093816-1771083016&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.6.nz" tvg-name="Sky Sport 6 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 6 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/f1e2d3c4b5a698786543210fedcba987/video.m3u8?token=3fc0fe18d99dcad941a7bf96d151afd9ff2dfa35-fd38c84311136ceabbe23ab557f48eb3-1771093820-1771083020&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.7.nz" tvg-name="Sky Sport 7 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 7 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d/video.m3u8?token=26060ee42fa9c0805af35412c9b5445903db3f89-1bc5472b4107824c58d4d0ab2bbfef31-1771093820-1771083020&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.8.nz" tvg-name="Sky Sport 8 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 8 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/e25132915cf1e67759051cac80b42275/video.m3u8?token=b877fe7bb0e52441f40bbcf8d0eb33f23f296c45-49c3a982b64747664ae40b09d36cca40-1771093820-1771083020&remote=no_check_ip
+#EXTINF:-1 tvg-id="Sky.Sport.9.nz" tvg-name="Sky Sport 9 NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport 9 NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/6ace62ce8424aee87f1edadb67d5a60a/video.m3u8?token=03a9ee2969ce6a4dd87b82e433dd1924e8bc92bb-c27d69c1a4b6441bdf82cadf5abc81e2-1771093821-1771083021&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Sky Sport Select NZ" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skysportnz.png" group-title="Tims 24/7", Sky Sport Select NZ
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/30a588548ac28c21c8010134f0e72821/video.m3u8?token=b6091402a1774cb1625d17f73cdaf1588e1f317d-58afc03b4670c8602d3a4c64e989c9e4-1771093821-1771083021&remote=no_check_ip
+#EXTINF:-1 tvg-id="SkySp.Cricket.uk" tvg-name="Sky Sports Cricket" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skycricket.png" group-title="Tims 24/7", Sky Sports Cricket
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/j5ru6icHofROsespidec64w0s7lgo8ot/video.m3u8?token=530e47fb893cf1d799e3532a67930bdff1385d18-70031cae3432a2bc880a05cee3af8685-1771093824-1771083024&remote=no_check_ip
+#EXTINF:-1 tvg-id="SkySp.F1.uk" tvg-name="Sky Sports F1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skyf1.png" group-title="Tims 24/7", Sky Sports F1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/888520f36cd94c5da4c71fddc1a5fc9b/video.m3u8?token=a44acf6ad46b28f7f14bd5c95b9e8d9d0f2cd494-569cd6a6cd9b67795bde976e60217e08-1771093824-1771083024&remote=no_check_ip
+#EXTINF:-1 tvg-id="SkySpMainEvHD.uk" tvg-name="Sky Sports Main Event" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/skymainevent.png" group-title="Tims 24/7", Sky Sports Main Event
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/4restacahurastic3o7rodraprey2glb/video.m3u8?token=63e1193e5676548ef65e3e96157722137bdea64b-1a567a350bebb7fce55cb79310a4d963-1771093827-1771083027&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="Teen Nick" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/teen-nick-us.png?raw=true" group-title="Tims 24/7", Teen Nick
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/c7af837d2ffea8c75175d994e4d6a2aa/video.m3u8?token=41dd4cb5ff187eeb861d92215723734cc139e047-ab526ed1aa4e925248ec8f8a3215f9d7-1771093835-1771083035&remote=no_check_ip
+#EXTINF:-1 tvg-id="TNT.HD.us2" tvg-name="TNT" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tnt.png" group-title="Tims 24/7", TNT
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/qibemas7lswithlwodu4ozablj8zuno4/video.m3u8?token=c333bdd61a1a97bf5258ed7564e8011576423236-6fa895cc6d1d79f95a58f1b5750adbe5-1771093837-1771083037&remote=no_check_ip
+#EXTINF:-1 tvg-id="TNT.Sports.2.HD.uk" tvg-name="TNT Sports 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tntsport.png" group-title="Tims 24/7", TNT Sports 2
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/c5phuthukothlwrudro8rosas3b64ini/video.m3u8?token=2a3f43eb198a9ad364dcfe4bf4fbb40bc279fa54-851f13015d65ed88ea68021abfbf824f-1771093840-1771083040&remote=no_check_ip
+#EXTINF:-1 tvg-id="TSN.1.ca2" tvg-name="TSN 1" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7", TSN 1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/4a1b2c3d5e6f7890a1b2c3d4e5f67890/video.m3u8?token=596e2538dce4c206bb8355b5272fc95193799bc5-462a24149c50054c798dc4bb5ee9f913-1771093842-1771083042&remote=no_check_ip
+#EXTINF:-1 tvg-id="TSN.2.ca2" tvg-name="TSN 2" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7", TSN 2
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/8b9c0d1e2f3a4b5c6d7e8f90a1b2c3d4/video.m3u8?token=f9138c42c54c9663909fe211ed1ab1d97f1c3895-cb4d9b9b95197635a300ffd9371f844e-1771093842-1771083042&remote=no_check_ip
+#EXTINF:-1 tvg-id="TSN.3.ca2" tvg-name="TSN 3" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7", TSN 3
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/e5f6a7b8c9d0e1f2a3b4c5d6e7f890a1/video.m3u8?token=8dfe82338eff3828c2b9f915f388293c501fc285-983fb13f5005f11e97bc1503df16101a-1771093844-1771083044&remote=no_check_ip
+#EXTINF:-1 tvg-id="TSN.4.ca2" tvg-name="TSN 4" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7", TSN 4
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8/video.m3u8?token=62981dbf933a9c0b7339366c0b0051492637aca5-189a233961f860b89440e3c545dd0cc0-1771093845-1771083045&remote=no_check_ip
+#EXTINF:-1 tvg-id="TSN.5.ca2" tvg-name="TSN 5" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/tsn.png" group-title="Tims 24/7", TSN 5
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/8a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d/video.m3u8?token=952f2a8fa955efcd7bdf033de9d9470c3b18a361-b863e271516f4e7a496e6ace980ef6d6-1771093846-1771083046&remote=no_check_ip
+#EXTINF:-1 tvg-id="" tvg-name="USA Network" tvg-logo="https://file.garden/aEH73g2_nCZCUuwA/usanetwork.png" group-title="Tims 24/7", USA Network
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0
+#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
+#EXTVLCOPT:http-referrer=https://timstreams.lol/
+https://gs-001.madayonoska.cam/probiniboc7ltizegevusplstaclmlbr/video.m3u8?token=612182c5888c9eef5d24997ee5bbbcba44e5254c-e30ea3585a8a0c19f8ed8764035da044-1771093846-1771083046&remote=no_check_ip
