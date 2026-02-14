@@ -58,7 +58,7 @@ jobs:
         run: |
           source venv/bin/activate
           mkdir -p TMS
-          curl -L -o TMLMain.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
+          curl -L -o TMLMain.py "${{ secrets.TMLMAIN_URL }}"
           timeout 450s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
           sync
         shell: bash
@@ -66,7 +66,7 @@ jobs:
       - name: Run CATFT Scraper
         run: |
           source venv/bin/activate
-          curl -L -o CATFt.py "https://www.dropbox.com/scl/fi/wf74ev50wjskahwifmzcp/CATFt.py?rlkey=yl569ajzo11dgnblpwf6wd11i&st=7fes2iic&dl=1"
+          curl -L -o CATFt.py "${{ secrets.CATFT_URL }}"
           timeout 360s python CATFt.py || echo "⚠️ CATFT timed out or failed, skipping..."
           sync
         shell: bash
@@ -75,11 +75,11 @@ jobs:
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels ---"
-          curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
+          curl -L -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
           timeout 360s python SS99_Channels.py || echo "⚠️ SS99 Channels timed out, skipping..."
           sync && sleep 2
           echo "--- Running SS99 Events ---"
-          curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
+          curl -L -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
           timeout 360s python SS99_Events_Scraper.py || echo "⚠️ SS99 Events timed out, skipping..."
           sync
         shell: bash
@@ -87,7 +87,7 @@ jobs:
       - name: Run SPX Scraper
         run: |
           source venv/bin/activate
-          curl -L -o SpX.py "https://www.dropbox.com/scl/fi/mec73is6zoc705tkbyjs2/SpX.py?rlkey=6xjaco9csn51zft4bvtqzv0y0&st=vwbo3jw8&dl=1"
+          curl -L -o SpX.py "${{ secrets.SPX_URL }}"
           timeout 360s python -u SpX.py || echo "⚠️ SPX Script timed out or failed, skipping..."
           sync
         shell: bash
@@ -100,7 +100,6 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          # Merge all sources into the Master List (which goes to Dropbox)
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "S4_Git.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
@@ -132,11 +131,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # We only add the obfuscated links directory and the Git-based M3U8
+          # Only push the obfuscated links and the Git-referenced M3U8
           git add TMS/
           if [ -f "S4_Git.m3u8" ]; then git add S4_Git.m3u8; fi
           
-          git commit -m "Update obfuscated links in TMS folder [skip ci]" || echo "No changes to commit"
+          git commit -m "Update TMS files and Git playlist [skip ci]" || echo "No changes to commit"
           git push origin main
         shell: bash
 
@@ -149,31 +148,15 @@ jobs:
           fi
         shell: bash
 
-      - name: Upload Master Playlist to Dropbox
+      - name: Upload Playlists to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyStuffCLW.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u
-
-      - name: Upload TML S4 (Direct) to Dropbox
-        if: hashFiles('S4.m3u8') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: S4.m3u8
-          DEST_PATH: /MyStuff/S4.m3u8
-
-      - name: Upload CATFT Standalone to Dropbox
-        if: hashFiles('Combined_Sports.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: Combined_Sports.m3u
-          DEST_PATH: /MyStuff/Combined_Sports.m3u
+          source_path: .
+          # Using a batch-style upload for specified files
+          upload_list: |
+            MyStuffCLW.m3u:/MyStuff/MyStuffCLW.m3u
+            S4.m3u8:/MyStuff/S4.m3u8
+            Combined_Sports.m3u:/MyStuff/Combined_Sports.m3u
