@@ -2,29 +2,20 @@ name: Combined Remote Playlist
 
 on:
   schedule:
-    # Times converted from GMT+3 to UTC (-3 Hours)
-    # 7:00, 7:40, 8:20 -> 4:00, 4:40, 5:20
     - cron: '0,40 4 * * *'
     - cron: '20 5 * * *'
-    # 9:00, 9:40, 10:10, 10:40 -> 6:00, 6:40, 7:10, 7:40
     - cron: '0,40 6 * * *'
     - cron: '10,40 7 * * *'
-    # 11:20, 12:00, 12:50 -> 8:20, 9:00, 9:50
     - cron: '20 8 * * *'
     - cron: '0,50 9 * * *'
-    # 1:40, 2:03, 2:40 -> 10:40, 11:03, 11:40
     - cron: '40 10 * * *'
     - cron: '3,40 11 * * *'
-    # 3:05, 3:33, 4:00, 4:35 -> 12:05, 12:33, 13:00, 13:35
     - cron: '5,33 12 * * *'
     - cron: '0,35 13 * * *'
-    # 5:05, 5:35, 6:03, 6:40 -> 14:05, 14:35, 15:03, 15:40
     - cron: '5,35 14 * * *'
     - cron: '3,40 15 * * *'
-    # 7:10, 7:30, 8:00, 8:40 -> 16:10, 16:30, 17:00, 17:40
     - cron: '10,30 16 * * *'
     - cron: '0,40 17 * * *'
-    # 9:00, 9:33, 10:05, 10:30, 11:03pm -> 18:00, 18:33, 19:05, 19:30, 20:03
     - cron: '0,33 18 * * *'
     - cron: '5,30 19 * * *'
     - cron: '3 20 * * *'
@@ -48,6 +39,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Environment
         run: |
@@ -63,8 +57,10 @@ jobs:
       - name: Run TMLMain Scraper
         run: |
           source venv/bin/activate
+          # We manually create the TMS folder just in case
+          mkdir -p TMS
           curl -L -o TMLMain.py "https://www.dropbox.com/scl/fi/3lhquuxhvtbwpo3pzi99d/TMLMain.py?rlkey=zpiwgjs8tsgm9b2r116o43dui&st=8yzkpwst&dl=1"
-          timeout 360s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
+          timeout 450s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
           sync
         shell: bash
 
@@ -82,9 +78,7 @@ jobs:
           echo "--- Running SS99 Channels ---"
           curl -L -o SS99_Channels.py "https://www.dropbox.com/scl/fi/o0mxw7v6gfm9eftonscuy/str99.py?rlkey=ehs3jfw6kdig0hgp4a8fb2fit&st=38etoi0k&dl=1"
           timeout 360s python SS99_Channels.py || echo "⚠️ SS99 Channels timed out, skipping..."
-          
           sync && sleep 2
-          
           echo "--- Running SS99 Events ---"
           curl -L -o SS99_Events_Scraper.py "https://www.dropbox.com/scl/fi/yuer1q6mc15ri2ifbobqf/ss99Events.py?rlkey=x599l0jqwm4dt3vvvk56vk3s8&st=5o1ux1zx&dl=1"
           timeout 360s python SS99_Events_Scraper.py || echo "⚠️ SS99 Events timed out, skipping..."
@@ -107,14 +101,11 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          echo "--- Merging Local Scraper Results ---"
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            else
-              echo "⚠️ Skipping $f (Empty or not generated)"
             fi
           done
 
@@ -126,7 +117,6 @@ jobs:
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             temp="remote_t.m3u"
             STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 20 "$url" -o "$temp" -s -w "%{http_code}")
-            
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -136,15 +126,29 @@ jobs:
           set -e
         shell: bash
 
+      - name: Deploy TMS folder to GitHub
+        run: |
+          # Critical for container environments to permit git operations
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add the TMS directory and its contents
+          if [ -d "TMS" ]; then
+            git add TMS/
+            git commit -m "Update TMS obfuscated stream files" || echo "No changes to commit"
+            git push origin main
+          else
+            echo "⚠️ TMS directory not found, skipping deploy."
+          fi
+        shell: bash
+
       - name: Final Cleanup and Stats
         run: |
           if [ -f MyStuffCLW.m3u ]; then
             sed -i 's/\r//g' MyStuffCLW.m3u
             sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
             echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
-          else
-            echo "❌ MyStuffCLW.m3u was not created!"
-            exit 1
           fi
         shell: bash
 
@@ -167,16 +171,6 @@ jobs:
           source_path: S4.m3u8
           DEST_PATH: /MyStuff/S4.m3u8
 
-      - name: Upload TML S4 (Backup)
-        if: hashFiles('S4.m3u8') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: S4.m3u8
-          DEST_PATH: /MyStuff/Backups/S4_backup.m3u8
-
       - name: Upload CATFT Standalone
         if: hashFiles('Combined_Sports.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -186,13 +180,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: Combined_Sports.m3u
           DEST_PATH: /MyStuff/Combined_Sports.m3u
-
-      - name: Upload SPX Standalone
-        if: hashFiles('spx.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          DEST_PATH: /MyStuff/spx.m3u
