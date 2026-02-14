@@ -98,6 +98,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
+          # Force pull latest changes to avoid non-fast-forward errors
+          git pull origin main --rebase
+          
           # Add the TMS directory and the Git-based playlist
           git add TMS/
           if [ -f "S4_Git.m3u8" ]; then git add S4_Git.m3u8; fi
@@ -114,7 +117,7 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          # Added S4_Git.m3u8 to the merge list
+          # Merge files including both TML versions
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "S4_Git.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
