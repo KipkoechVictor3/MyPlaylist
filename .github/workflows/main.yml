@@ -148,15 +148,31 @@ jobs:
           fi
         shell: bash
 
-      - name: Upload Playlists to Dropbox
+      - name: Upload Master Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: .
-          # Using a batch-style upload for specified files
-          upload_list: |
-            MyStuffCLW.m3u:/MyStuff/MyStuffCLW.m3u
-            S4.m3u8:/MyStuff/S4.m3u8
-            Combined_Sports.m3u:/MyStuff/Combined_Sports.m3u
+          source_path: MyStuffCLW.m3u
+          DEST_PATH: /MyStuff/MyStuffCLW.m3u
+
+      - name: Upload TML S4 (Direct) to Dropbox
+        if: hashFiles('S4.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: S4.m3u8
+          DEST_PATH: /MyStuff/S4.m3u8
+
+      - name: Upload CATFT Standalone to Dropbox
+        if: hashFiles('Combined_Sports.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: Combined_Sports.m3u
+          DEST_PATH: /MyStuff/Combined_Sports.m3u
