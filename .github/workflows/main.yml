@@ -100,7 +100,8 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "S4_Git.m3u8"; do
+          # Removed S4_Git.m3u8 from the loop below
+          for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -125,19 +126,6 @@ jobs:
           set -e
         shell: bash
 
-      - name: Deploy TMS folder to GitHub
-        run: |
-          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Only push the TMS folder (obfuscated links)
-          git add TMS/
-          
-          git commit -m "Update obfuscated links in TMS [skip ci]" || echo "No changes to commit"
-          git push origin main
-        shell: bash
-
       - name: Final Cleanup and Stats
         run: |
           if [ -f MyStuffCLW.m3u ]; then
@@ -156,13 +144,6 @@ jobs:
           source_path: MyStuffCLW.m3u
           DEST_PATH: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload TML Playlists (Direct & Git) to Dropbox
-        run: |
-          # Use curl or call action multiple times. 
-          # For consistency with your setup, we call the action for each specific file.
-          echo "Uploading S4.m3u8..."
-        shell: bash
-
       - name: Upload S4 Direct
         if: hashFiles('S4.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -172,16 +153,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: S4.m3u8
           DEST_PATH: /MyStuff/S4.m3u8
-
-      - name: Upload S4 Git Proxy
-        if: hashFiles('S4_Git.m3u8') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: S4_Git.m3u8
-          DEST_PATH: /MyStuff/S4_Git.m3u8
 
       - name: Upload CATFT Standalone to Dropbox
         if: hashFiles('Combined_Sports.m3u') != ''
