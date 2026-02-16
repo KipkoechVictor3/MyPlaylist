@@ -1,6 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
-#EXTVLCOPT:http-origin=https://gs-001.madayonoska.cam
-#EXTVLCOPT:http-referrer=https://timstreams.lol/
-https://gs-001.madayonoska.cam/4restacahurastic3o7rodraprey2glb/video.m3u8?token=0cf14db0923b174d4201b0392836cf035ffc4360-5d547c935b8dd4b067b8e4994a1cf0a9-1771170918-1771160118&remote=no_check_ip

@@ -1,6 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
-#EXTVLCOPT:http-origin=https://grand-s-v2.faggotsports.tv
-#EXTVLCOPT:http-referrer=https://timstreams.lol/
-https://grand-s-v2.faggotsports.tv/pl_120/207676-6807500-1/chunklist.m3u8
