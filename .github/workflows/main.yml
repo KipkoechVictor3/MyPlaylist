@@ -55,6 +55,7 @@ jobs:
         shell: bash
 
       - name: Run TMLMain Scraper
+        continue-on-error: true
         run: |
           source venv/bin/activate
           mkdir -p TMS
@@ -64,6 +65,7 @@ jobs:
         shell: bash
 
       - name: Run CATFT Scraper
+        continue-on-error: true
         run: |
           source venv/bin/activate
           curl -L -o CATFt.py "${{ secrets.CATFT_URL }}"
@@ -72,17 +74,17 @@ jobs:
         shell: bash
 
       - name: Run RRACE Scraper
+        continue-on-error: true
         run: |
           source venv/bin/activate
           echo "--- Running RRACE (F1TV) Scraper ---"
-          # Download the script from the secret URL
           curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
-          # Execute and ensure output is rftv.m3u (Script should be set to save as rftv.m3u)
           timeout 600s python rrace.py || echo "⚠️ RRACE timed out or failed, skipping..."
           sync
         shell: bash
 
       - name: Run SS99 Scrapers
+        continue-on-error: true
         run: |
           source venv/bin/activate
           echo "--- Running SS99 Channels ---"
@@ -96,6 +98,7 @@ jobs:
         shell: bash
 
       - name: Run SPX Scraper
+        continue-on-error: true
         run: |
           source venv/bin/activate
           curl -L -o SpX.py "${{ secrets.SPX_URL }}"
@@ -111,12 +114,14 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          # Added rftv.m3u to the merge list
+          # List of all files to merge including rftv.m3u
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            else
+              echo "⏭️ Skipping $f (Empty or Not Found)"
             fi
           done
 
