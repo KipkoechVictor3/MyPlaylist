@@ -1,7 +1,19 @@
-The scripts and links provided on these GitHub Repos are for informational and educational purposes only. All links and information are publicly available on the web. We do not claim responsibility for any issues, damages, or losses that may arise from the use of these scripts or links. Users are advised to use them at their own risk and discretion.
+# Disclaimer
 
-No Warranty: The scripts and information are provided 'as is,' without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. We make no guarantee that the scripts will be error-free or suitable for any specific purpose.
+The scripts and links provided in this repository are for **informational and educational purposes only**. All content is publicly available on the web.
 
-External Links Disclaimer: This repository contains links to third-party websites or content. We do not control, endorse, or assume responsibility for the content, privacy policies, or practices of any third-party websites or services.
+### **Use at Your Own Risk**
+* We do not claim responsibility for any **issues, damages, or losses** arising from the use of these scripts or links.
+* Users are advised to use them at their **own risk and discretion**.
 
-Always review and test any code or links before implementing them in your projects. You assume all risks associated with the implementation of this information.
+### **No Warranty**
+* All information is provided **"as is"** without warranty of any kind, express or implied.
+* We make **no guarantee** that scripts will be error-free or suitable for any specific purpose.
+
+### **External Links**
+* This repository contains links to **third-party websites**.
+* We do not control, endorse, or assume responsibility for the **content, privacy policies, or practices** of any third-party services.
+
+---
+
+**Important:** Always review and test any code or links before implementing them. You assume all risks associated with this information.
