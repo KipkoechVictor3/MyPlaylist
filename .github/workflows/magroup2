@@ -1,0 +1,36 @@
+name: Scraper Script MAgroup2
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-magroup2-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests thefuzz python-Levenshtein
+
+      - name: Run MAgroup2 Scraper
+        run: |
+          # Download and run the modified MAgroup2 script
+          curl -L "https://www.dropbox.com/scl/fi/7e2r0tbjxio8s91nz994o/MAgroup2.py?rlkey=ffvljf01k8yixgo73wc17cwkt&st=lw5pk8zm&dl=1" | python3
+
+      - name: Upload MyNewM.m3u to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "MyNewM.m3u"
+          dest_path: "/MyStuff/MyNewM.m3u"
