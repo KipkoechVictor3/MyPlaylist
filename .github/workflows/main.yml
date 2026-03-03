@@ -28,12 +28,7 @@ concurrency:
 jobs:
   update-all-playlists:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
     env:
-      HOME: /root
-      DOCKER_CONFIG: /tmp
-      HTTP_KEEP_ALIVE: "true"
       PYTHONUNBUFFERED: "1"
 
     steps:
@@ -43,31 +38,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Set up Environment
-        run: |
-          apt-get update
-          apt-get install -y python3-venv curl git
-          python3 -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          pip install playwright==1.55.0 httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4
-          playwright install firefox
-        shell: bash
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Run TMLMain Scraper
-        continue-on-error: true
+      - name: Install dependencies
         run: |
-          source venv/bin/activate
-          mkdir -p TMS
-          curl -L -o TMLMain.py "${{ secrets.TMLMAIN_URL }}"
-          timeout 450s python TMLMain.py || echo "⚠️ TMLMain timed out or failed, skipping..."
-          sync
+          python -m pip install --upgrade pip
+          pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4
         shell: bash
 
       - name: Run CATFT Scraper
         continue-on-error: true
         run: |
-          source venv/bin/activate
           curl -L -o CATFt.py "${{ secrets.CATFT_URL }}"
           timeout 360s python CATFt.py || echo "⚠️ CATFT timed out or failed, skipping..."
           sync
@@ -76,7 +60,6 @@ jobs:
       - name: Run RRACE Scraper
         continue-on-error: true
         run: |
-          source venv/bin/activate
           echo "--- Running RRACE (F1TV) Scraper ---"
           curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
           timeout 600s python rrace.py || echo "⚠️ RRACE timed out or failed, skipping..."
@@ -86,7 +69,6 @@ jobs:
       - name: Run SS99 Scrapers
         continue-on-error: true
         run: |
-          source venv/bin/activate
           echo "--- Running SS99 Channels ---"
           curl -L -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
           timeout 360s python SS99_Channels.py || echo "⚠️ SS99 Channels timed out, skipping..."
@@ -100,7 +82,6 @@ jobs:
       - name: Run SPX Scraper
         continue-on-error: true
         run: |
-          source venv/bin/activate
           curl -L -o SpX.py "${{ secrets.SPX_URL }}"
           timeout 360s python -u SpX.py || echo "⚠️ SPX Script timed out or failed, skipping..."
           sync
@@ -114,7 +95,7 @@ jobs:
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
-          # List of all files to merge including rftv.m3u
+          # List of all files to merge
           for f in "Combined_Sports.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f..."
