@@ -33,6 +33,7 @@ jobs:
     env:
       PYTHONUNBUFFERED: "1"
       HOME: /root
+      DEBIAN_FRONTEND: noninteractive
 
     steps:
       - name: Checkout repository
@@ -45,8 +46,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-pip python3-full curl
-          # We use --break-system-packages because we are inside a dedicated container
-          python3 -m pip install --upgrade pip --break-system-packages
+          # Use the system pip directly without upgrading it to avoid Debian uninstall errors
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
           playwright install firefox chromium
         shell: bash
