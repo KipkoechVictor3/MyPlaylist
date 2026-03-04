@@ -29,7 +29,7 @@ jobs:
   update-all-playlists:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.49.0-noble # Using Playwright container for environment
+      image: mcr.microsoft.com/playwright:v1.49.0-noble
     env:
       PYTHONUNBUFFERED: "1"
       HOME: /root
@@ -43,10 +43,12 @@ jobs:
 
       - name: Set up Environment and Dependencies
         run: |
-          apt-get update && apt-get install -y curl
-          python3 -m pip install --upgrade pip
-          pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
-          playwright install firefox chromium # Installing both to ensure compatibility
+          apt-get update
+          apt-get install -y python3-pip python3-full curl
+          # We use --break-system-packages because we are inside a dedicated container
+          python3 -m pip install --upgrade pip --break-system-packages
+          python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
+          playwright install firefox chromium
         shell: bash
 
       - name: Run CATFT Scraper
@@ -168,13 +170,32 @@ jobs:
           source_path: merge_report.txt
           DEST_PATH: /MyStuff/merge_report.txt
 
-      - name: Upload Standalone Files to Dropbox
-        run: |
-          # Note: Re-using the logic from your provided workflow for specific files
-          for f in "S4.m3u8" "Combined_Sports.m3u" "rftv.m3u"; do
-            if [ -f "$f" ]; then
-               echo "Found $f, uploading..."
-               # The Dropbox action would need to be called per file here or via your existing separate steps
-            fi
-          done
-        shell: bash
+      - name: Upload Standalone Files to Dropbox (S4)
+        if: hashFiles('S4.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: S4.m3u8
+          DEST_PATH: /MyStuff/S4.m3u8
+
+      - name: Upload Standalone Files to Dropbox (CATFT)
+        if: hashFiles('Combined_Sports.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: Combined_Sports.m3u
+          DEST_PATH: /MyStuff/Combined_Sports.m3u
+
+      - name: Upload Standalone Files to Dropbox (RRACE)
+        if: hashFiles('rftv.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: rftv.m3u
+          DEST_PATH: /MyStuff/rftv.m3u
