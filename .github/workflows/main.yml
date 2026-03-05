@@ -52,7 +52,7 @@ jobs:
           playwright install chrome
         shell: bash
 
-      - name: Run PPV.CX Scraper (PPL_SCRIPT)
+      - name: Run Scraper (PPL_SCRIPT)
         continue-on-error: true
         run: |
           echo "--- Running PPV.CX (PPL_SCRIPT) ---"
@@ -73,7 +73,7 @@ jobs:
       - name: Run RRACE Scraper
         continue-on-error: true
         run: |
-          echo "--- Running RRACE (F1TV) Scraper ---"
+          echo "--- Running RRACE Scraper ---"
           curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
           timeout 600s python3 rrace.py || echo "⚠️ RRACE timed out or failed, skipping..."
           sync
