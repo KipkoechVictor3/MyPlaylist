@@ -51,7 +51,7 @@ jobs:
           playwright install chrome
         shell: bash
 
-      - name: Run PPV.CX Scraper (PPL_SCRIPT)
+      - name: Run Scraper (PPL)
         continue-on-error: true
         run: |
           echo "--- Running PPV.CX (PPL_SCRIPT) ---"
@@ -60,7 +60,7 @@ jobs:
           sync
         shell: bash
 
-      - name: Run TimStreams Scraper (TMLMAIN)
+      - name: Run Scraper (TMLN)
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
