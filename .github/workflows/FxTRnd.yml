@@ -57,7 +57,7 @@ jobs:
         shell: bash
 
       - name: Upload Playlist to Dropbox
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.1.0
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
