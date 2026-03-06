@@ -63,7 +63,10 @@ jobs:
       - name: Run Scraper (TMLN)
         continue-on-error: true
         run: |
-          echo "--- Running TimStreams (TMLMAIN) ---"
+          echo "--- Preparing TMSS Folder ---"
+          # This clears all existing files in the local TMSS directory
+          mkdir -p TMSS
+          rm -rf TMSS/* echo "--- Running TimStreams (TMLMAIN) ---"
           curl -L -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
           sync
@@ -144,17 +147,16 @@ jobs:
 
       - name: Git Push Obfuscated TMSS Links
         run: |
-          # Fix ownership issues within the container
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Ensure TMSS exists
           mkdir -p TMSS
           
-          git add TMSS/
-          git commit -m "Update TMSS obfuscated links" || echo "No changes to commit"
-          git push origin main || echo "Push skipped (no changes)"
+          # git add -A (or --all) ensures that deleted files are removed from the index
+          git add -A TMSS/
+          git commit -m "Update and clean TMSS obfuscated links" || echo "No changes to commit"
+          git push origin main || echo "Push skipped"
         shell: bash
 
       - name: Final Cleanup and Stats
