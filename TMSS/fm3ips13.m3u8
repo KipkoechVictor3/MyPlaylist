@@ -1,6 +1,5 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXTVLCOPT:http-referrer=https://hmembeds.one/
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
-https://gs-001.madayonoska.cam/ae9c5de874d133c843df5b6d5ecbf27c/video.m3u8?token=0b23b053f5348e3db400391c6efc1fad9b810912-fdcc041424e5f2395208cc32be63e8eb-1772793232-1772782432&remote=no_check_ip
+#EXTVLCOPT:http-referrer=https://hmembeds.one/
+https://gs-001.madayonoska.cam/ae9c5de874d133c843df5b6d5ecbf27c/video.m3u8?token=0121535d116b3e4c877ae9de3f110aa8298e80e4-c314e7b1472076dafac765850dcc43f8-1772794111-1772783311&remote=no_check_ip
