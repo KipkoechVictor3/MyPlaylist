@@ -33,8 +33,8 @@ jobs:
 
       - name: Download MAgroup Script
         run: |
-          # We use -L to follow redirects and -O to ensure it's treated as a file
-          curl -L -o MAgroup.py "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=vocki7vi&dl=1"
+          # URL is now pulled from GITHUB_SECRET: MACGROUP_URL
+          curl -L -o MAgroup.py "${{ secrets.MACGROUP_URL }}"
         shell: bash
 
       - name: Run Scraper
@@ -42,21 +42,27 @@ jobs:
           source venv/bin/activate
           # Create directory if script doesn't
           mkdir -p MAG
-          python MAgroup.py
+          # Ensure output is flushed to console as per your preference
+          PYTHONUNBUFFERED=1 python MAgroup.py
         shell: bash
 
       - name: Deploy MAG folder to GitHub
         run: |
-          # This line is CRITICAL to avoid "dubious ownership" errors in containers
+          # CRITICAL to avoid "dubious ownership" errors in containers
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add MAG/
-          git commit -m "Update MAG obfuscated links" || echo "No changes to commit"
-          git push origin main
+          
+          # Only add and commit if the folder exists and has changes
+          if [ -d "MAG" ]; then
+            git add MAG/
+            git commit -m "Update MAG obfuscated links" || echo "No changes to commit"
+            git push origin main || echo "Push failed or no changes"
+          fi
         shell: bash
 
       - name: Upload Main Playlist to Dropbox
+        if: hashFiles('macg.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
