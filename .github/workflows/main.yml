@@ -64,9 +64,13 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Preparing TMSS Folder ---"
-          # This clears all existing files in the local TMSS directory
           mkdir -p TMSS
-          rm -rf TMSS/* echo "--- Running TimStreams (TMLMAIN) ---"
+          # Fix permission denied errors for the container user
+          chmod -R 777 TMSS
+          # Clear existing files
+          rm -rf TMSS/*
+          
+          echo "--- Running TimStreams (TMLMAIN) ---"
           curl -L -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
           sync
@@ -152,8 +156,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           mkdir -p TMSS
-          
-          # git add -A (or --all) ensures that deleted files are removed from the index
+          # Ensuring deleted files are tracked so they are removed from the repo
           git add -A TMSS/
           git commit -m "Update and clean TMSS obfuscated links" || echo "No changes to commit"
           git push origin main || echo "Push skipped"
@@ -175,7 +178,7 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
-          DEST_PATH: /MyStuff/MyStuffCLW.m3u
+          dest_path: /MyStuff/MyStuffCLW.m3u
 
       - name: Upload Standalone PCX to Dropbox
         if: hashFiles('pcx.m3u') != ''
@@ -185,7 +188,7 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: pcx.m3u
-          DEST_PATH: /MyStuff/pcx.m3u
+          dest_path: /MyStuff/pcx.m3u
 
       - name: Upload Standalone TMS1 to Dropbox
         if: hashFiles('tms1.m3u') != ''
@@ -195,7 +198,7 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: tms1.m3u
-          DEST_PATH: /MyStuff/tms1.m3u
+          dest_path: /MyStuff/tms1.m3u
 
       - name: Upload RRACE Standalone to Dropbox
         if: hashFiles('rftv.m3u') != ''
@@ -205,7 +208,7 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: rftv.m3u
-          DEST_PATH: /MyStuff/rftv.m3u
+          dest_path: /MyStuff/rftv.m3u
 
       - name: Upload Merge Report to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -214,4 +217,4 @@ jobs:
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: merge_report.txt
-          DEST_PATH: /MyStuff/merge_report.txt
+          dest_path: /MyStuff/merge_report.txt
