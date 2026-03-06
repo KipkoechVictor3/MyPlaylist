@@ -45,7 +45,7 @@ jobs:
       - name: Set up Environment and Dependencies
         run: |
           apt-get update
-          apt-get install -y python3-pip python3-full curl xvfb
+          apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
           playwright install firefox chromium
           playwright install chrome
@@ -109,7 +109,6 @@ jobs:
           echo "------------------------------------------------" >> "$REPORT_FILE"
           
           echo -e "\n--- Processing Scraped Local Files ---"
-          # Included pcx.m3u and tms1.m3u, removed CATFT files
           for f in "pcx.m3u" "tms1.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               SIZE=$(du -h "$f" | cut -f1)
@@ -141,6 +140,21 @@ jobs:
             rm -f "$temp"
           done < "channels_clean.txt"
           set -e
+        shell: bash
+
+      - name: Git Push Obfuscated TMSS Links
+        run: |
+          # Fix ownership issues within the container
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Ensure TMSS exists
+          mkdir -p TMSS
+          
+          git add TMSS/
+          git commit -m "Update TMSS obfuscated links" || echo "No changes to commit"
+          git push origin main || echo "Push skipped (no changes)"
         shell: bash
 
       - name: Final Cleanup and Stats
