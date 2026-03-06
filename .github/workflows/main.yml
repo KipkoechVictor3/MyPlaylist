@@ -65,11 +65,8 @@ jobs:
         run: |
           echo "--- Preparing TMSS Folder ---"
           mkdir -p TMSS
-          # Fix permission denied errors for the container user
           chmod -R 777 TMSS
-          # Clear existing files
           rm -rf TMSS/*
-          
           echo "--- Running TimStreams (TMLMAIN) ---"
           curl -L -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
@@ -135,14 +132,21 @@ jobs:
           
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
+            
+            # Extract clean name for display: removes path and Dropbox query strings
+            CLEAN_NAME=$(echo "$url" | sed 's|?.*||' | sed 's|.*/||')
+            
             temp="remote_t.m3u"
             STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 25 "$url" -o "$temp" -s -w "%{http_code}")
+            
             if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
               SIZE=$(du -h "$temp" | cut -f1)
-              echo "✅ [SUCCESS] $url ($SIZE)"
-              echo "✅ REMOTE | $url | Size: $SIZE | Status: ADDED" >> "$REPORT_FILE"
-              echo -e "\n######## REMOTE: $url | SIZE: $SIZE ########" >> "$OUTPUT_FILE"
+              echo "✅ [SUCCESS] $CLEAN_NAME ($SIZE)"
+              echo "✅ REMOTE | $CLEAN_NAME | Size: $SIZE | Status: ADDED" >> "$REPORT_FILE"
+              echo -e "\n######## REMOTE: $CLEAN_NAME | SIZE: $SIZE ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            else
+              echo "❌ [FAILED] $CLEAN_NAME (HTTP $STATUS)"
             fi
             rm -f "$temp"
           done < "channels_clean.txt"
@@ -154,9 +158,7 @@ jobs:
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           mkdir -p TMSS
-          # Ensuring deleted files are tracked so they are removed from the repo
           git add -A TMSS/
           git commit -m "Update and clean TMSS obfuscated links" || echo "No changes to commit"
           git push origin main || echo "Push skipped"
