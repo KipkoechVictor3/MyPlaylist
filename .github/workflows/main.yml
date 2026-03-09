@@ -56,7 +56,6 @@ jobs:
         run: |
           echo "--- Running PitSport Scraper ---"
           curl -L -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
-          # Using Firefox via xvfb as it handles the disguised manifest best
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 pitspt_scraper.py || echo "⚠️ PTSPT failed, skipping..."
           sync
         shell: bash
@@ -64,10 +63,6 @@ jobs:
       - name: Run Scraper (TMLN)
         continue-on-error: true
         run: |
-          echo "--- Preparing TMSS Folder ---"
-          mkdir -p TMSS
-          chmod -R 777 TMSS
-          rm -rf TMSS/*
           echo "--- Running TimStreams (TMLMAIN) ---"
           curl -L -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
@@ -114,7 +109,6 @@ jobs:
           echo "------------------------------------------------" >> "$REPORT_FILE"
           
           echo -e "\n--- Processing Scraped Local Files ---"
-          # Added pitspt.m3u to the loop
           for f in "pitspt.m3u" "tms1.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               SIZE=$(du -h "$f" | cut -f1)
@@ -150,17 +144,6 @@ jobs:
             rm -f "$temp"
           done < "channels_clean.txt"
           set -e
-        shell: bash
-
-      - name: Git Push Obfuscated TMSS Links
-        run: |
-          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          mkdir -p TMSS
-          git add -A TMSS/
-          git commit -m "Update and clean TMSS obfuscated links" || echo "No changes to commit"
-          git push origin main || echo "Push skipped"
         shell: bash
 
       - name: Final Cleanup and Stats
