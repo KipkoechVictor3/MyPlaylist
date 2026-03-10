@@ -48,7 +48,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium firefox
+          playwright install chrome chromium firefox
 
       - name: Run Scraper (TMLN)
         shell: bash
@@ -64,8 +64,8 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running ROX Scraper ---"
-          curl -L -f -o rox_scraper.py "${{ secrets.ROX_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_scraper.py || echo "⚠️ ROX failed..."
+          curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "⚠️ ROX failed..."
           sync
 
       - name: Run SPX Scraper
@@ -116,7 +116,7 @@ jobs:
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
           echo -e "\n--- Merging Hierarchy ---"
-          # Hierarchy: TMLMAIN > ROX > SPX > SS99 > Others
+          # Hierarchy: TMLMAIN > ROX > SPX > SS99 > Events > Others
           for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f"
@@ -178,54 +178,4 @@ jobs:
       - name: Upload SPX (spx)
         if: hashFiles('spx.m3u') != ''
         continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          dest_path: /MyStuff/spx.m3u
-
-      - name: Upload SS99 Channels
-        if: hashFiles('SSpo99.m3u8') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: SSpo99.m3u8
-          dest_path: /MyStuff/SSpo99.m3u8
-
-      - name: Upload SS99 Events
-        if: hashFiles('SS99_Events.m3u8') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: SS99_Events.m3u8
-          dest_path: /MyStuff/SS99_Events.m3u8
-
-      - name: Upload PitSport (pitspt)
-        if: hashFiles('pitspt.m3u') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
-
-      - name: Upload RRACE (rftv)
-        if: hashFiles('rftv.m3u') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rftv.m3u
-          dest_path: /MyStuff/rftv.m3u
+        uses: gomes042/gh-actions-dropbox/files/upload@
