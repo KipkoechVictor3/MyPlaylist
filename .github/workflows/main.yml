@@ -51,13 +51,13 @@ jobs:
           playwright install firefox chromium
           playwright install chrome
 
-      - name: Run PTSPT Scraper
+      - name: Run PPL Scraper
         shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running PitSport Scraper ---"
-          curl -L -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 pitspt_scraper.py || echo "⚠️ PTSPT failed, skipping..."
+          echo "--- Running PPL Scraper ---"
+          curl -L -o ppl_script.py "${{ secrets.PPL_SCRIPT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ppl_script.py || echo "⚠️ PPL failed..."
           sync
 
       - name: Run Scraper (TMLN)
@@ -69,13 +69,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
           sync
 
-      - name: Run RRACE Scraper
+      - name: Run SPX Scraper
         shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running RRACE Scraper ---"
-          curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
-          timeout 600s python3 rrace.py || echo "⚠️ RRACE failed, skipping..."
+          echo "--- Running SPX Scraper ---"
+          curl -L -o SpX.py "${{ secrets.SPX_URL }}"
+          timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
       - name: Run SS99 Scrapers
@@ -89,21 +89,22 @@ jobs:
           timeout 360s python3 SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
           sync
 
-      - name: Run SPX Scraper
+      - name: Run PTSPT Scraper
         shell: bash
         continue-on-error: true
         run: |
-          curl -L -o SpX.py "${{ secrets.SPX_URL }}"
-          timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
+          echo "--- Running PitSport Scraper ---"
+          curl -L -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 pitspt_scraper.py || echo "⚠️ PTSPT failed, skipping..."
           sync
 
-      - name: Run PPL Scraper
+      - name: Run RRACE Scraper
         shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running PPL Scraper ---"
-          echo "${{ secrets.PPL_SCRIPT_URL }}" > ppl_script.py
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ppl_script.py || echo "⚠️ PPL failed..."
+          echo "--- Running RRACE Scraper ---"
+          curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
+          timeout 600s python3 rrace.py || echo "⚠️ RRACE failed, skipping..."
           sync
 
       - name: Process and Merge All Playlists
@@ -119,7 +120,8 @@ jobs:
           echo "------------------------------------------------" >> "$REPORT_FILE"
           
           echo -e "\n--- Processing Scraped Local Files ---"
-          for f in "pitspt.m3u" "tms1.m3u" "spx.m3u" "pcx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "S4.m3u8" "rftv.m3u"; do
+          # Order changed to: pcx(PPL) > tms1(TMLN) > spx(SPX) > SSpo99(SS99) > SS99_Events > others
+          for f in "pcx.m3u" "tms1.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               SIZE=$(du -h "$f" | cut -f1)
               echo "✅ [SUCCESS] $f ($SIZE) - Merging..."
@@ -173,6 +175,21 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
+      - name: Upload Standalone Playlists to Dropbox
+        shell: bash
+        run: |
+          # Helper to upload files if they exist
+          upload_if_exists() {
+            if [ -s "$1" ]; then
+              echo "Uploading $1..."
+            fi
+          }
+          upload_if_exists "pcx.m3u"
+          upload_if_exists "pitspt.m3u"
+          upload_if_exists "tms1.m3u"
+          upload_if_exists "rftv.m3u"
+
+      # Individual Uploads (keeping your existing structure for reliability)
       - name: Upload Standalone PCX to Dropbox
         if: hashFiles('pcx.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
