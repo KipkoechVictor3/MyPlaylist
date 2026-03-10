@@ -48,7 +48,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chrome brave chromium firefox webkit
+          playwright install chrome msedge chromium firefox webkit
 
       - name: Run PPL Scraper
         shell: bash
