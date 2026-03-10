@@ -48,15 +48,14 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install firefox chromium
-          playwright install chrome
+          playwright install chrome chromium
 
       - name: Run PPL Scraper
         shell: bash
         continue-on-error: true
         run: |
           echo "--- Running PPL Scraper ---"
-          curl -L -o ppl_script.py "${{ secrets.PPL_SCRIPT_URL }}"
+          curl -L -f -o ppl_script.py "${{ secrets.PPL_SCRIPT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ppl_script.py || echo "⚠️ PPL failed..."
           sync
 
@@ -65,7 +64,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
-          curl -L -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
+          curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
           sync
 
@@ -74,7 +73,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running SPX Scraper ---"
-          curl -L -o SpX.py "${{ secrets.SPX_URL }}"
+          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
           timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
@@ -83,9 +82,9 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running SS99 Scrapers ---"
-          curl -L -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
+          curl -L -f -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
           timeout 360s python3 SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
-          curl -L -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
+          curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
           timeout 360s python3 SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
           sync
 
@@ -94,7 +93,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running PitSport Scraper ---"
-          curl -L -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
+          curl -L -f -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 pitspt_scraper.py || echo "⚠️ PTSPT failed, skipping..."
           sync
 
@@ -103,7 +102,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running RRACE Scraper ---"
-          curl -L -o rrace.py "${{ secrets.RRACE_URL }}"
+          curl -L -f -o rrace.py "${{ secrets.RRACE_URL }}"
           timeout 600s python3 rrace.py || echo "⚠️ RRACE failed, skipping..."
           sync
 
@@ -113,60 +112,38 @@ jobs:
           set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
-          REPORT_FILE="merge_report.txt"
           
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
-          echo "📊 PLAYLIST MERGE REPORT - $(date)" > "$REPORT_FILE"
-          echo "------------------------------------------------" >> "$REPORT_FILE"
           
-          echo -e "\n--- Processing Scraped Local Files ---"
-          # Order changed to: pcx(PPL) > tms1(TMLN) > spx(SPX) > SSpo99(SS99) > SS99_Events > others
+          echo -e "\n--- Merging Hierarchy ---"
+          # Hierarchy: PPL > TMLMAIN > SPX > SS99 > Events > Others
           for f in "pcx.m3u" "tms1.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
-              SIZE=$(du -h "$f" | cut -f1)
-              echo "✅ [SUCCESS] $f ($SIZE) - Merging..."
-              echo "✅ LOCAL  | $f | Size: $SIZE | Status: ADDED" >> "$REPORT_FILE"
-              echo -e "\n######## SOURCE: ${f%.*} | SIZE: $SIZE ########" >> "$OUTPUT_FILE"
+              echo "✅ Merging $f"
+              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            else
-              echo "❌ [SKIPPED] $f - Empty or Not Found"
-              echo "❌ LOCAL  | $f | Status: MISSING/EMPTY" >> "$REPORT_FILE"
             fi
           done
 
-          echo -e "\n--- Processing Remote Playlists ---"
+          echo -e "\n--- Fetching Remote Playlists ---"
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          tr -d '\r' < channels.txt > channels_clean.txt
-          
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            CLEAN_NAME=$(echo "$url" | sed 's|?.*||' | sed 's|.*/||')
             temp="remote_t.m3u"
-            STATUS=$(curl -L -f -k --connect-timeout 10 --max-time 25 "$url" -o "$temp" -s -w "%{http_code}")
-            
-            if [ "$STATUS" -eq 200 ] && [ -s "$temp" ]; then
-              SIZE=$(du -h "$temp" | cut -f1)
-              echo "✅ [SUCCESS] $CLEAN_NAME ($SIZE)"
-              echo "✅ REMOTE | $CLEAN_NAME | Size: $SIZE | Status: ADDED" >> "$REPORT_FILE"
-              echo -e "\n######## REMOTE: $CLEAN_NAME | SIZE: $SIZE ########" >> "$OUTPUT_FILE"
-              sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            else
-              echo "❌ [FAILED] $CLEAN_NAME (HTTP $STATUS)"
+            if curl -L -f -k --connect-timeout 10 "$url" -o "$temp" -s; then
+               echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
+               sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
             rm -f "$temp"
-          done < "channels_clean.txt"
-          set -e
+          done < <(tr -d '\r' < channels.txt)
 
-      - name: Final Cleanup and Stats
+      - name: Final Cleanup
         shell: bash
         run: |
-          if [ -f MyStuffCLW.m3u ]; then
-            sed -i 's/\r//g' MyStuffCLW.m3u
-            sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
-            echo "🚀 Master Playlist Finalized. Total Lines: $(wc -l < MyStuffCLW.m3u)"
-          fi
+          sed -i 's/\r//g' MyStuffCLW.m3u
+          sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
 
-      - name: Upload Master Playlist to Dropbox
+      - name: Upload to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -175,22 +152,8 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Standalone Playlists to Dropbox
-        shell: bash
-        run: |
-          # Helper to upload files if they exist
-          upload_if_exists() {
-            if [ -s "$1" ]; then
-              echo "Uploading $1..."
-            fi
-          }
-          upload_if_exists "pcx.m3u"
-          upload_if_exists "pitspt.m3u"
-          upload_if_exists "tms1.m3u"
-          upload_if_exists "rftv.m3u"
-
-      # Individual Uploads (keeping your existing structure for reliability)
-      - name: Upload Standalone PCX to Dropbox
+      # Individual backups
+      - name: Upload Standalone PCX
         if: hashFiles('pcx.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -199,42 +162,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: pcx.m3u
           dest_path: /MyStuff/pcx.m3u
-
-      - name: Upload Standalone PTSPT to Dropbox
-        if: hashFiles('pitspt.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
-
-      - name: Upload Standalone TMS1 to Dropbox
-        if: hashFiles('tms1.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: tms1.m3u
-          dest_path: /MyStuff/tms1.m3u
-
-      - name: Upload RRACE Standalone to Dropbox
-        if: hashFiles('rftv.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rftv.m3u
-          dest_path: /MyStuff/rftv.m3u
-
-      - name: Upload Merge Report to Dropbox
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: merge_report.txt
-          dest_path: /MyStuff/merge_report.txt
