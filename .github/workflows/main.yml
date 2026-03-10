@@ -102,7 +102,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running PPL Scraper ---"
-          echo "${{ secrets.PPL_SCRIPT }}" > ppl_script.py
+          echo "${{ secrets.PPL_SCRIPT_URL }}" > ppl_script.py
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ppl_script.py || echo "⚠️ PPL failed..."
           sync
 
