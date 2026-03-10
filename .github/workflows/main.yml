@@ -48,16 +48,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chrome msedge chromium firefox webkit
-
-      - name: Run PPL Scraper
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running PPL Scraper ---"
-          curl -L -f -o ppl_script.py "${{ secrets.PPL_SCRIPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ppl_script.py || echo "⚠️ PPL failed..."
-          sync
+          playwright install chromium firefox
 
       - name: Run Scraper (TMLN)
         shell: bash
@@ -66,6 +57,15 @@ jobs:
           echo "--- Running TimStreams (TMLMAIN) ---"
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed, skipping..."
+          sync
+
+      - name: Run ROX Scraper
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running ROX Scraper ---"
+          curl -L -f -o rox_scraper.py "${{ secrets.ROX_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_scraper.py || echo "⚠️ ROX failed..."
           sync
 
       - name: Run SPX Scraper
@@ -86,15 +86,6 @@ jobs:
           timeout 360s python3 SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
           curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
           timeout 360s python3 SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
-          sync
-
-      - name: Run SFREE Scraper
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running SFREE Scraper ---"
-          curl -L -f -o sfree.py "${{ secrets.SFREE_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u sfree.py || echo "⚠️ SFREE failed..."
           sync
 
       - name: Run PTSPT Scraper
@@ -125,8 +116,8 @@ jobs:
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
           
           echo -e "\n--- Merging Hierarchy ---"
-          # Hierarchy: PPL > TMLMAIN > SPX > SS99 > SFREE > Events > Others
-          for f in "pcx.m3u" "tms1.m3u" "spx.m3u" "SSpo99.m3u8" "stfree.m3u" "SS99_Events.m3u8" "pitspt.m3u" "S4.m3u8" "rftv.m3u"; do
+          # Hierarchy: TMLMAIN > ROX > SPX > SS99 > Others
+          for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u" "S4.m3u8" "rftv.m3u"; do
             if [ -s "$f" ]; then
               echo "✅ Merging $f"
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -162,17 +153,6 @@ jobs:
           dest_path: /MyStuff/MyStuffCLW.m3u
 
       # --- INDIVIDUAL BACKUPS ---
-      - name: Upload PPL (pcx)
-        if: hashFiles('pcx.m3u') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pcx.m3u
-          dest_path: /MyStuff/pcx.m3u
-
       - name: Upload TMLMAIN (tms1)
         if: hashFiles('tms1.m3u') != ''
         continue-on-error: true
@@ -183,6 +163,17 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: tms1.m3u
           dest_path: /MyStuff/tms1.m3u
+
+      - name: Upload ROX (rox)
+        if: hashFiles('rox.m3u8') != ''
+        continue-on-error: true
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: rox.m3u8
+          dest_path: /MyStuff/rox.m3u8
 
       - name: Upload SPX (spx)
         if: hashFiles('spx.m3u') != ''
@@ -205,17 +196,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: SSpo99.m3u8
           dest_path: /MyStuff/SSpo99.m3u8
-
-      - name: Upload SFREE (stfree)
-        if: hashFiles('stfree.m3u') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: stfree.m3u
-          dest_path: /MyStuff/stfree.m3u
 
       - name: Upload SS99 Events
         if: hashFiles('SS99_Events.m3u8') != ''
