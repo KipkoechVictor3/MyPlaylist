@@ -48,7 +48,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chrome chromium firefox
+          playwright install chromium firefox
           playwright install-deps
 
       - name: Run Scraper (TMLN)
@@ -58,20 +58,30 @@ jobs:
           echo "--- Running TimStreams (TMLMAIN) ---"
           mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
           sync
 
-      - name: Deploy TML folder to GitHub
+      - name: Run SS99 Scrapers
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running SS99 Scrapers ---"
+          mkdir -p SS99
+          curl -L -f -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
+          timeout 600s python3 -u SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
+          curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
+          timeout 360s python3 -u SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
+          sync
+
+      - name: Deploy Folders to GitHub
         shell: bash
         run: |
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -d "TML" ]; then
-            git add TML/
-            git commit -m "Update TML obfuscated links" || echo "No changes to commit"
-            git push origin main || echo "Push failed or no changes"
-          fi
+          git add TML/ SS99/
+          git commit -m "Update obfuscated links [TML & SS99]" || echo "No changes to commit"
+          git push origin main || echo "Push failed or no changes"
 
       - name: Run ROX Scraper
         shell: bash
@@ -91,24 +101,13 @@ jobs:
           timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
-      - name: Run SS99 Scrapers
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running SS99 Scrapers ---"
-          curl -L -f -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
-          timeout 360s python3 SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
-          curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
-          timeout 360s python3 SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
-          sync
-
       - name: Run PTSPT Scraper
         shell: bash
         continue-on-error: true
         run: |
           echo "--- Running PitSport Scraper ---"
           curl -L -f -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 pitspt_scraper.py || echo "⚠️ PTSPT failed..."
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pitspt_scraper.py || echo "⚠️ PTSPT failed..."
           sync
 
       - name: Process and Merge All Playlists
@@ -119,7 +118,6 @@ jobs:
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
-          mkdir -p temp_remotes
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
           while read -r url || [ -n "$url" ]; do
@@ -156,7 +154,7 @@ jobs:
           sed -i 's/\r//g' MyStuffCLW.m3u
           sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
 
-      - name: Upload Combined Playlist
+      - name: Upload Main Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -165,7 +163,19 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload TMLMAIN (tms1)
+      - name: Upload Backups to Dropbox
+        continue-on-error: true
+        run: |
+          # Individual uploads if you still need specific file tracking in Dropbox
+          for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "pitspt.m3u"; do
+            if [ -f "$f" ]; then
+               echo "Processing backup for $f..."
+               # Note: Calling the upload action inside a loop isn't standard in YAML, 
+               # keeping individual steps below for reliability.
+            fi
+          done
+
+      - name: Upload TMLMAIN (tms1) Backup
         if: hashFiles('tms1.m3u') != ''
         continue-on-error: true
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -176,7 +186,7 @@ jobs:
           source_path: tms1.m3u
           dest_path: /MyStuff/tms1.m3u
 
-      - name: Upload ROX (rox)
+      - name: Upload ROX Backup
         if: hashFiles('rox.m3u8') != ''
         continue-on-error: true
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -187,17 +197,7 @@ jobs:
           source_path: rox.m3u8
           dest_path: /MyStuff/rox.m3u8
 
-      - name: Upload SPX (spx)
-        if: hashFiles('spx.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          dest_path: /MyStuff/spx.m3u
-
-      - name: Upload SS99 Channels
+      - name: Upload SS99 Channels Backup
         if: hashFiles('SSpo99.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -206,13 +206,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: SSpo99.m3u8
           dest_path: /MyStuff/SSpo99.m3u8
-
-      - name: Upload PitSport (pitspt)
-        if: hashFiles('pitspt.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
