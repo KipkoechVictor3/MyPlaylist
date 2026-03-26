@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdn-live.ru/secure/api/v1/ca-sportsnet-east/playlist.m3u8?token=ba8e9cfe4b8e8f21e086e80957ee76e5007fa0a340546a2bf9781a7024728f99.1774557231.70a444e7f69296faa6ac695558960649.421993d8d65f86c79dc59e339517c0c9.22943662c63e6fc1daabc378ed8c44f5&signature=805cfca60661fed23cffaf20be5741f2385a00f91febdb2d8885880068e67fa7
+https://edge.cdn-live.ru/secure/api/v1/ca-sportsnet-east/playlist.m3u8?token=f925c08fdf8ea5e81a233b0740464fa18016fd02b45220098ac4cc011a500062.1774557588.f33dd9b178be8fa3892c29c8a36e0984.8f713c5a40b27137702a08cead7839e0.e6d0ead52d0a2e9b4c34e5b51fb22a5e&signature=e3e9911343bdfe1bae5996bc052be17febf1b3275352011717c70a9983ec1911
