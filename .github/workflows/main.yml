@@ -56,9 +56,22 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
+          mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
           sync
+
+      - name: Deploy TML folder to GitHub
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -d "TML" ]; then
+            git add TML/
+            git commit -m "Update TML obfuscated links" || echo "No changes to commit"
+            git push origin main || echo "Push failed or no changes"
+          fi
 
       - name: Run ROX Scraper
         shell: bash
@@ -104,19 +117,14 @@ jobs:
           set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
-          
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
-          # 1. Download all remote lists from tinyurl first to a temporary directory
           mkdir -p temp_remotes
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # 2. Identify and Merge MACG first (Priority 1)
-          echo -e "\n--- Processing Priority Remotes ---"
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             if [[ "$url" == *"macg.m3u"* ]]; then
-               echo "🎯 Found macg.m3u remote, merging as TOP priority"
                if curl -L -f -k --connect-timeout 10 "$url" -o "temp_macg.m3u" -s; then
                   echo -e "\n######## SOURCE: macg.m3u ########" >> "$OUTPUT_FILE"
                   sed 's/\r$//' "temp_macg.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -124,23 +132,16 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          # 3. Merge Hierarchy of Scraped files (Priority 2)
-          echo -e "\n--- Merging Local Scraped Hierarchy ---"
           for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u"; do
             if [ -s "$f" ]; then
-              echo "✅ Merging scraped: $f"
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
 
-          # 4. Merge Remaining Remotes (Priority 3)
-          echo -e "\n--- Processing Remaining Remotes ---"
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            # Skip macg as it was handled in step 2
             [[ "$url" == *"macg.m3u"* ]] && continue
-            
             temp="remote_t.m3u"
             if curl -L -f -k --connect-timeout 10 "$url" -o "$temp" -s; then
                 echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
@@ -164,7 +165,6 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      # --- INDIVIDUAL BACKUPS (RRACE REMOVED) ---
       - name: Upload TMLMAIN (tms1)
         if: hashFiles('tms1.m3u') != ''
         continue-on-error: true
