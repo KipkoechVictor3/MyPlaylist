@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-laliga/playlist.m3u8?token=16f4c5396cb83d325922bf5c4b40fec4d2fa919ecf74bed7d5f8ff8753948754.1774548860.403f4b6c872d118ca6f883053021e410.e4132ca3d05ceedcb93c45074564b44b.e3471e7fb8571ad6fad72b0b5224e384&signature=341b17f599239ea11e3fdaada002373b013cab0fd6be0ee7b6a11a3a3402cbc1
