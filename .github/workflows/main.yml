@@ -2,24 +2,9 @@ name: Combined Remote Playlist
 
 on:
   schedule:
-    - cron: '0,40 4 * * *'
-    - cron: '20 5 * * *'
-    - cron: '0,40 6 * * *'
-    - cron: '10,40 7 * * *'
-    - cron: '20 8 * * *'
-    - cron: '0,50 9 * * *'
-    - cron: '40 10 * * *'
-    - cron: '3,40 11 * * *'
-    - cron: '5,33 12 * * *'
-    - cron: '0,35 13 * * *'
-    - cron: '5,35 14 * * *'
-    - cron: '3,40 15 * * *'
-    - cron: '10,30 16 * * *'
-    - cron: '0,40 17 * * *'
-    - cron: '0,33 18 * * *'
-    - cron: '5,30 19 * * *'
-    - cron: '3 20 * * *'
-  workflow_dispatch:
+    # Backup internal trigger (runs every 30 mins)
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Primary trigger for Cron-job.org
 
 concurrency:
   group: combined-processing
@@ -48,7 +33,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium firefox
+          playwright install chromium chrome firefox
           playwright install-deps
 
       - name: Run Scraper (TMLN)
@@ -80,7 +65,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add TML/ SS99/
-          git commit -m "Update obfuscated links [TML & SS99]" || echo "No changes to commit"
+          # Ensure local is synced before pushing to avoid conflicts
+          git pull origin main --rebase || echo "Pull failed, continuing..."
+          git commit -m "Update links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main || echo "Push failed or no changes"
 
       - name: Run ROX Scraper
@@ -163,21 +150,14 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Backups to Dropbox
+      - name: Upload Individual Backups
+        if: always()
         continue-on-error: true
         run: |
-          # Individual uploads if you still need specific file tracking in Dropbox
-          for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "pitspt.m3u"; do
-            if [ -f "$f" ]; then
-               echo "Processing backup for $f..."
-               # Note: Calling the upload action inside a loop isn't standard in YAML, 
-               # keeping individual steps below for reliability.
-            fi
-          done
+          echo "Syncing individual M3U backups to Dropbox..."
 
-      - name: Upload TMLMAIN (tms1) Backup
+      - name: Upload TML Backup
         if: hashFiles('tms1.m3u') != ''
-        continue-on-error: true
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
@@ -186,18 +166,7 @@ jobs:
           source_path: tms1.m3u
           dest_path: /MyStuff/tms1.m3u
 
-      - name: Upload ROX Backup
-        if: hashFiles('rox.m3u8') != ''
-        continue-on-error: true
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rox.m3u8
-          dest_path: /MyStuff/rox.m3u8
-
-      - name: Upload SS99 Channels Backup
+      - name: Upload SS99 Backup
         if: hashFiles('SSpo99.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
