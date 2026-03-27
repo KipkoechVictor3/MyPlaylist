@@ -2,9 +2,8 @@ name: Combined Remote Playlist
 
 on:
   schedule:
-    # Backup internal trigger (runs every 30 mins)
     - cron: '*/30 * * * *'
-  workflow_dispatch: # Primary trigger for Cron-job.org
+  workflow_dispatch: 
 
 concurrency:
   group: combined-processing
@@ -33,7 +32,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium chrome firefox
+          playwright install firefox
           playwright install-deps
 
       - name: Run Scraper (TMLN)
@@ -51,7 +50,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running SS99 Scrapers ---"
-          mkdir -p SS99
+          mkdir -p SS99 ss99events
           curl -L -f -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
           timeout 600s python3 -u SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
           curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
@@ -64,8 +63,7 @@ jobs:
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add TML/ SS99/
-          # Ensure local is synced before pushing to avoid conflicts
+          git add TML/ SS99/ ss99events/
           git pull origin main --rebase || echo "Pull failed, continuing..."
           git commit -m "Update links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main || echo "Push failed or no changes"
@@ -149,12 +147,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
-
-      - name: Upload Individual Backups
-        if: always()
-        continue-on-error: true
-        run: |
-          echo "Syncing individual M3U backups to Dropbox..."
 
       - name: Upload TML Backup
         if: hashFiles('tms1.m3u') != ''
