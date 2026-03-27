@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdn-live.ru/secure/api/v1/gb-bbc-one/playlist.m3u8?token=6f222739e66c3f974be02653cdcbcda2ec19a7e9cc2bb2214dd7fc3ca2445c9c.1774633145.2b7a96ddb40e63db89020a4639f2692a.dd083ca2be7220b216ac84251d641506.8b82638869b5bcf231058ad6fcd75159&signature=4f2414b22a21b166b0fccf53749ec0a8c524a9f2cdb709d21b01ca9196edef7f
+https://edge.cdn-live.ru/secure/api/v1/gb-bbc-one/playlist.m3u8?token=abc50eb62c514363ccceba24b83804f1dca1651005945162720793e29cfc5ff4.1774633592.98d1cbf2d01176e5edddef6687188172.c4c2afe2ada7d892d1555a9664e79db9.58782e2942e9f3311e4aad17012dfdbd&signature=7e7815dda32d3f2e6941d0c7ddcc4ac2d49071f8c11ac1c5f8d0e844728c9ca9
