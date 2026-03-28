@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/us-nhl-network/playlist.m3u8?token=7ee4a1ca6019df4282a77a9d0dcef08b2900c6a5859ccd2211cf89a775177bfd.1774739393.37513ec4b59e825005adaf37412849e2.970d387f582322412f297ca1a030315a.a4339d8f4e1278665ba38202ee888191&signature=987fd1bf10eeeaf247ceee92de9c01872713c52538d11185bcd94f6bc61a8735
+https://edge.cdn-live.ru/secure/api/v1/us-nhl-network/playlist.m3u8?token=7358714be727ce7cc15e38f1551cda9bdfa7d95d83980396c3d324a0fb0ebfe3.1774741262.525ffa566fb1d9f805dd7bb785dc6725.b3e8b907030cdfbcab530465e32b14da.199839268dc468dda65b0c9ffe893f51&signature=462376b297fb59acc8c52db76ba1e3bf849a8f31e92e216445c94d3104ea47bc
