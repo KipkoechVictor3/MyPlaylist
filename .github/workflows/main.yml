@@ -107,6 +107,15 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
+          # 1. Start with Local Files in requested order: TMS, PTSP, ROX, SS99, SS99Events
+          for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
+            if [ -s "$f" ]; then
+              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
+              sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            fi
+          done
+
+          # 2. Add MACG from channels.txt
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             if [[ "$url" == *"macg.m3u"* ]]; then
@@ -117,13 +126,13 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          for f in "tms1.m3u" "rox.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u"; do
-            if [ -s "$f" ]; then
-              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
-              sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            fi
-          done
+          # 3. Add SPX
+          if [ -s "spx.m3u" ]; then
+            echo -e "\n######## SOURCE: spx ########" >> "$OUTPUT_FILE"
+            sed 's/\r$//' "spx.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+          fi
 
+          # 4. Add the rest of the remote URLs from channels.txt
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             [[ "$url" == *"macg.m3u"* ]] && continue
