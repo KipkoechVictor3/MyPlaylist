@@ -32,7 +32,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium chrome firefox
+          playwright install chromium firefox
           playwright install-deps
 
       - name: Run Scraper (TMLN)
@@ -57,22 +57,12 @@ jobs:
           timeout 360s python3 -u SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
           sync
 
-      - name: Deploy Folders to GitHub
-        shell: bash
-        run: |
-          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add TML/ SS99/ ss99events/
-          git pull origin main --rebase || echo "Pull failed, continuing..."
-          git commit -m "Update links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
-          git push origin main || echo "Push failed or no changes"
-
       - name: Run ROX Scraper
         shell: bash
         continue-on-error: true
         run: |
           echo "--- Running ROX Scraper ---"
+          mkdir -p rox
           curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "⚠️ ROX failed..."
           sync
@@ -86,14 +76,26 @@ jobs:
           timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
-      - name: Run PTSPT Scraper
+      - name: Run PitSport Scraper
         shell: bash
         continue-on-error: true
         run: |
           echo "--- Running PitSport Scraper ---"
+          mkdir -p ptsp
           curl -L -f -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pitspt_scraper.py || echo "⚠️ PTSPT failed..."
           sync
+
+      - name: Deploy Folders to GitHub
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add TML/ SS99/ ss99events/ rox/ ptsp/
+          git pull origin main --rebase || echo "Pull failed, continuing..."
+          git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git push origin main || echo "Push failed or no changes"
 
       - name: Process and Merge All Playlists
         shell: bash
@@ -115,7 +117,7 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          for f in "tms1.m3u" "rox.m3u8" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u"; do
+          for f in "tms1.m3u" "rox.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -167,3 +169,33 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: SSpo99.m3u8
           dest_path: /MyStuff/SSpo99.m3u8
+
+      - name: Upload ROX Backup
+        if: hashFiles('rox.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: rox.m3u
+          dest_path: /MyStuff/rox.m3u
+
+      - name: Upload SPX Backup
+        if: hashFiles('spx.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: spx.m3u
+          dest_path: /MyStuff/spx.m3u
+
+      - name: Upload PTSPT Backup
+        if: hashFiles('pitspt.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: pitspt.m3u
+          dest_path: /MyStuff/pitspt.m3u
