@@ -92,10 +92,31 @@ jobs:
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add all changes to index first
           git add TML/ SS99/ ss99events/ rox/ ptsp/
-          git pull origin main --rebase || echo "Pull failed, continuing..."
+          
+          # Stash them so the working directory is clean for the pull
+          git stash
+          
+          # Pull latest changes with rebase
+          git pull origin main --rebase
+          
+          # Bring your scraped files back
+          git stash pop || echo "No stashed changes to pop"
+          
+          # Add again and commit
+          git add TML/ SS99/ ss99events/ rox/ ptsp/
           git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
-          git push origin main || echo "Push failed or no changes"
+          
+          # Push with a simple retry mechanism
+          for i in {1..5}; do
+            git push origin main && break || {
+              echo "Push failed, retrying in 5s..."
+              git pull origin main --rebase
+              sleep 5
+            }
+          done
 
       - name: Process and Merge All Playlists
         shell: bash
@@ -107,7 +128,6 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # 1. Start with Local Files in order: TMS, PTSP, ROX, SS99, SS99Events
           for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -115,7 +135,6 @@ jobs:
             fi
           done
 
-          # 2. Add MACG from channels.txt
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             if [[ "$url" == *"macg.m3u"* ]]; then
@@ -126,13 +145,11 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          # 3. Add SPX
           if [ -s "spx.m3u" ]; then
             echo -e "\n######## SOURCE: spx ########" >> "$OUTPUT_FILE"
             sed 's/\r$//' "spx.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
 
-          # 4. Add the rest of the remote URLs from channels.txt
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             [[ "$url" == *"macg.m3u"* ]] && continue
