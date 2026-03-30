@@ -32,8 +32,17 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium chrome firefox
+          playwright install chromium firefox
           playwright install-deps
+
+      - name: Run STRFREE Scraper
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running STRFREE Scraper ---"
+          curl -L -f -o strfree_scraper.py "${{ secrets.STRFREE_URL }}"
+          python3 -u strfree_scraper.py || echo "⚠️ STRFREE failed..."
+          sync
 
       - name: Run Scraper (TMS/TMLN)
         shell: bash
@@ -96,8 +105,8 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # -A ensures deletions are tracked
-          git add -A TML/ SS99/ ss99events/ rox/ ptsp/
+          # Added stfree.m3u to git tracking
+          git add -A TML/ SS99/ ss99events/ rox/ ptsp/ stfree.m3u
           git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
@@ -112,8 +121,8 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # 1. Local Scraper Files Order: TMS, PTSP, ROX, SS99, SS99Events, SPX
-          for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          # 1. Local Scraper Files Order: STRFREE (New), TMS, PTSP, ROX, SS99, SS99Events, SPX
+          for f in "stfree.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -158,18 +167,15 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Backups to Dropbox
-        if: always()
-        shell: bash
-        run: |
-          # Function to upload if file exists
-          upload_file() {
-            if [ -s "$1" ]; then
-              echo "Uploading $1 to Dropbox..."
-              # Note: Using curl here as a fallback or you can repeat the action block for each.
-              # For stability, I will keep your explicit action blocks below.
-            fi
-          }
+      - name: Upload STRFREE Backup
+        if: hashFiles('stfree.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: stfree.m3u
+          dest_path: /MyStuff/stfree.m3u
 
       - name: Upload TML Backup
         if: hashFiles('tms1.m3u') != ''
