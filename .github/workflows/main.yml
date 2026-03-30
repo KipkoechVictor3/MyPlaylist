@@ -32,7 +32,7 @@ jobs:
           apt-get update
           apt-get install -y python3-pip python3-full curl xvfb git
           python3 -m pip install httpx[http2] aiohttp dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium firefox
+          playwright install chromium chrome firefox
           playwright install-deps
 
       - name: Run STRFREE Scraper
