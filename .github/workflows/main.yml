@@ -35,15 +35,6 @@ jobs:
           playwright install chromium chrome firefox
           playwright install-deps
 
-      - name: Run STRFREE Scraper
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running STRFREE Scraper ---"
-          curl -L -f -o strfree_scraper.py "${{ secrets.STRFREE_URL }}"
-          python3 -u strfree_scraper.py || echo "⚠️ STRFREE failed..."
-          sync
-
       - name: Run Scraper (TMS/TMLN)
         shell: bash
         continue-on-error: true
@@ -105,8 +96,7 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Added stfree.m3u to git tracking
-          git add -A TML/ SS99/ ss99events/ rox/ ptsp/ stfree.m3u
+          git add -A TML/ SS99/ ss99events/ rox/ ptsp/
           git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
@@ -121,29 +111,29 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # 1. Local Scraper Files Order: STRFREE (New), TMS, PTSP, ROX, SS99, SS99Events, SPX
-          for f in "stfree.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          # 1. Local Scraper Files Order (Excluding STRFREE as it is now remote)
+          for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
 
-          # 2. Process macg.m3u from remote list
+          # 2. Process STRFREE from remote list (Replacing the old macg priority)
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            if [[ "$url" == *"macg.m3u"* ]]; then
-               if curl -L -f -k --connect-timeout 10 "$url" -o "temp_macg.m3u" -s; then
-                  echo -e "\n######## SOURCE: macg.m3u ########" >> "$OUTPUT_FILE"
-                  sed 's/\r$//' "temp_macg.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            if [[ "$url" == *"stfree.m3u"* ]]; then
+               if curl -L -f -k --connect-timeout 10 "$url" -o "temp_stfree.m3u" -s; then
+                  echo -e "\n######## SOURCE: STRFREE (Remote) ########" >> "$OUTPUT_FILE"
+                  sed 's/\r$//' "temp_stfree.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
                fi
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          # 3. Process the rest of the remote URLs
+          # 3. Process the rest of the remote URLs (Excluding stfree)
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            [[ "$url" == *"macg.m3u"* ]] && continue
+            [[ "$url" == *"stfree.m3u"* ]] && continue
             temp="remote_t.m3u"
             if curl -L -f -k --connect-timeout 10 "$url" -o "$temp" -s; then
                 echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
@@ -166,16 +156,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
-
-      - name: Upload STRFREE Backup
-        if: hashFiles('stfree.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: stfree.m3u
-          dest_path: /MyStuff/stfree.m3u
 
       - name: Upload TML Backup
         if: hashFiles('tms1.m3u') != ''
