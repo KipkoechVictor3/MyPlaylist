@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/gb-sky-sports-action/playlist.m3u8?token=f90128fbfcd1162ca752868ff34b1d24fabd0c35f1b3410625bcc993bb8cd010.1774917650.9a9a01020720abb20362cfae5bd32203.fc49b6fc772166c56447f998f27b4a2c.f85440776ac6d46fe4202b268b9706dd&signature=1da9b3b5eaa109a5d2d5caf9956888b175c922364cddfa3430c7c89a71afb685
