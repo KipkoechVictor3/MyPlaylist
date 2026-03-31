@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdn-live.ru/secure/api/v1/za-supersport-action/playlist.m3u8?token=608abc3067bd10b21212489471cbbe7c8d6c3a27e2e5563c962aa9224d74dac8.1774960907.148b635d1ae3d9933f38ed3b9477ba41.95aeab24491fa6dd8360086a3fc65e14.cba1d24478d3ff8094f8aaec3a90e327&signature=f24ab23b8bb869adbe0193731f5692498b85034994d3eeaf3facee635a43c687
