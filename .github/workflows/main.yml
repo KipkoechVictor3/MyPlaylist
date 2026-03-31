@@ -35,16 +35,6 @@ jobs:
           playwright install chromium chrome firefox
           playwright install-deps
 
-      - name: Run FShot Scraper (FRESHT)
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running FShot (FRESHT) ---"
-          rm -rf FRESHT/* && mkdir -p FRESHT
-          curl -L -f -o FRESHT_SCRAPER.py "${{ secrets.FRESHT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u FRESHT_SCRAPER.py || echo "⚠️ FRESHT failed..."
-          sync
-
       - name: Run Scraper (TMS/TMLN)
         shell: bash
         continue-on-error: true
@@ -106,7 +96,7 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          git add -A FRESHT/ TML/ SS99/ ss99events/ rox/ ptsp/
+          git add -A TML/ SS99/ ss99events/ rox/ ptsp/
           git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
@@ -122,7 +112,7 @@ jobs:
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
           # 1. Local Scraper Files Order
-          for f in "fsht.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -166,16 +156,6 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
-
-      - name: Upload fsht Backup
-        if: hashFiles('fsht.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: fsht.m3u
-          dest_path: /MyStuff/fsht.m3u
 
       - name: Upload TML Backup
         if: hashFiles('tms1.m3u') != ''
