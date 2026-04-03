@@ -1,0 +1,45 @@
+name: PPV Scraper
+
+on:
+  schedule:
+    - cron: "0 * * * *" # Runs every hour
+  workflow_dispatch:
+
+jobs:
+  scrape-ppv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright httpx pytz
+          # Note: We don't prompt 'playwright install' as per your preference,
+          # but the runner needs the actual browser binaries to function.
+          python -m playwright install firefox chromium 
+
+      # THIS IS THE KEY STEP for external=True
+      - name: Launch Background Browser (CDP)
+        run: |
+          # Launch Chromium or Firefox in the background with remote debugging enabled
+          # The script expects port 9222
+          google-chrome --headless --remote-debugging-port=9222 --disable-gpu &
+          
+          # Give it a few seconds to initialize
+          sleep 5
+
+      - name: Run Scraper
+        run: python fetch.py
+
+      - name: Commit and Push M3U8
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update PPV Playlist"
+          file_pattern: "*.m3u8 caches/*.json logs/*.log"
