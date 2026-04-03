@@ -20,7 +20,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install playwright httpx pytz
+          pip install "httpx[http2]" playwright pytz
           # Note: We don't prompt 'playwright install' as per your preference,
           # but the runner needs the actual browser binaries to function.
           python -m playwright install firefox chromium 
