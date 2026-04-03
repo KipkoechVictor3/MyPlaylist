@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdn-live.ru/secure/api/v1/us-mlb-philadelphia-phillies/playlist.m3u8?token=bd494a5a8fd5697bbac69994009fe50673c36ddb5d7797975daa01e95f14de18.1775223569.c21d0841354e7a3a5e5fbf05e855c75b.e1c26f2ae4b79aa462499335643db8fb.546d5bfbf7a4d25ce496939ad6f9f187&signature=a8f801037c0b32c0d104cdfac1dcb008cb180c398af996767671a5a9368461a0
