@@ -1,0 +1,19 @@
+#EXTM3U url-tvg="https://raw.githubusercontent.com/doms9/iptv/refs/heads/default/M3U8/TV.xml"
+
+#EXTINF:-1 tvg-chno="1" tvg-id="MLB.Baseball.Dummy.us" tvg-name="[Baseball] Miami Marlins vs. New York Yankees (PPV)" tvg-logo="https://api.ppv.la/assets/thumb/94e704acfb023e67701fb5aa4601aa12-thumbnail.jpg" group-title="Live Events",[Baseball] Miami Marlins vs. New York Yankees (PPV)
+#EXTVLCOPT:http-referrer=https://pooembed.eu/embed/mlb/2026-04-03/mia-nyy#player=clappr#autoplay=true
+#EXTVLCOPT:http-origin=https://pooembed.eu/embed/mlb/2026-04-03/mia-nyy#player=clappr#autoplay=true
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0
+https://lb3.modifiles.fans/secure/GRVPyCtDjgVnhcVOidPjmoimrovdGBUZ/1775226900/1775257500/newyorkyankees/tracks-v1a1/mono.ts.m3u8
+
+#EXTINF:-1 tvg-chno="2" tvg-id="MLB.Baseball.Dummy.us" tvg-name="[Baseball] San Diego Padres vs. Boston Red Sox (PPV)" tvg-logo="https://api.ppv.la/assets/thumb/60f3624568850c184913b9de9683757d-thumbnail.jpg" group-title="Live Events",[Baseball] San Diego Padres vs. Boston Red Sox (PPV)
+#EXTVLCOPT:http-referrer=https://pooembed.eu/embed/mlb/2026-04-03/sd-bos#player=clappr#autoplay=true
+#EXTVLCOPT:http-origin=https://pooembed.eu/embed/mlb/2026-04-03/sd-bos#player=clappr#autoplay=true
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0
+https://lb4.modifiles.fans/secure/WJoxSbHYtADXqffpOSjLWtHylocgdYBR/1775229000/1775259600/bostonredsox/tracks-v1a1/mono.ts.m3u8
+
+#EXTINF:-1 tvg-chno="3" tvg-id="MLB.Baseball.Dummy.us" tvg-name="[Baseball] Toronto Blue Jays vs. Chicago White Sox (PPV)" tvg-logo="https://api.ppv.la/assets/thumb/4b3b5108033127bfc97fb193c79643aa-thumbnail.jpg" group-title="Live Events",[Baseball] Toronto Blue Jays vs. Chicago White Sox (PPV)
+#EXTVLCOPT:http-referrer=https://pooembed.eu/embed/mlb/2026-04-03/tor-chw#player=clappr#autoplay=true
+#EXTVLCOPT:http-origin=https://pooembed.eu/embed/mlb/2026-04-03/tor-chw#player=clappr#autoplay=true
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0
+https://lb4.modifiles.fans/secure/ffjQixrqLrvXfapjPIIYarJIpKTVdaJA/1775229000/1775259600/chicagowhitesox/tracks-v1a1/mono.ts.m3u8
