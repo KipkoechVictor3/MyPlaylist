@@ -1,4 +1,5 @@
 import re
+import sys
 from functools import partial
 
 from playwright.async_api import Browser
@@ -25,7 +26,6 @@ API_MIRRORS = [
 
 def fix_url(s: str) -> str:
     pattern = re.compile(r"index\.m3u8$", re.I)
-
     return pattern.sub(r"tracks-v1a1/mono.ts.m3u8", s)
 
 
@@ -34,32 +34,24 @@ async def get_events(url: str, cached_keys: list[str]) -> list[dict[str, str]]:
 
     if not (api_data := API_FILE.load(per_entry=False)):
         log.info("Refreshing API cache")
-
         api_data = {"timestamp": now.timestamp()}
-
         if r := await network.request(url, log=log):
             api_data: dict = r.json()
-
         API_FILE.write(api_data)
 
     events = []
-
     start_dt = now.delta(minutes=-30)
     end_dt = now.delta(minutes=30)
 
     for stream_group in api_data.get("streams", []):
         sport = stream_group["category"]
-
         if sport == "24/7 Streams":
             continue
 
         for event in stream_group.get("streams", []):
             name = event.get("name")
-
             start_ts = event.get("starts_at")
-
             logo = event.get("poster")
-
             iframe = event.get("iframe")
 
             if not (name and start_ts and iframe):
@@ -69,7 +61,6 @@ async def get_events(url: str, cached_keys: list[str]) -> list[dict[str, str]]:
                 continue
 
             event_dt = Time.from_ts(start_ts)
-
             if not start_dt <= event_dt <= end_dt:
                 continue
 
@@ -82,26 +73,20 @@ async def get_events(url: str, cached_keys: list[str]) -> list[dict[str, str]]:
                     "timestamp": event_dt.timestamp(),
                 }
             )
-
     return events
 
 
 async def scrape(browser: Browser) -> None:
     cached_urls = CACHE_FILE.load()
-
     valid_urls = {k: v for k, v in cached_urls.items() if v["url"]}
-
     valid_count = cached_count = len(valid_urls)
 
     urls.update(valid_urls)
-
     log.info(f"Loaded {cached_count} event(s) from cache")
 
     if not (api_url := await network.get_base(API_MIRRORS)):
         log.warning("No working PPV mirrors")
-
         CACHE_FILE.write(cached_urls)
-
         return
 
     log.info(f'Scraping from "{api_url}"')
@@ -136,7 +121,6 @@ async def scrape(browser: Browser) -> None:
                     )
 
                     key = f"[{sport}] {event} ({TAG})"
-
                     tvg_id, pic = leagues.get_tvg_info(sport, event)
 
                     entry = {
@@ -152,10 +136,13 @@ async def scrape(browser: Browser) -> None:
 
                     if url:
                         valid_count += 1
-
                         entry["url"] = fix_url(url)
-
                         urls[key] = entry
+                        
+                        # PRINTING TO CONSOLE AS REQUESTED
+                        print(f"\n[EVENT] {key}")
+                        print(f"[M3U8]  {entry['url']}")
+                        sys.stdout.flush()
 
         log.info(f"Collected and cached {valid_count - cached_count} new event(s)")
 
