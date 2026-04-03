@@ -20,26 +20,25 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
+          # Added [http2] for webwork.py requirement
           pip install "httpx[http2]" playwright pytz
-          # Note: We don't prompt 'playwright install' as per your preference,
-          # but the runner needs the actual browser binaries to function.
+          # Installing Firefox for hdl_brwsr and Chromium for xtrnl_brwsr
           python -m playwright install firefox chromium 
 
-      # THIS IS THE KEY STEP for external=True
       - name: Launch Background Browser (CDP)
         run: |
-          # Launch Chromium or Firefox in the background with remote debugging enabled
-          # The script expects port 9222
-          google-chrome --headless --remote-debugging-port=9222 --disable-gpu &
-          
-          # Give it a few seconds to initialize
+          # Added flags for stability in headless Linux and silenced stderr
+          google-chrome --headless --remote-debugging-port=9222 --disable-gpu --no-sandbox --disable-dev-shm-usage > /dev/null 2>&1 &
           sleep 5
 
       - name: Run Scraper
         run: python fetch.py
 
-      - name: Commit and Push M3U8
+      - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update PPV Playlist"
-          file_pattern: "*.m3u8 caches/*.json logs/*.log"
+          # Using "." prevents the 'pathspec did not match' error 
+          # by letting Git find whatever files were actually created.
+          file_pattern: "."
+          skip_dirty_check: false
