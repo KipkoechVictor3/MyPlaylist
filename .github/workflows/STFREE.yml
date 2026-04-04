@@ -17,14 +17,15 @@ jobs:
           curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
           sudo apt-get update && sudo apt-get install cloudflare-warp -y
-          warp-cli --accept-tos registration new
-          warp-cli --accept-tos mode proxy
-          warp-cli --accept-tos connect
+          
+          # Force TOS acceptance on every command to prevent the TTY error
+          sudo warp-cli --accept-tos registration new
+          sudo warp-cli --accept-tos mode proxy
+          sudo warp-cli --accept-tos connect
           
           echo "Waiting for WARP to establish stable connection..."
-          # Loop until 'warp-cli status' actually says 'Connected'
           for i in {1..15}; do
-            STATUS=$(warp-cli status)
+            STATUS=$(sudo warp-cli --accept-tos status)
             echo "$STATUS"
             if [[ "$STATUS" == *"Connected"* ]]; then
               echo "WARP is ready!"
@@ -32,7 +33,7 @@ jobs:
             fi
             sleep 5
           done
-          # Final check: can we actually reach the internet via the proxy?
+          # Verify routing
           curl --socks5-hostname 127.0.0.1:4000 -I https://google.com || echo "Proxy not routing yet"
 
       - name: Set up Python
@@ -50,7 +51,6 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           curl -L -f -o stfree.py "${{ secrets.STRFREE_URL }}"
-          # Added a 5s head-start to ensure the SOCKS port is fully 'listening'
           sleep 5
           python -u stfree.py || echo "⚠️ Scraper execution had issues..."
 
