@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdn-live.ru/secure/api/v1/us-mlb-oakland-athletics/playlist.m3u8?token=0f59c553f2c16f39cd52d4b7c2f18014e70f5e7a702a4b271bda431c0e1fec7f.1775329552.aab958d786cf84a502e82b2b36306bff.d66f539209de6b70390789ddd602be10.6a720e4cc283d15ee33eb4654a0bf79e&signature=5015dfa23de9c59c0f7e199ba49ade8f6f6e5f43165b8a644f125065736cb3ed

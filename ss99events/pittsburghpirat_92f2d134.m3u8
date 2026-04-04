@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdn-live.ru/secure/api/v1/us-mlb-pittsburgh-pirates/playlist.m3u8?token=5001c3a502e32ab2e94db7af9496bd6892867e5fdf4d579b221fb00b2c8ce64d.1775329546.7bc841a60d450f60b265ee92f0d5d6a4.9748a8650ac58e65d105ae956da24e97.f81c6ffa02578c69193e5a2d793b0030&signature=ba4b25acdb039583d8448bd9231624c67e39e1a1c2eaa9c1cf404d7e8c2d5357
