@@ -21,15 +21,19 @@ jobs:
           warp-cli --accept-tos mode proxy
           warp-cli --accept-tos connect
           
-          echo "Waiting for WARP to verify connection..."
-          for i in {1..12}; do
-            if warp-cli status | grep -q "Connected"; then
-              echo "WARP is fully connected."
+          echo "Waiting for WARP to establish stable connection..."
+          # Loop until 'warp-cli status' actually says 'Connected'
+          for i in {1..15}; do
+            STATUS=$(warp-cli status)
+            echo "$STATUS"
+            if [[ "$STATUS" == *"Connected"* ]]; then
+              echo "WARP is ready!"
               break
             fi
-            echo "Waiting... (Attempt $i)"
             sleep 5
           done
+          # Final check: can we actually reach the internet via the proxy?
+          curl --socks5-hostname 127.0.0.1:4000 -I https://google.com || echo "Proxy not routing yet"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +50,8 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           curl -L -f -o stfree.py "${{ secrets.STRFREE_URL }}"
-          # Ensure the script starts with the latest code
+          # Added a 5s head-start to ensure the SOCKS port is fully 'listening'
+          sleep 5
           python -u stfree.py || echo "⚠️ Scraper execution had issues..."
 
       - name: Deploy Generated M3U to GitHub
