@@ -20,6 +20,16 @@ jobs:
           warp-cli --accept-tos registration new
           warp-cli --accept-tos mode proxy
           warp-cli --accept-tos connect
+          
+          echo "Waiting for WARP to verify connection..."
+          for i in {1..12}; do
+            if warp-cli status | grep -q "Connected"; then
+              echo "WARP is fully connected."
+              break
+            fi
+            echo "Waiting... (Attempt $i)"
+            sleep 5
+          done
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,7 +39,6 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          # Added socksio and httpx[socks] to fix the ImportError
           pip install httpx[http2,socks] socksio
 
       - name: Run StreamFree Scraper
@@ -37,19 +46,19 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           curl -L -f -o stfree.py "${{ secrets.STRFREE_URL }}"
-          python -u stfree.py || echo "⚠️ Scraper failed..."
+          # Ensure the script starts with the latest code
+          python -u stfree.py || echo "⚠️ Scraper execution had issues..."
 
       - name: Deploy Generated M3U to GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add stfree.m3u || echo "No m3u file"
-          git commit -m "Update StreamFree: $(date +'%Y-%m-%d %H:%M')" || echo "No changes"
-          git push
+          git add stfree.m3u || echo "No m3u file found"
+          git commit -m "Update StreamFree: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git push origin main || echo "Push failed or nothing to push"
 
       - name: Upload to Dropbox
         if: hashFiles('stfree.m3u') != ''
-        # Using your specific preferred version
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
