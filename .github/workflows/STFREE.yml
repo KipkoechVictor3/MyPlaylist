@@ -29,15 +29,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[http2] PySocks
+          # Added socksio and httpx[socks] to fix the ImportError
+          pip install httpx[http2,socks] socksio
 
       - name: Run StreamFree Scraper
         env:
           PYTHONUNBUFFERED: "1"
         run: |
-          # Fetch the script from your secret URL
           curl -L -f -o stfree.py "${{ secrets.STRFREE_URL }}"
-          # Run script - it will use the WARP proxy on 127.0.0.1:4000
           python -u stfree.py || echo "⚠️ Scraper failed..."
 
       - name: Deploy Generated M3U to GitHub
@@ -50,6 +49,7 @@ jobs:
 
       - name: Upload to Dropbox
         if: hashFiles('stfree.m3u') != ''
+        # Using your specific preferred version
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
