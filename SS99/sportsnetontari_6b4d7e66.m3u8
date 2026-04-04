@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdn-live.ru/secure/api/v1/ca-sportsnet-ontario/playlist.m3u8?token=127bc0cddaa772eaa14c74256986e1f8e8f97e78dbea4f2e7086d8ff72c0a47e.1775322267.a5bd7275e561cafd711ef42bdb860b0a.3f29b7521ab3158fb492bf7c1eb88779.3a82dac8e125f0a9c273a77c3b67fd12&signature=8500c4d833059f15cfbf24bc1408deb077ab455b5176fbdf249522c317a5dc3a
