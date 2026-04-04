@@ -1,4 +1,4 @@
-name: StreamFree Scraper Workflow
+name: StreamFree Scraper (Tailscale Tunnel)
 
 on:
   schedule:
@@ -12,33 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Cloudflare WARP
-        run: |
-          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
-          sudo apt-get update && sudo apt-get install cloudflare-warp -y
-          
-          # Start the background daemon explicitly
-          sudo systemctl enable --now warp-svc
-          sleep 2
-          
-          # Registration and setup
-          sudo warp-cli --accept-tos registration new
-          sudo warp-cli --accept-tos mode proxy
-          sudo warp-cli --accept-tos connect
-          
-          echo "Waiting for WARP tunnel stabilization..."
-          for i in {1..15}; do
-            STATUS=$(sudo warp-cli --accept-tos status)
-            echo "$STATUS"
-            if [[ "$STATUS" == *"Connected"* ]]; then
-              echo "WARP is ready!"
-              break
-            fi
-            sleep 5
-          done
-          # Final network test
-          curl --socks5-hostname 127.0.0.1:4000 -I https://google.com || echo "Proxy still not routing"
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          # Uses your Kenyan home IP for all requests
+          args: --exit-node=${{ secrets.HOME_PC_IP }} --exit-node-allow-lan-access=false
+          ping: ${{ secrets.HOME_PC_IP }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -48,14 +30,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[http2,socks] socksio
+          pip install httpx[http2]
 
       - name: Run StreamFree Scraper
         env:
           PYTHONUNBUFFERED: "1"
         run: |
           curl -L -f -o stfree.py "${{ secrets.STRFREE_URL }}"
-          python -u stfree.py || echo "⚠️ Scraper execution had issues..."
+          python -u stfree.py
 
       - name: Deploy Generated M3U to GitHub
         run: |
