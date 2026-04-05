@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
+https://ru-001.local-honduras-center.sbs/secure/api/v1/espn2-usa.m3u8?md5=ad361e81e348f7fd81371f582d2e3e93&exp=1775403672

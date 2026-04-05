@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2700000,RESOLUTION=1920x1080
+https://ru-001.local-honduras-center.sbs/secure/api/v1/fox-sports-505.m3u8?md5=fa461fd0445ca956b7186d8c9319893d&exp=1775403704
