@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/us-univision/playlist.m3u8?token=a311409460627420451ca7e6a762dd418faf48770f81cf4f05a3dfc7b0b42aa2.1775376377.aa2026d0ee9f642bce4f086f74bf499f.c7fd03160af912ff3cb61d56cc5dedda.571e2f5484d4a2c44bfdc08b119b50e6&signature=ac19d0182f5845b16f047ff32dc8e00f3c09ae424b771f4b6b7d8b6a66b7f945

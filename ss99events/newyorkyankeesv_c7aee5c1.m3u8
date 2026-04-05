@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/us-mlb-miami-marlins/playlist.m3u8?token=b1801451dafa88c04ae283438579e7aec1812ff04404d9695c0e067c00fc4c7e.1775376465.73180dc2678bd530314dd80888bb762a.4b8e26106dfbc725194d71855ab517b4.3491b5265dec6feb1b5344b1ebb3660f&signature=c7a4f83fc3d68aaca0d0e4dbe29fe9f6b224e9854c756ac99d31a6cac608e597
