@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.local-honduras-center.sbs/secure/api/v1/sportv1.m3u8?md5=320435137dd4058c400be2c6937f8606&exp=1775505758
