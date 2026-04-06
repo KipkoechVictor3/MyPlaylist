@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/us-nba-tv/playlist.m3u8?token=655e10c71a3e0775322951ee46ab6d460070b57d95d04d00497ce671abcb0f9c.1775439605.13e18f7595faa734a65ce2a5c06fdb40.0084dbf11b83f91631d0bfe94de95097.91cdc9fd6a57fe4af0cfe12881a4052b&signature=c32992e66e878138cfc94aaf2cf9a6a5e57ec8c37600f4053d3da9cac324a9f6
+https://edge.cdn-live.ru/secure/api/v1/us-nba-tv/playlist.m3u8?token=1ca689a04c6e1e327898b9507ac854d4dcda6a8925f6639ea4846557e935c6d1.1775441167.635037527b7b31eea567280140e0c5c4.d0f66044d127ae3cb268dac6735edf1e.273eb7eb5f5a250cec36681c77fa4a8a&signature=6b81a7fd22006cf9198bf296268b65c0c398676dcdc07d63ba35d05d095a7ace
