@@ -1,7 +1,7 @@
-name: MScanner
+name: MAC Address Scanner
 
 on:
-  workflow_dispatch: # Allows you to trigger this manually from the Actions tab
+  workflow_dispatch: # Allows manual trigger from the "Actions" tab
 
 jobs:
   scan:
@@ -11,22 +11,48 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget curl
+          sudo apt-get install -y wget curl coreutils
 
-      - name: Download and Setup mcbash
+      - name: Setup mcbash Environment
         run: |
+          # Create config directory to silence warnings
+          mkdir -p /home/runner/.config/mcbash
+          
+          # Create default config to prevent curl variable errors
+          cat <<EOF > /home/runner/.config/mcbash/mcbash.conf
+          TIMEOUT=5
+          WAIT=0
+          EOF
+          
+          # Download the tool
           wget https://raw.githubusercontent.com/dougy147/mcbash/refs/heads/master/bin/mcbash
           chmod +x ./mcbash
 
-      - name: Run Scan
+      - name: Execute Scan
         run: |
-          # Replace the values below with your actual data
+          # Configuration
           SERVER_URL="http://195.128.27.141:80"
           START_MAC="00:1A:79:24:19:24"
           END_MAC="00:1A:79:24:1D:0C"
           
-          ./mcbash -u "$SERVER_URL" -F "$START_MAC" -L "$END_MAC" --seq --show-only-mac
+          # Run parameters:
+          # -u: Server URL
+          # -F / -L: MAC Range
+          # -t 5: Explicit timeout for curl
+          # --seq: Sequential scanning
+          # --show-only-mac: Clean output
+          # --no-checkpoint: Disable local state saving
+          # -np: Non-interactive mode (crucial for CI/CD)
+          
+          ./mcbash -u "$SERVER_URL" \
+                   -F "$START_MAC" \
+                   -L "$END_MAC" \
+                   -t 5 \
+                   --seq \
+                   --show-only-mac \
+                   --no-checkpoint \
+                   -np
         shell: bash
