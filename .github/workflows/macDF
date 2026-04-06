@@ -1,0 +1,32 @@
+name: MScanner
+
+on:
+  workflow_dispatch: # Allows you to trigger this manually from the Actions tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget curl
+
+      - name: Download and Setup mcbash
+        run: |
+          wget https://raw.githubusercontent.com/dougy147/mcbash/refs/heads/master/bin/mcbash
+          chmod +x ./mcbash
+
+      - name: Run Scan
+        run: |
+          # Replace the values below with your actual data
+          SERVER_URL="http://your-server-url.com"
+          START_MAC="00:1A:79:00:00:00"
+          END_MAC="00:1A:79:00:11:11"
+          
+          ./mcbash -u "$SERVER_URL" -F "$START_MAC" -L "$END_MAC" --seq --show-only-mac
+        shell: bash
