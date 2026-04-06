@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdn-live.ru/secure/api/v1/us-telemundo/playlist.m3u8?token=9db3c7e688a459b91aff20e589959941cc2374bc33ab912222847d7dcfc83990.1775455526.23e24aa047a807211aaa801ae3472d2e.854bce0aea6e83ba3f1f183b8f5a9d4a.463509e47cd4c0d037c4bd50aafbe606&signature=6a1dd15690ba600a2fdfeafc5afd874951afa3726f5c0c246257dcd211282eaa
+https://edge.cdn-live.ru/secure/api/v1/us-telemundo/playlist.m3u8?token=3d56c927eff3e9c9e817ff95617083eb1b5690b2afe5ef1bb2dc6861675e529c.1775457556.27c67dbd2135348b2f5cb547c7bf3a27.a41e5cdea020ef01ec5cd0e7bab6ff0a.6a5394736e4d190c5531fe9f73c052c9&signature=b7af6cad90e4f8418dad88a08bab19fda0d6f2d3cc92afdf30ce71c3671b5ca3
