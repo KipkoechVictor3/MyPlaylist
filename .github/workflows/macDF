@@ -24,9 +24,9 @@ jobs:
       - name: Run Scan
         run: |
           # Replace the values below with your actual data
-          SERVER_URL="http://your-server-url.com"
-          START_MAC="00:1A:79:00:00:00"
-          END_MAC="00:1A:79:00:11:11"
+          SERVER_URL="http://195.128.27.141:80"
+          START_MAC="00:1A:79:24:19:24"
+          END_MAC="00:1A:79:24:1D:0C"
           
           ./mcbash -u "$SERVER_URL" -F "$START_MAC" -L "$END_MAC" --seq --show-only-mac
         shell: bash
