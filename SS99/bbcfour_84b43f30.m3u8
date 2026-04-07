@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdn-live.ru/secure/api/v1/gb-bbc-four/playlist.m3u8?token=d490c701b6b37516ab32df78504fb9431144d7a83a15c930a49246909a2fc62d.1775552584.bc90759306adfbf8299a6bfe49aa3270.0faf1bb5cc7951ce3be966eb5b58c598.50df33c66e015356fde0805fd6b1c951&signature=dbb89d8ffc1ba00ea60a27fa373dbd4b55d189bc88ff79dd146c19bfa0d3f26c
