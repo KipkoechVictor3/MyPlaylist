@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/nba-0022501153.m3u8?md5=1e35898062a8edf85a91cd6d0f4a4c36&exp=1775590641
