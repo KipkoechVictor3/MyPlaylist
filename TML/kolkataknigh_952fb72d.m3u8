@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/fox-sports-501.m3u8?md5=a71835a9d7880cf228893da836d736d3&exp=1775739711
