@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/dirtvision-1.m3u8?md5=e5d3dad532a07363aa2b5d5ad51d7c4d&exp=1775869333
