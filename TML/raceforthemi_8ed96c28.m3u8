@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/floracing-3.m3u8?md5=7a5365d8f658b85edf11a9b68bad4fd8&exp=1775858521
