@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/nbc-sports-boston.m3u8?md5=a48ba863e680654565a5d2fc30db6bda&exp=1775786576
