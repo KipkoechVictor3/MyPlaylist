@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/cbs-sports-golazo.m3u8?md5=ba850417297bd38d69de59519ec9ec5f&exp=1775854922
