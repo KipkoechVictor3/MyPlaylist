@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/golf-2.m3u8?md5=a6efd4fe08e6993aae23caf15ce1174b&exp=1775863336
