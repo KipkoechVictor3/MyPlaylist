@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-premier-sports-1/playlist.m3u8?token=a3a20587f48bfe3f64f24bbe9f38ed5038043e465bcc3b3382bd10a4dad0bd7f.1775903045.cb887c5597a42d1e120c4799343a3851.0d6a1275aa911164b005a344448adeb5.d9f517a9a16be6de21ff658c69ec9fce&signature=ea491123cc2405b4319a12132ccaa48b031396c1eddcf002cb145097561abb98
