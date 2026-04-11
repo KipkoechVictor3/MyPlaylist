@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/laligatv.m3u8?md5=66ad802a6465ba2ba43b9bb6dd8090ec&exp=1775918222
