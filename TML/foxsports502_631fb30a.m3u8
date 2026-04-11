@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/fox-sports-502.m3u8?md5=0fe3b3f933d5f084fd8424e63e2b258e&exp=1775957891

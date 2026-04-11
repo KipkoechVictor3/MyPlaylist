@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbcgolf-usa.m3u8?md5=c5b7e8c2bb79bcdcd9c29208dfde2535&exp=1775957892
