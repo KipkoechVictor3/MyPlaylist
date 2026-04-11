@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/bundesliga-1.m3u8?md5=a5fb31c203039b174668f5c8701c7834&exp=1775921814
