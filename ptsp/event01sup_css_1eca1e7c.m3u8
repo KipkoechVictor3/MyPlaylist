@@ -1,7 +1,7 @@
 #EXTM3U
 #EXT-X-STREAM-INF:PROGRAM-ID=0,BANDWIDTH=988000,RESOLUTION=768x432,FRAME-RATE=29.97,CODECS="avc1.4d401e,mp4a.40.2"
-https://dash.serveplay.site/v0_f355c8ecc474.js
+https://dash.serveplay.site/v0_260b7e568319.js
 #EXT-X-STREAM-INF:PROGRAM-ID=2,BANDWIDTH=4958000,RESOLUTION=1280x720,FRAME-RATE=29.97,CODECS="avc1.64001f,mp4a.40.2"
-https://dash.serveplay.site/v1_f355c8ecc474.js
+https://dash.serveplay.site/v1_260b7e568319.js
 #EXT-X-STREAM-INF:PROGRAM-ID=4,BANDWIDTH=10128000,RESOLUTION=1920x1080,FRAME-RATE=59.94,CODECS="avc1.64002a,mp4a.40.2"
-https://dash.serveplay.site/v2_f355c8ecc474.js
+https://dash.serveplay.site/v2_260b7e568319.js

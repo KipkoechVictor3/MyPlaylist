@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/boxeo.m3u8?md5=61ead296c7511f74c23a2c05ce55964a&exp=1775937881
