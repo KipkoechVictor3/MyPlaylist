@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-astro-football/playlist.m3u8?token=123bbbaa30cb026d306a62775fbd4218db231c19021ff0d3abfd52a53590d3dc.1775894720.22baf73d1c2016ddf17e31ff8c44f97b.922fae36c39ced7ae0552207510474ef.6d20451c21dacb08d32217bef57ebcd4&signature=eaef37a82e221b668bec5cfc6d728877922a0fe56ddee16198b5661fb506b085

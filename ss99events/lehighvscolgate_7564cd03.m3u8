@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-cbs-sports-network/playlist.m3u8?token=1ace3ba956b87b1ecb5a06506864db80b696695b4c7b9937eecf41f7951e4991.1775894806.ca07bbc3751ea2575833e05e43fd8547.9a2179fa3ddd9f04c9f0529e8eb22216.6b8f028d1f1592d7f269b3e8966054b7&signature=03ac9e680469cf9b1b8d833ddac8f3a62b4ca0890bcde97a7bc128ea1203cc47
