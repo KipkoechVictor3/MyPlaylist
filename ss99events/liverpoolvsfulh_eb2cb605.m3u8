@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-maximo-1/playlist.m3u8?token=2cc2ea7ed3c0a71a497e1baddd31d62252c71b91f27dfefc415733d32cc2c719.1775916344.a3c6bd178d55b5b4c4535fc83431d731.9ec9327dad754f43d9e130021a6e3846.ac712f6dcd72df57eaa0988dc14221d6&signature=56d1a5e75244285232a2474df3b53ec22d8145a4518b71f7cbbcba8a8bf25193

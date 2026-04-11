@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-laliga-tv/playlist.m3u8?token=e26e84d5340342e8c957af11ed0bac5da2f0a8988949ccbb84a7c2caea53362e.1775916339.03281754444a31950fc03cac6085dd43.727cfde7e2fffc5e74c073afdb4d6c18.9b5cb7192aaa95412bb99051bdc72d3c&signature=6b2bb042fa178f801eef7db7b6b1da1ef3a64714cbf1bda89447e50aeda4eeca
