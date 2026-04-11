@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/cbs-usa.m3u8?md5=d83fa6ce25b4acc8072bd9e4dc57dd06&exp=1775890928

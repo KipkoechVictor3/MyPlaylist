@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/sky-sport-1-nz.m3u8?md5=c80f3d0cbcc3f29e71e842ab09b00e27&exp=1775890952

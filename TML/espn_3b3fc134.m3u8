@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://ru-001.winter-spring-api.shop/secure/api/v1/espn-usa.m3u8?md5=debe8bf5e95b29531db28a97d078c2d2&exp=1775890929
