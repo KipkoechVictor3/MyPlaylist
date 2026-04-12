@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-euro-sport-1/playlist.m3u8?token=b6f7049c33ea2e0715d2fc51fc1ba72f188ffd445e22ca390778434e3c505459.1775992260.a975155b669fa91eaa0dc9dcda46d99a.701f48957e977fb71743aa1f7cd8f372.5c43a5dc4c1d5c9f1dfba01f25d3eab7&signature=ca3f8b6de86ab18c4d67eef7693919ed7f96a25b36fd432fa171407d73e3cc1f

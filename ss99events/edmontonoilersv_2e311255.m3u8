@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-cbs/playlist.m3u8?token=2fda38c11460a66fcaa638c2cf493f9b2be825d09f0ac48be5d9929ea2a6e46e.1775990922.9ce617289e3f734c82f167c421f03eeb.e3a341bf3ab942e8b76539593b53131a.6b96bd951a5fb79a37ec77dd87169b3c&signature=4ddeb69f6dc53b64c66e9525c8d57a9aadacd25c5552c6e8eb07eeef93f32662
