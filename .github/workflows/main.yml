@@ -43,6 +43,7 @@ jobs:
           rm -rf TML/* && mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
+          [ -f "tms1.m3u" ] && du -sh tms1.m3u || echo "❌ tms1.m3u not found"
           sync
 
       - name: Run DamiTV Scraper
@@ -52,6 +53,7 @@ jobs:
           echo "--- Running DamiTV Scraper ---"
           curl -L -f -o DamiTV.py "${{ secrets.DAMI_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiTV.py || echo "⚠️ DamiTV failed..."
+          [ -f "DamiTV.m3u" ] && du -sh DamiTV.m3u || echo "❌ DamiTV.m3u not found"
           sync
 
       - name: Run PitSport Scraper
@@ -62,6 +64,7 @@ jobs:
           rm -rf ptsp/* && mkdir -p ptsp
           curl -L -f -o pitspt_scraper.py "${{ secrets.PTSPT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pitspt_scraper.py || echo "⚠️ PTSPT failed..."
+          [ -f "pitspt.m3u" ] && du -sh pitspt.m3u || echo "❌ pitspt.m3u not found"
           sync
 
       - name: Run ROX Scraper
@@ -72,6 +75,7 @@ jobs:
           rm -rf rox/* && mkdir -p rox
           curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "⚠️ ROX failed..."
+          [ -f "rox.m3u" ] && du -sh rox.m3u || echo "❌ rox.m3u not found"
           sync
 
       - name: Run SS99 Scrapers
@@ -93,22 +97,8 @@ jobs:
           echo "--- Running SPX Scraper ---"
           curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
           timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
+          [ -f "spx.m3u" ] && du -sh spx.m3u || echo "❌ spx.m3u not found"
           sync
-
-      - name: Deploy All Folders to GitHub
-        shell: bash
-        run: |
-          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git fetch origin main
-          git reset --soft origin/main
-          
-          git add -A TML/ SS99/ ss99events/ rox/ ptsp/
-          git commit -m "Update pointers and links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
-          
-          git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Process and Merge All Playlists
         shell: bash
@@ -120,15 +110,19 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # 1. Local Scraper Files Order (Added DamiTV.m3u)
+          # Verification List
           for f in "tms1.m3u" "DamiTV.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
+              SIZE=$(du -kb "$f" | cut -f1)
+              echo "[*] Merging $f ($SIZE KB)"
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            else
+              echo "⚠️ Warning: $f is empty or missing. Skipping merge."
             fi
           done
 
-          # 2. Process STRFREE from remote list
+          # Process STRFREE
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             if [[ "$url" == *"stfree.m3u"* ]]; then
@@ -139,7 +133,7 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          # 3. Process the rest of the remote URLs
+          # Process others
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             [[ "$url" == *"stfree.m3u"* ]] && continue
@@ -151,11 +145,33 @@ jobs:
             rm -f "$temp"
           done < <(tr -d '\r' < channels.txt)
 
-      - name: Final Cleanup
+      - name: Final Cleanup and Integrity Check
         shell: bash
         run: |
           sed -i 's/\r//g' MyStuffCLW.m3u
           sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
+          FINAL_SIZE=$(du -sh MyStuffCLW.m3u | cut -f1)
+          echo "[*] Final Playlist Size: $FINAL_SIZE"
+          if [ ! -s "MyStuffCLW.m3u" ]; then
+            echo "❌ ERROR: Final playlist is empty!"
+            exit 1
+          fi
+
+      - name: Deploy All Folders and Files to GitHub
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git fetch origin main
+          git reset --soft origin/main
+          
+          # Overwrite and sync local files into folders if scripts didn't do it automatically
+          git add -A TML/ SS99/ ss99events/ rox/ ptsp/ *.m3u *.m3u8
+          
+          git commit -m "Update Playlists: $(date +'%Y-%m-%d %H:%M') [Size: $(du -sh MyStuffCLW.m3u | cut -f1)]" || echo "No changes to commit"
+          git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Upload Main Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
