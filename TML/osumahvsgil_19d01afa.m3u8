@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/ppv-boxing.m3u8?md5=1c6413c7550fa7d567a67cfa641c9095&exp=1775961427
