@@ -141,7 +141,7 @@ jobs:
           sed -i 's/\r//g' MyStuffCLW.m3u
           sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
 
-      - name: Deploy All Folders and Files to GitHub
+      - name: Deploy Script Folders to GitHub
         shell: bash
         run: |
           git config --global --add safe.directory /__w/MyPlaylist/MyPlaylist
@@ -151,10 +151,11 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Explicitly target playlist data to avoid touching the .github folder
-          git add TML/ SS99/ ss99events/ rox/ ptsp/ *.m3u *.m3u8
+          # ONLY add the subfolders. 
+          # NO .m3u or .m3u8 files are added to GitHub.
+          git add TML/ SS99/ ss99events/ rox/ ptsp/
           
-          git commit -m "Update Playlists: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Upload Main Playlist to Dropbox
@@ -166,8 +167,72 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Backups to Dropbox
-        if: always()
-        run: |
-          echo "Playlist processing complete."
-          [ -f "MyStuffCLW.m3u" ] && du -sh MyStuffCLW.m3u
+      - name: Upload TMS Backup to Dropbox
+        if: hashFiles('tms1.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: tms1.m3u
+          dest_path: /MyStuff/tms1.m3u
+
+      - name: Upload DamiTV Backup to Dropbox
+        if: hashFiles('DamiTV.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: DamiTV.m3u
+          dest_path: /MyStuff/DamiTV.m3u
+
+      - name: Upload PitSport Backup to Dropbox
+        if: hashFiles('pitspt.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: pitspt.m3u
+          dest_path: /MyStuff/pitspt.m3u
+
+      - name: Upload ROX Backup to Dropbox
+        if: hashFiles('rox.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: rox.m3u
+          dest_path: /MyStuff/rox.m3u
+
+      - name: Upload SS99 Backup to Dropbox
+        if: hashFiles('SSpo99.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: SSpo99.m3u8
+          dest_path: /MyStuff/SSpo99.m3u8
+
+      - name: Upload SS99 Events Backup to Dropbox
+        if: hashFiles('SS99_Events.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: SS99_Events.m3u8
+          dest_path: /MyStuff/SS99_Events.m3u8
+
+      - name: Upload SPX Backup to Dropbox
+        if: hashFiles('spx.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: spx.m3u
+          dest_path: /MyStuff/spx.m3u
