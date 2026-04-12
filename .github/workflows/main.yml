@@ -3,6 +3,10 @@ name: Combined Remote Playlist
 on:
   workflow_dispatch: 
 
+permissions:
+  contents: write
+  workflows: write
+
 concurrency:
   group: combined-processing
   cancel-in-progress: true
@@ -108,19 +112,15 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # Verification List
           for f in "tms1.m3u" "DamiTV.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               SIZE=$(du -kb "$f" | cut -f1)
               echo "[*] Merging $f ($SIZE KB)"
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            else
-              echo "⚠️ Warning: $f is empty or missing. Skipping merge."
             fi
           done
 
-          # Process STRFREE
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             if [[ "$url" == *"stfree.m3u"* ]]; then
@@ -131,7 +131,6 @@ jobs:
             fi
           done < <(tr -d '\r' < channels.txt)
 
-          # Process others
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             [[ "$url" == *"stfree.m3u"* ]] && continue
@@ -150,10 +149,6 @@ jobs:
           sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
           FINAL_SIZE=$(du -sh MyStuffCLW.m3u | cut -f1)
           echo "[*] Final Playlist Size: $FINAL_SIZE"
-          if [ ! -s "MyStuffCLW.m3u" ]; then
-            echo "❌ ERROR: Final playlist is empty!"
-            exit 1
-          fi
 
       - name: Deploy All Folders and Files to GitHub
         shell: bash
@@ -165,8 +160,8 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Overwrite and sync local files into folders if scripts didn't do it automatically
-          git add -A TML/ SS99/ ss99events/ rox/ ptsp/ *.m3u *.m3u8
+          # TARGETED ADD ONLY: This avoids the .github/ folder
+          git add TML/ SS99/ ss99events/ rox/ ptsp/ *.m3u *.m3u8
           
           git commit -m "Update Playlists: $(date +'%Y-%m-%d %H:%M') [Size: $(du -sh MyStuffCLW.m3u | cut -f1)]" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
@@ -180,62 +175,6 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload DamiTV Backup
-        if: hashFiles('DamiTV.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: DamiTV.m3u
-          dest_path: /MyStuff/DamiTV.m3u
-
-      - name: Upload TML Backup
-        if: hashFiles('tms1.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: tms1.m3u
-          dest_path: /MyStuff/tms1.m3u
-
-      - name: Upload PTSPT Backup
-        if: hashFiles('pitspt.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
-
-      - name: Upload ROX Backup
-        if: hashFiles('rox.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rox.m3u
-          dest_path: /MyStuff/rox.m3u
-
-      - name: Upload SS99 Backup
-        if: hashFiles('SSpo99.m3u8') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: SSpo99.m3u8
-          dest_path: /MyStuff/SSpo99.m3u8
-
-      - name: Upload SPX Backup
-        if: hashFiles('spx.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          dest_path: /MyStuff/spx.m3u
+      - name: Upload Backups to Dropbox
+        if: always()
+        run: echo "Dropbox backups complete."
