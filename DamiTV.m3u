@@ -1,0 +1,36 @@
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | FOOTBALL",Mainz 05 vs SC Freiburg
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://iframe.ifnewgen.xyz/partner-stream.m3u8?url=https%3A%2F%2Flivecdn-bp-dara.maypn.stream%2Fstream%2F3%2Findex.m3u8&client_id=dara&uid=uygqslk8&is_vip=true&verify=1776024000-gNvUTH9dUMOlLcHMnnoOh6BVJWocGsJkHDgTBz1%2BqkM%3D
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | TENNIS",Day 7
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://iframe.ifnewgen.xyz/partner-stream.m3u8?url=https%3A%2F%2Flivecdn-bp-dara.maypn.stream%2Fstream%2F23%2Findex.m3u8&client_id=dara&uid=9qyph2p9&is_vip=true&verify=1776024000-Y0qNUPeMHLD1Y7XSlrdsrkponyvC%2Bo0CUbnDl5vtNOs%3D
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | FOOTBALL",Lyon vs Lorient S1
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://iframe.ifnewgen.xyz/partner-stream.m3u8?url=https%3A%2F%2Flivecdn-bp-dara-iptv.maypn.stream%2Flive_abr%2F274842%2Fabr.m3u8&client_id=dara&uid=tex5sdv6&is_vip=true&verify=1776024000-Dh6zo0Ky%2B3lWqB819iZPcU6Ji%2F57%2BSUCSFn7DmHpooU%3D
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | FOOTBALL",Lyon vs Lorient S2
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://livecdn-bp-dara-iptv.maypn.stream/live_abr/274842_hd/index.m3u8?is_vip=true&token=dara-tex5sdv6&x-sign=a90426aaa39e42315f2b49f0eb56d4ec&x-time=1776024180
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | FOOTBALL",Como vs Inter Milan
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://iframe.ifnewgen.xyz/partner-stream.m3u8?url=https%3A%2F%2Flivecdn-bp-dara.maypn.stream%2Fstream%2F24%2Findex.m3u8&client_id=dara&uid=ochbudrx&is_vip=true&verify=1776024000-z3eG7kEleUQ%2FTrCFDf%2BFnvQEvx1Gb4JfoF9nj7nUZns%3D
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | BASKETBALL",Maccabi Rapyd Tel Aviv vs Hapoel Tel Aviv Basketball S1
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://iframe.ifnewgen.xyz/partner-stream.m3u8?url=https%3A%2F%2Flivecdn-bp-dara-iptv.maypn.stream%2Flive_abr%2F68892%2Fabr.m3u8&client_id=dara&uid=crbi8ar9&is_vip=true&verify=1776024000-gwwn3p5wN055AwMaNPP1a%2BUB9KpS1KJVqYXtMV2YMOg%3D
+#EXTINF:-1 tvg-logo="https://damitvsports.com/img/90sport.png" group-title="DamiTV | BASKETBALL",Maccabi Rapyd Tel Aviv vs Hapoel Tel Aviv Basketball S2
+#EXTVLCOPT:http-user-agent=Mozilla/50 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+#EXTVLCOPT:http-referrer=https://90sport.com/
+#EXTVLCOPT:http-origin=https://90sport.com
+https://livecdn-bp-dara-iptv.maypn.stream/live_abr/68892_hd/index.m3u8?is_vip=true&token=dara-crbi8ar9&x-sign=eac167a58d294e6e5ab0b8c6dcd5eee6&x-time=1776024240
