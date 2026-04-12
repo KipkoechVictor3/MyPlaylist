@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/canal-extra-3.m3u8?md5=e293506b5d6fcd5aed8a5f31052f86b8&exp=1775993834
