@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-tnt-sports-9/playlist.m3u8?token=fca17d5ef3dc03dfa259ea237b48dbb99c977644db26d667cc0704311da70cd0.1775983188.9a1df4b4dc94fb4400979d80e9b868ea.0921d36faf2c7a871c05fd384091690e.aebdfab6feb7b5a8b456cbbfc6dc60b3&signature=f6959db0f2f43441a02e0261cfcefc2cba34bfd5b74fc6af5c0c52b06496b322

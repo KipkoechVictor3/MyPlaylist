@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-canal-sport-4/playlist.m3u8?token=14ce25e9060bacc6e215bb5ffff2f6cee09663c3576ae072e7d8f74a6523ce5d.1775983193.6157bb22bace39d0f5a8f71f1aa775dd.c47f5ea49af1533c794f7d66944fbaad.53ebf52ef1a7c6b86d53c3452c908db2&signature=1d3a0150690168d7c7cf7a9bbeb887eb273b9814b37b90da0d25509a6695a1ea
