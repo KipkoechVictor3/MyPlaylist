@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-fox-soccer-plus/playlist.m3u8?token=059bbdac83bbdd087d8d502fa47bc9b3f7604e52e7637096747c6b8675d14ef6.1776087980.9e3d7410d0fab41bb4e6b97dfa1fce1b.94cd403529ebd0db1f6c1ecdb51b1921.2bc27ecff305a2951c4b8b221d0e8010&signature=651d9026598eadfb66f2060441141f606e34d16a26cad79a021ebe8eca49b257
