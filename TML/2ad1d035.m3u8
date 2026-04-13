@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbc-sports-philly.m3u8?md5=c9658ae8f729b18a965e071c7c713c25&exp=1776087770
