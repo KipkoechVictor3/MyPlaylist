@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/canal-sport-3-pl.m3u8?md5=cda48733fdbe08f781e95dd193af2880&exp=1776069721
