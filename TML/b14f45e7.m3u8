@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/tnt-sports-2.m3u8?md5=0dbe1b2ed3384e3eb9cde3bc5f87f62c&exp=1776106968
