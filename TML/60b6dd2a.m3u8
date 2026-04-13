@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/cbs-usa.m3u8?md5=6a966c89ccac8e2a6f5dea9ac5c8e701&exp=1776124928
