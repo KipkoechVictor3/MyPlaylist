@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/rally-tv.m3u8?md5=a95e6d1c602e9a3a77e72d1843cb24f4&exp=1776120020
