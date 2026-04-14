@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/wwe-netflix.m3u8?md5=ab5dd14f60739f0e4a80c72cf9620b2e&exp=1776132132
