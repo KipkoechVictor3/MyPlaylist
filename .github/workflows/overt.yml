@@ -1,0 +1,66 @@
+name: OVERT Hourly Scraper
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour at the start of the hour
+  workflow_dispatch:     # Allows manual trigger
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: overt-processing
+  cancel-in-progress: true
+
+jobs:
+  run-overt-scraper:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.0-noble
+    env:
+      PYTHONUNBUFFERED: "1"
+      HOME: /root
+      DEBIAN_FRONTEND: noninteractive
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Environment and Dependencies
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y python3-pip python3-full curl xvfb git
+          python3 -m pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
+          playwright install firefox
+          playwright install-deps
+
+      - name: Run OVERT Scraper (F1 Archive)
+        shell: bash
+        run: |
+          echo "--- Running OVERT Scraper ---"
+          curl -L -f -o OVERT.py "${{ secrets.OVERT_URL }}"
+          # Using Firefox user-agent and flushing output as per your preferences
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u OVERT.py || echo "⚠️ OVERT failed..."
+          sync
+
+      - name: Final Cleanup
+        if: hashFiles('f1Arch.m3u') != ''
+        shell: bash
+        run: |
+          sed -i 's/\r//g' f1Arch.m3u
+          sed -i '/^[[:space:]]*$/d' f1Arch.m3u
+
+      - name: Upload OVERT to Dropbox
+        if: hashFiles('f1Arch.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: f1Arch.m3u
+          dest_path: /MyStuff/f1Arch.m3u
