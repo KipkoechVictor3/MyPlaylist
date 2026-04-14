@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbc-sports-boston.m3u8?md5=52fca6ab2ff4dc5e3c06bb1d15a7babe&exp=1776159154
