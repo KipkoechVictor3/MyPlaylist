@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-sportsnet-pittsburgh/playlist.m3u8?token=116f6a4726eb01ff2fd82b26f42c425a8af67cdfa3b51a4c4b7e7781d86b9377.1776200809.eeff6da94f2922e60c32d33c7b34f3c3.76fae7b8b777915f513f5cad600a3929.522fe714d6a891e2813dc4a2a0f5ac97&signature=cc62184bfd4ee0b1612fd9b90df5e8d9e469dbe6b921ef33c611adaceadb363b

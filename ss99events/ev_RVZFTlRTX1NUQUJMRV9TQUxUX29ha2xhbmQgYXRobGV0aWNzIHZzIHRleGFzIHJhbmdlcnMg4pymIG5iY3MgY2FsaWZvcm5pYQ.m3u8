@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-nbcs-california/playlist.m3u8?token=8d77bc5a4baa6768ce1db78af436c163234f3fa3f51700e32ccd0f61f036f143.1776200826.696c5eb5be2ddc5e172056819bc878e5.e32f2b7032a2146aecfc7104132b2b49.8743e1aa5d49b74841a0cd1476343186&signature=a0eff7c9a0d0ac3d15a827eddebe03b3732b823edd490e649e7ceffe872d062a
