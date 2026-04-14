@@ -97,6 +97,15 @@ jobs:
           timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
+      - name: Run OVERT Scraper (F1 Archive)
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running OVERT Scraper ---"
+          curl -L -f -o OVERT.py "${{ secrets.OVERT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u OVERT.py || echo "⚠️ OVERT failed..."
+          sync
+
       - name: Process and Merge All Playlists
         shell: bash
         run: |
@@ -107,7 +116,8 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          for f in "tms1.m3u" "DamiTV.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          # List includes f1Arch.m3u for direct inclusion
+          for f in "tms1.m3u" "DamiTV.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u" "f1Arch.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -151,8 +161,7 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # ONLY add the subfolders. 
-          # NO .m3u or .m3u8 files are added to GitHub.
+          # Only add metadata folders as per preference
           git add TML/ SS99/ ss99events/ rox/ ptsp/
           
           git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
@@ -236,3 +245,13 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: spx.m3u
           dest_path: /MyStuff/spx.m3u
+
+      - name: Upload OVERT Backup to Dropbox
+        if: hashFiles('f1Arch.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: f1Arch.m3u
+          dest_path: /MyStuff/f1Arch.m3u
