@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-tampa-bay-rays/playlist.m3u8?token=a28448a9755989d3b8e09bdd6273eed7fe3eca83ae44f19e58284c3622a50b53.1776227951.f16da4a533bdde0f0cbcb3a4ae998495.8f8482dcbf3c30c86b889441f46086f0.f4280bbeef881206d9a0cd36178a448b&signature=50e172aeecab82c5b9622ffb1da24e0a92604670608190b33e5217fc92bde306
