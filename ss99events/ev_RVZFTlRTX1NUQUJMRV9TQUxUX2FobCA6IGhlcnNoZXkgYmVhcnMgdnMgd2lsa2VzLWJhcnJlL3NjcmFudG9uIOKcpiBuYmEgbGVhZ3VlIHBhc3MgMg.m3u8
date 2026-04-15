@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-nba-league-pass-2/playlist.m3u8?token=5ec5af6dc99305135a133cdeb96b7378169b7d0fdeedbe2cd3badf6859e0f63d.1776282030.680f9ada2376251793f0b7ab4270b491.c83e1aa8b6bc219b70849dffea6fa5ec.34e2bc7fe28783fb5dfba34eee231c3d&signature=680510065e468ff81c7f206c6f8c012a43b2ea10e7d977a9dc3afb51addd3871

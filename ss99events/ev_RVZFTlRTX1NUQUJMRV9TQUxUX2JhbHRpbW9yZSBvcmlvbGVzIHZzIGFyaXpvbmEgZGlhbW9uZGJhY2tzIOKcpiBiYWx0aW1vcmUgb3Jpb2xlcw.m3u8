@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-baltimore-orioles/playlist.m3u8?token=7096b733cf5cf38e7fe216bcbf0744aa4f19ab3012e21d896da9158b414fb6dd.1776282030.0bcab496ad2f522120172ddf8e529810.ffa24c5b3bb93f41ff0b90ef8ae33f84.d8e82db1bb7fd1016a3733a846f93f99&signature=1f09c6abdd7673512e01b36319ff5751400495d1611a8fef3a4c8763c33c515d
