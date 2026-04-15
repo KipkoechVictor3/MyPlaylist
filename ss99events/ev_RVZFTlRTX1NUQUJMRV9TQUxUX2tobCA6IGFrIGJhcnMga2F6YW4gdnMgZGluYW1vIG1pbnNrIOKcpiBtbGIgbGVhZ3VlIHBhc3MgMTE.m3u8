@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-league-pass-3/playlist.m3u8?token=c7727ecf75cc24dc579b713cca10f21a28fb08068a3a2d847cede0fa4cea2156.1776236837.485ef95457479219f0b60804a70d0990.677dbed9a0926bfb132e7cf42c70ff23.f68d3e241e31e9dc8f33c232ac5ccb4d&signature=dbe2b95e3fb267f9c7572098f97f6efa6ac2da068632e60501ee0d2cce81d230
