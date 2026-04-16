@@ -28,14 +28,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Cache Python Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Set up Environment and Dependencies
         shell: bash
         run: |
-          apt-get update
-          apt-get install -y python3-pip python3-full curl xvfb git
+          # Only install what's missing from the Playwright image
+          # Removed playwright install-deps (already in image)
+          apt-get update || true
+          apt-get install -y python3-pip python3-full curl xvfb git --no-install-recommends
+          
           python3 -m pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
-          playwright install chromium chrome firefox
-          playwright install-deps
+          
+          # Only install Firefox as per your preference to save 15+ minutes
+          playwright install firefox
 
       - name: Run Scraper (TMS/TMLN)
         shell: bash
@@ -97,7 +109,6 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # pitspt.m3u and f1Arch.m3u removed from merge loop
           for f in "tms1.m3u" "DamiTV.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -142,7 +153,6 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Removed ptsp/ from git add
           git add TML/ SS99/ ss99events/ rox/
           
           git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
