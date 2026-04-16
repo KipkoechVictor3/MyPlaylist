@@ -28,25 +28,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Cache Python Packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: Set up Environment and Dependencies
         shell: bash
         run: |
-          # Only install what's missing from the Playwright image
-          # Removed playwright install-deps (already in image)
-          apt-get update || true
-          apt-get install -y python3-pip python3-full curl xvfb git --no-install-recommends
+          # 1. Update only what is necessary
+          apt-get update -y
           
+          # 2. Minimal install: We only need pip, xvfb, and git. 
+          # We skip 'python3-full' to avoid the 30-minute bloat.
+          apt-get install -y --no-install-recommends python3-pip xvfb git curl
+          
+          # 3. Install Python libraries
           python3 -m pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
           
-          # Only install Firefox as per your preference to save 15+ minutes
+          # 4. Only install Firefox (saves 10+ minutes compared to installing all browsers)
           playwright install firefox
 
       - name: Run Scraper (TMS/TMLN)
