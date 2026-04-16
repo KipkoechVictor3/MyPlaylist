@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-nbcs-bay-area/playlist.m3u8?token=2afb49befdd9ebb63eb3937a69a5d4d6b6a6131dbba2db4a005ded9c491d5e8e.1776373738.3178cec9e2064a3b87f1f91349278daa.0f7f88588582feaaf1ba117ac4e083ef.c141b8a4719000b84b802905b693d12b&signature=07237bb4db217413f1961b26a771e6d0c5abc89d8f0b0602a2b2d1a8cf033062
