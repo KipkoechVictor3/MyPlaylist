@@ -31,17 +31,16 @@ jobs:
       - name: Set up Environment and Dependencies
         shell: bash
         run: |
-          # 1. Update only what is necessary
-          apt-get update -y
+          # 1. Soft update: || true ensures the workflow continues even if Ubuntu mirrors are syncing
+          apt-get update || true
           
-          # 2. Minimal install: We only need pip, xvfb, and git. 
-          # We skip 'python3-full' to avoid the 30-minute bloat.
-          apt-get install -y --no-install-recommends python3-pip xvfb git curl
+          # 2. Install only xvfb (the rest are already in the noble container)
+          apt-get install -y --no-install-recommends xvfb || true
           
-          # 3. Install Python libraries
+          # 3. Direct Python dependency install (Fastest part)
           python3 -m pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright --break-system-packages
           
-          # 4. Only install Firefox (saves 10+ minutes compared to installing all browsers)
+          # 4. Only install Firefox as per your automation preference
           playwright install firefox
 
       - name: Run Scraper (TMS/TMLN)
