@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/dirtvision.m3u8?md5=79e37fcc9f8bc9512fb2b862cf47fd98&exp=1776384060
