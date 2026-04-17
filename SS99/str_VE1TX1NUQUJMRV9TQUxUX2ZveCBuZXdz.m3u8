@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdnlivetv.ru/secure/api/v1/us-fox-news/playlist.m3u8?token=6642f03eafb719c94c665b1f7c6a31ceac08db9edb3776210942b078ad35ced9.1776436382.726ad153401e0704470f83e0a4e05b08.916c905f722deb0ecc7cbfd69db1508c.375f01c8157499f56d4a54ae2aec5420&signature=be530c48afc9fcf163b53726ed580996465de2f2d0e052cf4ccb38a2eabbea34
+https://edge.cdnlivetv.ru/secure/api/v1/us-fox-news/playlist.m3u8?token=6371dd04c122a10fb18dbf538703a6889e0ba546e35c81894fc462ce0a9e2177.1776438194.d7792df30ec81b72a15240afc7b1f4d7.b9e0d656a7ca1a65f1edeffd60a8e189.4c8d5e3ceea353e89d5745144c54ef13&signature=2c63eea906a82d01fcd0d55f0aa38194ad54c57eaab8576491217a1ebbfd2488
