@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-racing/playlist.m3u8?token=c251e209553905a7a788a5df71302e322a6f779b194c6417e855d40609cdc71f.1776427451.0be0f6892ff84cf82e2aedf17d5431d2.bfbe7b3e38709546da358d533ae14b9c.bca6e7bd7b5f01cc83cd0071c56a9a0d&signature=9e19fc3a10cd83a1c505df757faa7446e5e7d83f75f1d17ca0e0c51175585996
