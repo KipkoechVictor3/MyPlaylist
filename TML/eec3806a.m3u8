@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/pdc-tv.m3u8?md5=688023c754ba0cf80c1ca7d624df6a0d&exp=1776436269
