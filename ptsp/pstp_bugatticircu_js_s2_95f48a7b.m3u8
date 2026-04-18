@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=5000000
+https://dash.serveplay.site/out/v2/6465cbea4d5e876fae0e7a12e6fa07cb/variant-v0a0/stream.js
