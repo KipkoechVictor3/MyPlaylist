@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/arena1-bh.m3u8?md5=53f4cd3c0b40cdfb5d547b0b9bb8420a&exp=1776524469
