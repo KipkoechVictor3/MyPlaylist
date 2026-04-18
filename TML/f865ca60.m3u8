@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbc-usa.m3u8?md5=6f98f3729adbbf8fd5ea777e39716ace&exp=1776549740
