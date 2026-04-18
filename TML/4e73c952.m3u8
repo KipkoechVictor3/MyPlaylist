@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2700000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/espn-usa.m3u8?md5=419d77a2f77fff389da8a00a856e1fe6&exp=1776492089
