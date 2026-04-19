@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/star-sport-1-hindi.m3u8?md5=0ecb4df56e3c6158727488f43612788a&exp=1776618161
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/star-sport-1-hindi.m3u8?md5=3c0c66b082258b5a0ab18810f73b3183&exp=1776620037

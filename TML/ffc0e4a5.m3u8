@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/canal-sport-3-pl.m3u8?md5=1553911889b6d4cb6d5ec4a99caf15a2&exp=1776618112
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/canal-sport-3-pl.m3u8?md5=8ebb87beaf89f5b5b21a8fcff395f5f6&exp=1776619967

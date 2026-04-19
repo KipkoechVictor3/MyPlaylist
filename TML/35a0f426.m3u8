@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/wrestlemania-xlii.m3u8?md5=83ab64248e63aa1fff295c9d4537264c&exp=1776618076
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/wrestlemania-xlii.m3u8?md5=a38169a3f3d320bed89ca234efe809c0&exp=1776619877

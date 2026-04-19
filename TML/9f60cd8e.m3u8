@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nova-sport-1-cz.m3u8?md5=685bda43c84c8fbf6e903893de0023bc&exp=1776618145
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nova-sport-1-cz.m3u8?md5=b41f17c59563e3b7faf2088138dbeb68&exp=1776620020

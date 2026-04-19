@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/superclassico.m3u8?md5=067ae67558c1cd0cc85d30ebfee1bdf9&exp=1776618078
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/superclassico.m3u8?md5=ec8bce2c5b661a66fe903a3a0d4015b0&exp=1776619877

@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/star-sport-2.m3u8?md5=dc44ed184a37ea46b87c29016cdc86d7&exp=1776618163
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/star-sport-2.m3u8?md5=3938eb056c0de14019f84927065ecd11&exp=1776620038

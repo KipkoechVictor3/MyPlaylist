@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/espnu-usa.m3u8?md5=158db5a2febb3c7066cffd14e33f4674&exp=1776618130
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/espnu-usa.m3u8?md5=adbd82c79aa590d0752a26868b630817&exp=1776619989

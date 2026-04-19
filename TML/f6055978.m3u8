@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbc-sports-bay.m3u8?md5=57024f6bd2d8bd121a6734e3b5026e43&exp=1776618144
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbc-sports-bay.m3u8?md5=a66ec57c94786b006a3c4b96bb6068c9&exp=1776620005

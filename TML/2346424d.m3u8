@@ -1,3 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/fox-usa.m3u8?md5=b73ba469b65250c3ebfd6b66009df384&exp=1776618128
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/fox-usa.m3u8?md5=6d4c5e83bbfb61a73914abf9b52fc2ef&exp=1776619988
