@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/cbs-usa.m3u8?md5=bbc2620b7bd563d2643672903b990491&exp=1776724293
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/cbs-usa.m3u8?md5=6129f26e52ae9d91f7707241b6c73bec&exp=1776726111
