@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/orf-1-at.m3u8?md5=e2a35ffe3c79db246db635de573afd24&exp=1776670342
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/orf-1-at.m3u8?md5=7ac82e3dbe7a654e04a778ea279c3054&exp=1776672144
