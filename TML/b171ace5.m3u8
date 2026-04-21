@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/hbo-east-us.m3u8?md5=7456b48e9bdce8fa9e6dd8b6522eea0c&exp=1776758547
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/hbo-east-us.m3u8?md5=d1d62877c30c8a22c8985e931180c9cf&exp=1776760327
