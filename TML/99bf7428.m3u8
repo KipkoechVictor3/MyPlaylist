@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/fox-sports-2.m3u8?md5=9d5cf7c81a26b7961c9f614210d4dd0b&exp=1776776869
+#EXT-X-STREAM-INF:BANDWIDTH=5000000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/fox-sports-2.m3u8?md5=2cebd972edbf94c87c689db62f943ccb&exp=1776778297

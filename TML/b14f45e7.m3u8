@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/tnt-sports-2.m3u8?md5=2fc6b7ff1949094541593d3ee0e91afb&exp=1776776919
+#EXT-X-STREAM-INF:BANDWIDTH=5000000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/tnt-sports-2.m3u8?md5=a24aece0588408fdb964f2b167e4e6cf&exp=1776778320

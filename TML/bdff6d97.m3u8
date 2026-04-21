@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbcgolf-usa.m3u8?md5=292a6fbd8b720354eaf0646dd553db5a&exp=1776776886
+#EXT-X-STREAM-INF:BANDWIDTH=5000000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/nbcgolf-usa.m3u8?md5=471074220b8ebc126fe1923b0568862a&exp=1776778300

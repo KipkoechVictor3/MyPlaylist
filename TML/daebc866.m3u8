@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,NAME="HD"
-https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/sky-sport-7-nz.m3u8?md5=24d1daaa7beed7188768b189eaac6042&exp=1776776903
+#EXT-X-STREAM-INF:BANDWIDTH=5000000
+https://lb-nl-50gbs.zenostreams-cdn-001.com/secure/api/v1/sky-sport-7-nz.m3u8?md5=2533d92c2d585b09838625d2fe3941c4&exp=1776778321
