@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-nhl-league-pass-1/playlist.m3u8?token=bb49b3a4dbf2b03b2c929d4b12f04657c9a6d7ccc3d2391af926ee8531bb8abd.1776755104.4741d7e1dbd77642f7bb3767795f41fc.42abbce0aea230269c574e02e3b84323.329b8df283aa30c381d2b7cbc43442d1&signature=8300bf8b57cccba1ef72117ce50c8fb46f1e67165af1d09a06a9ce6a1badd32d

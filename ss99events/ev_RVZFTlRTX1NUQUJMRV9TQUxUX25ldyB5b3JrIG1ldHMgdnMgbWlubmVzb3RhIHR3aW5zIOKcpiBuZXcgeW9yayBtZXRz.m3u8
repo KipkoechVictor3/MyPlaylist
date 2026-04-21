@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-new-york-mets/playlist.m3u8?token=693a756fbbac0940b55d2a47aec656c56d10c8c925bc91f159902e87c250fcc0.1776755117.3973a947c53585010e36616933e4ee5b.d6e7baf6830cafc14a3fcfe2a8c9cd2d.396fab4a787f1fe3f50af27806b79380&signature=715c74f61fd2ba0ed47434a42de1e73b3725beee2ac14781eafe37a54f0d6f88
