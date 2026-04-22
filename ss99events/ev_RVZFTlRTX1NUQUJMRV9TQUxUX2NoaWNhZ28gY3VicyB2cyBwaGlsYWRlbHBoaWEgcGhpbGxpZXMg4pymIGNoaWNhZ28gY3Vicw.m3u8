@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-chicago-cubs/playlist.m3u8?token=5f82dbc29e9363b7ec4754d44a6bb6f33007bab5c62ab9db807822ca80af3ffc.1776830680.4a27518060453c731f178d07908af382.194e56387f758079b4aed1ffc06bf381.76339c7f6b2f9e109ef09bf575f796d5&signature=8f4e79221ac2dd6e69c40ee79d049affd7bad4be052ca407e5f9241e0e79e555
