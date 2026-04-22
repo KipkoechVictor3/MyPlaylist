@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,10 +25,19 @@ jobs:
 
       - name: Run MAgroup2 Scraper
         run: |
-          # Download and run the modified MAgroup2 script
+          # The script will be downloaded and executed
+          # Ensure your Dropbox link is updated with the script below
           curl -L "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=45p226u6&dl=1" | python3
 
-      - name: Upload MyNewM.m3u to Dropbox
+      - name: Push to GitHub
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add MAG/ macg.m3u
+          git commit -m "Update Playlists and MAG files" || echo "No changes to commit"
+          git push
+
+      - name: Upload macg.m3u to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
