@@ -52,7 +52,6 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
-          rm -rf TML/* && mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
           sync
@@ -117,7 +116,7 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # Merging local files: RawGit now follows TMS directly
+          # Merging local files: RawGit follows TMS directly
           for f in "tms1.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -161,7 +160,8 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          git add TML/ SS99/ ss99events/ rox/ ptsp/
+          # Removed TML/ from git add as it is no longer used for obfuscated files
+          git add SS99/ ss99events/ rox/ ptsp/
           
           git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
