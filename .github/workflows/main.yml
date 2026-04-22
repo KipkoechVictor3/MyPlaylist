@@ -30,146 +30,106 @@ jobs:
           python-version: '3.11'
 
       - name: Install System Dependencies
-        shell: bash
         run: |
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends xvfb
 
       - name: Install Python Packages
-        shell: bash
         run: |
           python -m pip install --upgrade pip
           pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
 
       - name: Install Playwright Firefox
-        shell: bash
         run: |
-          playwright install firefox chromium chrome
-          playwright install-deps firefox chromium chrome
+          playwright install firefox
+          playwright install-deps firefox
 
-      # --- START OF SCRAPER SEQUENCE ---
+      # --- SCRAPER EXECUTION (PRIORITY ORDER) ---
 
       - name: Run Scraper (TMS/TMLN)
-        shell: bash
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
           rm -rf TML/* && mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
+          xvfb-run --auto-servernum python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
           sync
 
-      - name: Run RawGit Scraper (Immediate Run)
-        shell: bash
+      - name: Run RawGit Scraper (Priority: Immediately after TMS)
         continue-on-error: true
         run: |
           echo "--- Running RawGit Scraper ---"
           curl -L -f -o RawGit_Scraper.py "${{ secrets.RAWGIT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u RawGit_Scraper.py || echo "⚠️ RawGit failed..."
+          xvfb-run --auto-servernum python3 -u RawGit_Scraper.py || echo "⚠️ RawGit failed..."
           sync
 
       - name: Run PTSPT Scraper
-        shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running PTSPT Scraper (Strict Live) ---"
+          echo "--- Running PTSPT Scraper ---"
           rm -rf ptsp/* && mkdir -p ptsp
           curl -L -f -o PTSPT.py "${{ secrets.PTSPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u PTSPT.py || echo "⚠️ PTSPT failed..."
+          xvfb-run --auto-servernum python3 -u PTSPT.py || echo "⚠️ PTSPT failed..."
           sync
 
       - name: Run ROX Scraper
-        shell: bash
         continue-on-error: true
         run: |
           echo "--- Running ROX Scraper ---"
           rm -rf rox/* && mkdir -p rox
           curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "⚠️ ROX failed..."
+          xvfb-run --auto-servernum python3 -u rox_script.py || echo "⚠️ ROX failed..."
           sync
 
       - name: Run SS99 Scrapers
-        shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running SS99 Scrapers ---"
           rm -rf SS99/* ss99events/* && mkdir -p SS99 ss99events
           curl -L -f -o SS99_Channels.py "${{ secrets.SS99_CHANNELS_URL }}"
-          timeout 600s python3 -u SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
+          python3 -u SS99_Channels.py || echo "⚠️ SS99 Channels failed..."
           curl -L -f -o SS99_Events_Scraper.py "${{ secrets.SS99_EVENTS_URL }}"
-          timeout 360s python3 -u SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
+          python3 -u SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
           sync
 
       - name: Run SPX Scraper
-        shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running SPX Scraper ---"
           curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
-          timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
+          python3 -u SpX.py || echo "⚠️ SPX failed..."
           sync
 
-      # --- END OF SCRAPER SEQUENCE ---
+      # --- MERGE LOGIC (ORDER: TMS -> RawGit -> Others) ---
 
       - name: Process and Merge All Playlists
-        shell: bash
         run: |
-          set +e 
           OUTPUT_FILE="MyStuffCLW.m3u"
-          EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
-          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
-
-          curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
+          echo "#EXTM3U url-tvg=\"https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz\"" > "$OUTPUT_FILE"
           
-          # Merging local files - rox.m3u is handled directly here
-          for f in "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u" "RawGit.m3u"; do
+          # This order determines the final playlist sequence
+          for f in "tms1.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
 
-          # Process remote links from channels.txt
-          while read -r url || [ -n "$url" ]; do
-            [[ -z "$url" || "$url" =~ ^# ]] && continue
-            if [[ "$url" == *"stfree.m3u"* ]]; then
-               if curl -L -f -k --connect-timeout 10 "$url" -o "temp_stfree.m3u" -s; then
-                  echo -e "\n######## SOURCE: STRFREE (Remote) ########" >> "$OUTPUT_FILE"
-                  sed 's/\r$//' "temp_stfree.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-               fi
-            fi
-          done < <(tr -d '\r' < channels.txt)
-
-          while read -r url || [ -n "$url" ]; do
-            [[ -z "$url" || "$url" =~ ^# ]] && continue
-            [[ "$url" == *"stfree.m3u"* ]] && continue
-            temp="remote_t.m3u"
-            if curl -L -f -k --connect-timeout 10 "$url" -o "$temp" -s; then
-                echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
-                sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            fi
-            rm -f "$temp"
-          done < <(tr -d '\r' < channels.txt)
-
       - name: Final Cleanup
-        shell: bash
         run: |
           sed -i 's/\r//g' MyStuffCLW.m3u
           sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
 
-      - name: Deploy Script Folders to GitHub
-        shell: bash
+      - name: Deploy Folders to GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           git add TML/ SS99/ ss99events/ rox/ ptsp/
-          
-          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes"
           git push origin main || (git pull origin main --rebase && git push origin main)
 
+      # --- DROPBOX UPLOADS (Using original SHA to ensure it works) ---
+
       - name: Upload Main Playlist to Dropbox
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
@@ -177,67 +137,22 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
-      - name: Upload Backups to Dropbox
-        # This generic step handles individual backups if they exist
-        run: |
-          echo "Starting selective backup uploads..."
-        
-      - name: Upload TMS Backup
-        if: hashFiles('tms1.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: tms1.m3u
-          dest_path: /MyStuff/tms1.m3u
-
-      - name: Upload PTSPT Backup
-        if: hashFiles('pitspt.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
-
-      - name: Upload ROX Backup
-        if: hashFiles('rox.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rox.m3u
-          dest_path: /MyStuff/rox.m3u
-
-      - name: Upload SS99 Backup
-        if: hashFiles('SSpo99.m3u8') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: SSpo99.m3u8
-          dest_path: /MyStuff/SSpo99.m3u8
-
-      - name: Upload SPX Backup
-        if: hashFiles('spx.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          dest_path: /MyStuff/spx.m3u
-
-      - name: Upload RawGit Backup
+      - name: Upload RawGit Backup to Dropbox
         if: hashFiles('RawGit.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@v1.0.1
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: RawGit.m3u
           dest_path: /MyStuff/RawGit.m3u
+
+      - name: Upload ROX Backup to Dropbox
+        if: hashFiles('rox.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: rox.m3u
+          dest_path: /MyStuff/rox.m3u
