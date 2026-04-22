@@ -19,12 +19,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests thefuzz python-Levenshtein
+          pip install requests
 
       - name: Run MAgroup2 Scraper
         run: |
           # Download and run the modified MAgroup2 script
-          curl -L "https://www.dropbox.com/scl/fi/7e2r0tbjxio8s91nz994o/MAgroup2.py?rlkey=ffvljf01k8yixgo73wc17cwkt&st=lw5pk8zm&dl=1" | python3
+          curl -L "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=45p226u6&dl=1" | python3
 
       - name: Upload MyNewM.m3u to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
@@ -32,5 +32,5 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: "MyNewM.m3u"
+          source_path: "macg.m3u"
           dest_path: "/MyStuff/MyNewM.m3u"
