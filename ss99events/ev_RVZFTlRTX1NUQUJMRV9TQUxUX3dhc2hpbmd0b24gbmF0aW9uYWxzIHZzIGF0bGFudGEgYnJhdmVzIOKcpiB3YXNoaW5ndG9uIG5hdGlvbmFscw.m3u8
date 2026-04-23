@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-washington-nationals/playlist.m3u8?token=f7928249396ecbd09a94432d8766bdf9a9b4dc191c2b38cd01085d6680f4bb8f.1776927966.66a0960cc1a4d6bc2699e05861ec09f2.c7558cb2e5705e897d3fb10f98512758.5b0940e758848e08fe90fd83f80f4c58&signature=ad9d6512f7ef631cd0683b4a4fbe854d38f683cc66ef30e620580ecc2ea452df

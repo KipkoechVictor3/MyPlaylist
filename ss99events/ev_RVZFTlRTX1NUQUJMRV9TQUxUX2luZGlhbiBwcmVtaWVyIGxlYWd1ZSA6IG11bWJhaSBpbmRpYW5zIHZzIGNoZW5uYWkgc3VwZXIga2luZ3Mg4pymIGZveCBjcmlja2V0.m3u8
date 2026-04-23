@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-fox-cricket/playlist.m3u8?token=e9bc6b906df5bd6bc3a4d50c40e975b0ce60e7a66db86834b991f97b648a4977.1776927881.9ae3704a4a3c1c9f15ca4008dd5e2cdd.aa7a4f77facc19d96a1242b6c0bc482f.52ad83e485be36dff15beafbb34f32c3&signature=319b9a804a57fe2e981d3a285eb58bb6898d2d0c8a5f011b81a682fca48cb19b
