@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-tennis/playlist.m3u8?token=48baf1c2e65689a6944fc12d5dc6a946006b680b0d286301c2075888ffc2ec28.1776978143.27012319a927ee6e1926a11d8c3ecb28.6e4229f29eed0d4eb332276a3dc55264.03544f1ba975ecdb41815673ddbb8de6&signature=9efe03619d0d1e78b67a8f6ed0d6c7a8fa26ec3b4399d1cf5046226ab09df9c8

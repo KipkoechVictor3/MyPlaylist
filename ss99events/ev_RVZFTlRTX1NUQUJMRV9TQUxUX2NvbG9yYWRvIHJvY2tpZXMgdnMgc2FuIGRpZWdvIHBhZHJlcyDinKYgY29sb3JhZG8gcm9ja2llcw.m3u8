@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-colorado-rockies/playlist.m3u8?token=613445ae62b17fb78587405560fd21166877af2856535359b423d5ec76d2ada6.1776978333.bdb6b70db59d4238ca41495d89f6b442.ad955d988caede840035b807c40e2c4b.a9520c835b343c53e4dcfb9fd9c2cc1d&signature=f3af84a8aee738f76ffa2e9a7da2bfd459b7391584b6cb45f2f30bba81ed07f4
