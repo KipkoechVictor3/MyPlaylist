@@ -25,16 +25,16 @@ jobs:
 
       - name: Run MAgroup2 Scraper
         run: |
-          # The script will be downloaded and executed
-          # Ensure your Dropbox link is updated with the script below
+          # Executes the script which generates MAG/ folder and macg.m3u
           curl -L "https://www.dropbox.com/scl/fi/k2pmkb9rhb05lvf14d1hr/MAgroup.py?rlkey=w8n9yo3wjyamjefr8xttntrw6&st=45p226u6&dl=1" | python3
 
-      - name: Push to GitHub
+      - name: Push MAG folder to GitHub
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add MAG/ macg.m3u
-          git commit -m "Update Playlists and MAG files" || echo "No changes to commit"
+          # Only add the MAG directory, explicitly avoid macg.m3u
+          git add MAG/
+          git commit -m "Update MAG files" || echo "No changes to commit"
           git push
 
       - name: Upload macg.m3u to Dropbox
