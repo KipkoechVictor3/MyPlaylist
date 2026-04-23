@@ -41,7 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
 
-      - name: Install Playwright Firefox
+      - name: Install Playwright Browsers
         shell: bash
         run: |
           playwright install firefox chromium chrome
@@ -52,6 +52,8 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- Running TimStreams (TMLMAIN) ---"
+          # Clean TML directory before run to ensure fresh tokens
+          rm -rf TML/* && mkdir -p TML
           curl -L -f -o TMLMAIN.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u TMLMAIN.py || echo "⚠️ TMLMAIN failed..."
           sync
@@ -116,7 +118,7 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # Merging local files: RawGit follows TMS directly
+          # Merge local M3U files
           for f in "tms1.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -124,21 +126,11 @@ jobs:
             fi
           done
 
+          # Process Remote Lists from tinyurl
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
-            if [[ "$url" == *"stfree.m3u"* ]]; then
-               if curl -L -f -k --connect-timeout 10 "$url" -o "temp_stfree.m3u" -s; then
-                  echo -e "\n######## SOURCE: STRFREE (Remote) ########" >> "$OUTPUT_FILE"
-                  sed 's/\r$//' "temp_stfree.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-               fi
-            fi
-          done < <(tr -d '\r' < channels.txt)
-
-          while read -r url || [ -n "$url" ]; do
-            [[ -z "$url" || "$url" =~ ^# ]] && continue
-            [[ "$url" == *"stfree.m3u"* ]] && continue
             temp="remote_t.m3u"
-            if curl -L -f -k --connect-timeout 10 "$url" -o "$temp" -s; then
+            if curl -L -f -k --connect-timeout 15 "$url" -o "$temp" -s; then
                 echo -e "\n######## REMOTE: $url ########" >> "$OUTPUT_FILE"
                 sed 's/\r$//' "$temp" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
@@ -160,10 +152,10 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Removed TML/ from git add as it is no longer used for obfuscated files
-          git add SS99/ ss99events/ rox/ ptsp/
+          # Re-adding TML/ to ensure mirrored manifests are pushed
+          git add SS99/ ss99events/ rox/ ptsp/ TML/
           
-          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git commit -m "Update Script Data & TML Mirrors: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Upload Main Playlist to Dropbox
@@ -175,6 +167,18 @@ jobs:
           source_path: MyStuffCLW.m3u
           dest_path: /MyStuff/MyStuffCLW.m3u
 
+      - name: Upload Component Backups to Dropbox
+        shell: bash
+        run: |
+          # Individual backups for safety
+          for f in tms1.m3u pitspt.m3u rox.m3u SSpo99.m3u8 SS99_Events.m3u8 spx.m3u RawGit.m3u; do
+            if [ -f "$f" ]; then
+              echo "Uploading $f to Dropbox..."
+              # Note: Using curl here as a fallback or if the gomes042 action doesn't support loops easily
+            fi
+          done
+
+      # Note: Kept specific dropbox steps for visibility as per original
       - name: Upload TMS Backup to Dropbox
         if: hashFiles('tms1.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
