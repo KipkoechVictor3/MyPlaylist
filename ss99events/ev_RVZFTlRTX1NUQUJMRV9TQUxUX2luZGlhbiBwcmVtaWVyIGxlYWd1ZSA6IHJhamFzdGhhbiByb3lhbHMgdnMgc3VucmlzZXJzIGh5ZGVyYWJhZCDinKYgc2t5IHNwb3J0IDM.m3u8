@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/nz-sky-sport-3/playlist.m3u8?token=f5b2a7ec16416f43a8df1a5838d4f3eba8231218cd555878e2de68d119dd6a38.1777100655.70e64284d8abe793f2385a66c20feceb.876371414bd0c73f72fad54a4939c0b3.6bfee557ec994ffac8d61b6498adeeb4&signature=7ff642f96c559e539e65d2557b1fde56b8e09ba48e13e3181226c9537aa9bd2a
