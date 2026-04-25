@@ -1,0 +1,6 @@
+#EXTM3U
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="program_audio",NAME="Track 0",DEFAULT=YES,URI="https://ev01-prod.serveplay.site/out/v2/d452732ec72e16e49d356ba7657d8631/variant-a0/stream.js"
+#EXT-X-STREAM-INF:PROGRAM-ID=0,BANDWIDTH=1329363,RESOLUTION=960x540,FRAME-RATE=25.00,CODECS="avc1.64001F,mp4a.40.2",AUDIO="program_audio"
+https://ev01-prod.serveplay.site/out/v2/d452732ec72e16e49d356ba7657d8631/variant-v0/stream.js
+#EXT-X-STREAM-INF:PROGRAM-ID=2,BANDWIDTH=8129363,RESOLUTION=1920x1080,FRAME-RATE=25.00,CODECS="avc1.640028,mp4a.40.2",AUDIO="program_audio"
+https://ev01-prod.serveplay.site/out/v2/d452732ec72e16e49d356ba7657d8631/variant-v1/stream.js
