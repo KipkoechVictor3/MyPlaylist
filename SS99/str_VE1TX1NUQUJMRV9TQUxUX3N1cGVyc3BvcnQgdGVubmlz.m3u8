@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-tennis/playlist.m3u8?token=031bf735ddb8eb7c7ab82711fe64c006fb92b71b5e3c047a08f6b1ec717d9297.1777235648.e307047f1fe4e3b0e7a9766800136760.61d4128d5decc7907ee163e5ab369eed.273c858395ba458a98f1a4a5a005ecb4&signature=df0b8a9d02e3565846fb480c494ef5d72668fa9e94f4c0d47da538b28f78c96c
