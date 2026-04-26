@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-main-event/playlist.m3u8?token=f536eaae3c1e869d67355d127ee44119a5f4693ba23be7ad616e0cfcc3037a4f.1777203211.70a0ba5ef3693bd5f3a8a7cde79868be.6e17aea81b5fce33701d158b3038d8e5.00fa8910a564b79ce553d2fe47dec21c&signature=180db88c71289f8b4eb411c45bf99d8363cddff60d3c1903b1f053e599d760b1
