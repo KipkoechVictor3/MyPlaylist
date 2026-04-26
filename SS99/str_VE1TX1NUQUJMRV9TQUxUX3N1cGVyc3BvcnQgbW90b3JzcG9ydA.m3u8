@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-motorsport/playlist.m3u8?token=34f9f852f896f2dd4902bec4bf5242dc9d360bfa820a5ae1d2cd95f526b489f4.1777241040.005eb31ac1130bb699cc5d563c2421fe.dd6bcba9664d6435ca5f73f3ceb6a0f8.a5446214defec225ada0b6606f28bd5b&signature=8f63c41543fe24103cb707dd3f6bfa8cba8962353ca242f06b51b567b8a03e1a
