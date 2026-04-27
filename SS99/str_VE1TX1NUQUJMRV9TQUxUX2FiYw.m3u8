@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdnlivetv.ru/secure/api/v1/us-abc/playlist.m3u8?token=9f9f1dfa072e8c1135fa3ef1f8d1829f6890b8a9accf7aa0bea1bb79fb5412d3.1777246386.7c79f72dbaa2a63b8d27c2e4ebd704a1.e2c2a0a1839b8413cc363c17258524cd.bbf21fb9ce0e1bac3b730993581dc7df&signature=b58edf275fc677f9e6a4b23bcee5dbfd4bc61166996ebbc478320a867b50b8c6

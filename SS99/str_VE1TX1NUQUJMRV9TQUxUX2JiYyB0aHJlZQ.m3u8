@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdnlivetv.ru/secure/api/v1/gb-bbc-three/playlist.m3u8?token=bf9beecb81ee579b7a3edb63577fa5c89a3e02527695f8431f68374eb3300b0e.1777246402.6d0b941eea944c7564c8bf52122041a4.35c6419a5d04cfb55cbef95af81a766a.5cbc4abebb3b523c15cb98bf089b89c7&signature=274702b6a864e400b7adcc6c2a585e581cf5fc78b919780c85c0b7a71cce9671
