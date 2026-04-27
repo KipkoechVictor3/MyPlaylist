@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-football/playlist.m3u8?token=ade7bdb79338ba84f3dc7aad78396fe9dc063c7047eef249bb381762ce9cba79.1777249960.897dc95ab7214f5338c5d123e397cf3d.a7a615d3c68d08975ae39e465855b769.73bcd89379a6ffa670601211805ed600&signature=a9311525e3f06f46b06bb1f432ee5442c49bb0b0c794f5c2060c2ecbd54e1fbf
