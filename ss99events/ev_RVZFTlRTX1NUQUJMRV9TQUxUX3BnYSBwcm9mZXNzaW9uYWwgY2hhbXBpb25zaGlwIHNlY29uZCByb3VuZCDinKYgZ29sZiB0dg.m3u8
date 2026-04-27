@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-golf-tv/playlist.m3u8?token=25b50810bcba3339845eff298a27386e6964a35269be86f3bccf17e63566f40a.1777273422.e387a4bc33f0f68033159567c3a5927d.bd594569edb2f0e838ff4bc0f4abf9ca.c8a191d40a40af6d55f3a6ba584d5eaa&signature=c8cd6dfbda2afd50f8daadb6ee460526a8db35bb1bfd13ad3d3757acdb22a675
