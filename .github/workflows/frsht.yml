@@ -1,0 +1,101 @@
+name: FreshT Playlist Update
+
+on:
+  workflow_dispatch: 
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fresht-processing
+  cancel-in-progress: true
+
+jobs:
+  update-fresht-playlist:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+      GITHUB_RAW_BASE: "https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/FRESHT"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install System Dependencies
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends xvfb
+
+      - name: Install Python Packages
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
+
+      - name: Install Playwright Browsers
+        shell: bash
+        run: |
+          # Installing only Chromium and Chrome as requested
+          playwright install chromium chrome
+          playwright install-deps chromium chrome
+
+      - name: Run FreshT Scraper
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Fetching and Running FreshT Scraper ---"
+          # Ensure target directory exists
+          mkdir -p FRESHT
+          
+          # Download the script from your Raw GitHub base using the secret URL suffix
+          curl -L -f -o FRESHT_Scraper.py "${{ env.GITHUB_RAW_BASE }}/${{ secrets.FRESHT_URL }}"
+          
+          # Run with xvfb for headful browser emulation
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u FRESHT_Scraper.py || echo "⚠️ FRESHT Scraper failed..."
+          sync
+
+      - name: Final Playlist Cleanup
+        shell: bash
+        run: |
+          if [ -f "fsht.m3u" ]; then
+            sed -i 's/\r//g' fsht.m3u
+            sed -i '/^[[:space:]]*$/d' fsht.m3u
+            echo "Playlist fsht.m3u cleaned."
+          else
+            echo "fsht.m3u not found, skipping cleanup."
+          fi
+
+      - name: Deploy Data to GitHub
+        shell: bash
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git fetch origin main
+          git reset --soft origin/main
+          
+          # Tracking the FRESHT directory for any mirrored manifests
+          git add FRESHT/
+          
+          git commit -m "Update FRESHT Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
+
+      - name: Upload FreshT Playlist to Dropbox
+        if: hashFiles('fsht.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: fsht.m3u
+          dest_path: /MyStuff/fsht.m3u
