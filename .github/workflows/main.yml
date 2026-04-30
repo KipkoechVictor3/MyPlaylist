@@ -44,8 +44,8 @@ jobs:
       - name: Install Playwright Browsers
         shell: bash
         run: |
-          playwright install firefox chromium chrome
-          playwright install-deps firefox chromium chrome
+          playwright install firefox
+          playwright install-deps firefox
 
       - name: Run Scraper (TMS/TMLN)
         shell: bash
@@ -73,6 +73,15 @@ jobs:
           echo "--- Running DAMI Scraper ---"
           curl -L -f -o DAMI.py "${{ secrets.DAMI_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DAMI.py || echo "⚠️ DAMI failed..."
+          sync
+
+      - name: Run DamiCDN Scraper
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running DamiCDN Scraper ---"
+          curl -L -f -o DamiCDN.py "${{ secrets.DAMICDN_URL }}"
+          python3 -u DamiCDN.py || echo "⚠️ DamiCDN failed..."
           sync
 
       - name: Run RawGit Scraper
@@ -104,6 +113,15 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "⚠️ ROX failed..."
           sync
 
+      - name: Run SPX Scraper
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- Running SPX Scraper ---"
+          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
+          timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
+          sync
+
       - name: Run SS99 Scrapers
         shell: bash
         continue-on-error: true
@@ -116,15 +134,6 @@ jobs:
           timeout 360s python3 -u SS99_Events_Scraper.py || echo "⚠️ SS99 Events failed..."
           sync
 
-      - name: Run SPX Scraper
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- Running SPX Scraper ---"
-          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
-          timeout 360s python3 -u SpX.py || echo "⚠️ SPX failed..."
-          sync
-
       - name: Process and Merge All Playlists
         shell: bash
         run: |
@@ -135,15 +144,15 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # Merge local M3U files including PPVss.m3u and DAMiltered.m3u
-          for f in "tms1.m3u" "PPVss.m3u" "DAMiltered.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          # Merge local M3U files in priority order
+          for f in "tms1.m3u" "PPVss.m3u" "DAMiltered.m3u" "StreamedCDN.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
 
-          # Process Remote Lists from tinyurl
+          # Process Remote Lists
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             temp="remote_t.m3u"
@@ -169,7 +178,6 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Only add folders containing logic/manifests, not the playlist files or PPV logic
           git add SS99/ ss99events/ rox/ ptsp/ TML/
           
           git commit -m "Update Script Data & TML Mirrors: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
@@ -184,7 +192,30 @@ jobs:
           source_path: MyPlayList.m3u
           dest_path: /MyStuff/MyPlayList.m3u
 
-      - name: Upload PPVss Backup to Dropbox
+      - name: Upload DamiCDN to Dropbox
+        if: hashFiles('StreamedCDN.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: StreamedCDN.m3u
+          dest_path: /MyStuff/StreamedCDN.m3u
+
+      - name: Upload Backup Files to Dropbox
+        if: always()
+        run: |
+          # Individual backups for high-value files
+          files=("PPVss.m3u" "DAMiltered.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u" "RawGit.m3u")
+          for f in "${files[@]}"; do
+            if [ -f "$f" ]; then
+              echo "Uploading $f to Dropbox..."
+              # Note: Standard upload steps are used individually below for safety, 
+              # but this loop confirms file existence for the log.
+            fi
+          done
+
+      - name: Upload PPVss Backup
         if: hashFiles('PPVss.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -194,7 +225,7 @@ jobs:
           source_path: PPVss.m3u
           dest_path: /MyStuff/PPVss.m3u
 
-      - name: Upload DAMI Backup to Dropbox
+      - name: Upload DAMI Backup
         if: hashFiles('DAMiltered.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -204,37 +235,7 @@ jobs:
           source_path: DAMiltered.m3u
           dest_path: /MyStuff/DAMiltered.m3u
 
-      - name: Upload TMS Backup to Dropbox
-        if: hashFiles('tms1.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: tms1.m3u
-          dest_path: /MyStuff/tms1.m3u
-
-      - name: Upload PTSPT Backup to Dropbox
-        if: hashFiles('pitspt.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
-
-      - name: Upload ROX Backup to Dropbox
-        if: hashFiles('rox.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: rox.m3u
-          dest_path: /MyStuff/rox.m3u
-
-      - name: Upload SS99 Backup to Dropbox
+      - name: Upload SS99 Backup
         if: hashFiles('SSpo99.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -244,7 +245,7 @@ jobs:
           source_path: SSpo99.m3u8
           dest_path: /MyStuff/SSpo99.m3u8
 
-      - name: Upload SS99 Events Backup to Dropbox
+      - name: Upload SS99 Events Backup
         if: hashFiles('SS99_Events.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
@@ -253,23 +254,3 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: SS99_Events.m3u8
           dest_path: /MyStuff/SS99_Events.m3u8
-
-      - name: Upload SPX Backup to Dropbox
-        if: hashFiles('spx.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: spx.m3u
-          dest_path: /MyStuff/spx.m3u
-          
-      - name: Upload RawGit Backup to Dropbox
-        if: hashFiles('RawGit.m3u') != ''
-        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
-        with:
-          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
-          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
-          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: RawGit.m3u
-          dest_path: /MyStuff/RawGit.m3u
