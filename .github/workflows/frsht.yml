@@ -1,4 +1,4 @@
-name: FreshT Playlist Update
+name: FreshT Deployment Workflow
 
 on:
   workflow_dispatch: 
@@ -12,11 +12,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  update-fresht-playlist:
+  update-fresht:
     runs-on: ubuntu-latest
     env:
       PYTHONUNBUFFERED: "1"
-      GITHUB_RAW_BASE: "https://raw.githubusercontent.com/KipkoechVictor3/MyPlaylist/main/FRESHT"
 
     steps:
       - name: Checkout repository
@@ -40,12 +39,12 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
+          pip install playwright beautifulsoup4 requests
 
       - name: Install Playwright Browsers
         shell: bash
         run: |
-          # Installing only Chromium and Chrome as requested
+          # Only Chromium and Chrome as requested
           playwright install chromium chrome
           playwright install-deps chromium chrome
 
@@ -53,29 +52,26 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-          echo "--- Fetching and Running FreshT Scraper ---"
-          # Ensure target directory exists
+          echo "--- Running FreshT Scraper ---"
+          # Create the directory where the script saves individual .m3u8 files
           mkdir -p FRESHT
           
-          # Download the script from your Raw GitHub base using the secret URL suffix
-          curl -L -f -o FRESHT_Scraper.py "${{ env.GITHUB_RAW_BASE }}/${{ secrets.FRESHT_URL }}"
+          # Use the secret URL directly as per your other working scripts
+          curl -L -f -o FRESHT_Scraper.py "${{ secrets.FRESHT_URL }}"
           
-          # Run with xvfb for headful browser emulation
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u FRESHT_Scraper.py || echo "⚠️ FRESHT Scraper failed..."
+          # Run script with xvfb
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u FRESHT_Scraper.py
           sync
 
-      - name: Final Playlist Cleanup
+      - name: Final Cleanup
         shell: bash
         run: |
           if [ -f "fsht.m3u" ]; then
             sed -i 's/\r//g' fsht.m3u
             sed -i '/^[[:space:]]*$/d' fsht.m3u
-            echo "Playlist fsht.m3u cleaned."
-          else
-            echo "fsht.m3u not found, skipping cleanup."
           fi
 
-      - name: Deploy Data to GitHub
+      - name: Push Individual M3U8 Links to GitHub
         shell: bash
         run: |
           git config --global user.name "github-actions[bot]"
@@ -84,13 +80,13 @@ jobs:
           git fetch origin main
           git reset --soft origin/main
           
-          # Tracking the FRESHT directory for any mirrored manifests
+          # Add the FRESHT folder to GitHub so the generated links become active
           git add FRESHT/
           
-          git commit -m "Update FRESHT Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git commit -m "Update FRESHT individual links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
-      - name: Upload FreshT Playlist to Dropbox
+      - name: Upload Main Playlist to Dropbox
         if: hashFiles('fsht.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
