@@ -58,13 +58,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Use rebase to stay in sync with the remote
-          git pull origin main --rebase
-          
-          # Only add the data directory. DO NOT add . (the root) 
-          # to avoid touching the .github folder
+          # 1. Stage the changes FIRST to clear the "unstaged changes" error
           git add FRESHT/
           
+          # 2. Now pull with rebase. Since changes are staged, Git can handle the merge.
+          git pull origin main --rebase
+          
+          # 3. Check if there is anything to commit
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
