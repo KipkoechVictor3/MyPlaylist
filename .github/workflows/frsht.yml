@@ -53,24 +53,27 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u FRESHT_Scraper.py
           sync
 
-      - name: Push Data to GitHub
+      - name: Final Cleanup
+        run: |
+          if [ -f "fsht.m3u" ]; then
+            sed -i 's/\r//g' fsht.m3u
+            sed -i '/^[[:space:]]*$/d' fsht.m3u
+          fi
+
+      - name: Deploy FreshT to GitHub
+        shell: bash
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 1. Stage the changes FIRST to clear the "unstaged changes" error
+          git fetch origin main
+          git reset --soft origin/main
+          
+          # Using your preferred targeted add approach
           git add FRESHT/
           
-          # 2. Now pull with rebase. Since changes are staged, Git can handle the merge.
-          git pull origin main --rebase
-          
-          # 3. Check if there is anything to commit
-          if git diff --staged --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "Update FRESHT Data: $(date +'%Y-%m-%d %H:%M')"
-            git push origin main
-          fi
+          git commit -m "Update FRESHT individual links: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Upload Main Playlist to Dropbox
         if: hashFiles('fsht.m3u') != ''
