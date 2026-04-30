@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-bein-sports-mena-1/playlist.m3u8?token=1fd70cf0f147ddfe1a212da0be62c23ad13f58f7781e99d478a893b3803766e2.1777583361.01001604bf9eb9c2d3a1adfcb2da39ea.d90a95079a86e79838e643c28eea6eec.6945f9a28f8ab0b2a8f6c0bf98912ffa&signature=3621830d1eb9c49c9d19ca8bbea6fdb55ef225a3c4eea2a34a7a384c6056165d
