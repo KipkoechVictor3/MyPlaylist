@@ -45,8 +45,8 @@ jobs:
         shell: bash
         run: |
           # Only Chromium and Chrome as requested
-          playwright install chromium chrome
-          playwright install-deps chromium chrome
+          playwright install chromium chrome firefox
+          playwright install-deps chromium chrome firefox
 
       - name: Run FreshT Scraper
         shell: bash
