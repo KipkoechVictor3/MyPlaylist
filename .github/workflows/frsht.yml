@@ -6,7 +6,6 @@ on:
 permissions:
   contents: write
   actions: write
-  workflows: write  # Necessary to bypass the remote rejection you saw
 
 concurrency:
   group: fresht-processing
@@ -59,18 +58,17 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Pull latest changes to avoid conflict
+          # Use rebase to stay in sync with the remote
           git pull origin main --rebase
           
-          # Stage ONLY the FRESHT folder
+          # Only add the data directory. DO NOT add . (the root) 
+          # to avoid touching the .github folder
           git add FRESHT/
           
-          # Check if there are actually changes before committing
           if git diff --staged --quiet; then
-            echo "No changes in FRESHT files. Skipping push."
+            echo "No changes to commit."
           else
             git commit -m "Update FRESHT Data: $(date +'%Y-%m-%d %H:%M')"
-            # Standard push; permissions: workflows: write handles the security check
             git push origin main
           fi
 
