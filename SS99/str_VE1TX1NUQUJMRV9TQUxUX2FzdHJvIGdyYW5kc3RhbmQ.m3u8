@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-astro-grandstand/playlist.m3u8?token=4a4ce27b2304e1c063d8e0b0b21c6f1540b18cceaf0db70fc1f523c4ab41db6e.1777554110.10ed1441e6ca87efced4d3b7894827cb.3f9aeb75bda59f5477f5b49af2d1c2d6.d3680b244b730296e87529e55f4352be&signature=c744ab07adee5fac0d3d7f78407953c8a30762fca614f8cf7cf1a109dba51011
