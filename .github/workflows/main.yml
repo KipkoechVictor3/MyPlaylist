@@ -129,7 +129,7 @@ jobs:
         shell: bash
         run: |
           set +e 
-          OUTPUT_FILE="MyStuffCLW.m3u"
+          OUTPUT_FILE="MyPlayList.m3u"
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
@@ -157,8 +157,8 @@ jobs:
       - name: Final Cleanup
         shell: bash
         run: |
-          sed -i 's/\r//g' MyStuffCLW.m3u
-          sed -i '/^[[:space:]]*$/d' MyStuffCLW.m3u
+          sed -i 's/\r//g' MyPlayList.m3u
+          sed -i '/^[[:space:]]*$/d' MyPlayList.m3u
 
       - name: Deploy Script Folders to GitHub
         shell: bash
@@ -181,8 +181,8 @@ jobs:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: MyStuffCLW.m3u
-          dest_path: /MyStuff/MyStuffCLW.m3u
+          source_path: MyPlayList.m3u
+          dest_path: /MyStuff/MyPlayList.m3u
 
       - name: Upload PPVss Backup to Dropbox
         if: hashFiles('PPVss.m3u') != ''
