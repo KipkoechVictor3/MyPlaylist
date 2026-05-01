@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/au-stan-sport-3/playlist.m3u8?token=90165fc767ea17bf3c20a22bfccd98f4bfada8ff39b79e5b09389e1856f5c6c7.1777621050.7900aac41c0eebb63e9a9a21b91d1d40.d8876be73d08c3c76a13ea2ab189b444.c36ff632bb41c040be5954a11bf61c43&signature=427bd7c735a5892bade46d69e15874ee6a62b910648fdd9cbc8e2e42482dbd03
