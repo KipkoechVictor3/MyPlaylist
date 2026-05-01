@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/sa-ssc-extra-3/playlist.m3u8?token=3df74997933d2360fbfcdfcbfdbe8f832ecaa40b4e94320a79c51894476f4cc2.1777644503.09e6c98fb3860df539d7dc0f023cdcf2.b57963c8e8845fc1e240bb1d5428e07f.03f8e4c06bde332f7d3037db1632973e&signature=0d85aeb73b523050dd8591bb63ea96fc52cb92a1e88cd3208fea89f83b32c914
