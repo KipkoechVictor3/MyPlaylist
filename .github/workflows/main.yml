@@ -154,7 +154,7 @@ jobs:
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
           # Merge local M3U files in priority order
-          for f in "tms1.m3u" "PPVss.m3u" "DAMiltered.m3u" "StreamedCDN.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "streamcorner_final.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
+          for f in "tms1.m3u" "PPVss.m3u" "DAMiltered.m3u" "StreamedCDN.m3u" "RawGit.m3u" "pitspt.m3u" "rox.m3u" "str_final.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -214,7 +214,7 @@ jobs:
       - name: Upload Backup Files to Dropbox
         if: always()
         run: |
-          files=("PPVss.m3u" "DAMiltered.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "streamcorner_final.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u" "RawGit.m3u")
+          files=("PPVss.m3u" "DAMiltered.m3u" "tms1.m3u" "pitspt.m3u" "rox.m3u" "str_final.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "spx.m3u" "RawGit.m3u")
           for f in "${files[@]}"; do
             if [ -f "$f" ]; then
               echo "Uploading $f to Dropbox..."
@@ -232,14 +232,14 @@ jobs:
           dest_path: /MyStuff/PPVss.m3u
 
       - name: Upload STRC Backup
-        if: hashFiles('streamcorner_final.m3u') != ''
+        if: hashFiles('str_final.m3u') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: streamcorner_final.m3u
-          dest_path: /MyStuff/streamcorner_final.m3u
+          source_path: str_final.m3u
+          dest_path: /MyStuff/str_final.m3u
 
       - name: Upload DAMI Backup
         if: hashFiles('DAMiltered.m3u') != ''
