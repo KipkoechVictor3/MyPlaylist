@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-cricket/playlist.m3u8?token=a85516a4e7d1d3b68925313ee91bf82d92a47cbab2e2bc99ad6803aead7cc222.1777761246.858d6dcccce95eda32d3c28786778932.d31276aa4cd892b1677b8aca0d7df563.962365b1168b3feff21e563f527f69a2&signature=7ae95660e32b984a1cb19b9ae079f5fc4880e08bd5d2013d74190bdcc737094d

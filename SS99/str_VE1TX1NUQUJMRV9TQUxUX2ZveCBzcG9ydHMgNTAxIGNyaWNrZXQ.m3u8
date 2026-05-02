@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/au-fox-sports-501-cricket/playlist.m3u8?token=b57fe5713adfefb92fc84e04b05c2cfd78bd643c33c3b5a74c4b5b39aa019f89.1777761254.24a48af188540d3dd3a4137caf07de81.b7d2490bb23af52c9da78b28c381ea35.b220074509cddb150fca2d33a4b2d5aa&signature=54f2870610d6b966785021feb342a73e819259b3faafe61487ebde6e7e06daf9

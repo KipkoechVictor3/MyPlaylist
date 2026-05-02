@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-boston-red-sox/playlist.m3u8?token=9d04fa8adb4218b3f4bea4810a88ecd980342c77f89a706d24d3a6347ffcbc4f.1777761332.1b3413e6e060ea360b5b6d8aa7afea02.d60fbacc5eb0d2debb284488333c012a.a6bad47fc719a6a09f2565b01764a239&signature=2a9106d9bdad5e4827d6057f4b97323188a27493855cf86899f8f5c92f6223e5

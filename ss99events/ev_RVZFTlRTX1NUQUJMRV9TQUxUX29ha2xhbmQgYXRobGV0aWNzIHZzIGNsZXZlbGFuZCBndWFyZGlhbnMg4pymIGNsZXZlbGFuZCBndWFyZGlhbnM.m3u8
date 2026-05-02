@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-cleveland-guardians/playlist.m3u8?token=c52e2fff4c865f0091cb3d05d722081e8bfc5380ae372a28da6618f5a0ac8d92.1777761332.efb65c9cd62970c7327db1df55886a96.b167bed3a53856370eee0b37f69fe877.a223c0144f089ae0c9e5cb8bcc76e367&signature=e7e4367f8392bfcc1d23385a33c90d81644976dc11ede76cb9bb2ec31a783cb4
