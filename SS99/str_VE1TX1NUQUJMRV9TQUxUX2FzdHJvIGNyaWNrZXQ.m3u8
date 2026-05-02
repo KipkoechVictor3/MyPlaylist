@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-astro-cricket/playlist.m3u8?token=63b72e8e19a102e3cd688b419dae94ae60ca1c3e57921ba174588ccbc5ac1466.1777732387.6b114d9b9667f848750e8281a7dca9bb.f1fd2fc5ade0b18f125eb491bbb8b48d.aa35914ddbbda6b1409b6a811ae6ebd5&signature=97bd862a8c5e8b26e8aa32fb26a73d8134754631c1fd911a57f782ba165567ca

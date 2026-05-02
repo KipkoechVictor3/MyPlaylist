@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/au-fox-sports-504/playlist.m3u8?token=f1892e1102bd27094ea6f89be28b9cdaf36af7c8c3a6f0611366d5c9c03ac62d.1777732409.24969f3ff7f5292ca529ae63577d8591.d59d93ab59f9419f2d7ef2aee6cedca1.2a1022c3c8caf205efed829112828da6&signature=11ffc0a10b7e1f261ed7e439ea098acb04449c5c5165c498e5463d0cd717a62c
