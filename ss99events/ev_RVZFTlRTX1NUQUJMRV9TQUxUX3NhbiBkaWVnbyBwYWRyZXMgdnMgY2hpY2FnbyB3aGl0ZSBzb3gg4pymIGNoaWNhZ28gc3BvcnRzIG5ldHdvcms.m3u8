@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-chicago-sports-network/playlist.m3u8?token=3918d2493fc96da4109378c093f27eccf1b4e5b0d70ee03f302e90c5e111abc7.1777757888.a14d111f72a6217de50c5aa794671aca.ec053260db28d36a323f26abad1c97e0.87039e83ad026526e685db7f8399a9cf&signature=f7a78d1bf5f7f4e09207aba7c7ccce48e6c5250faaea2327f7b554c896eb26a4

@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-toronto-blue-jays/playlist.m3u8?token=ae60359bd0cfef4762281048fbae93ec53148b0834a1b39fb4c43056100784a8.1777757870.ae859ef170e463d05b2109806bed9a86.e53aedd8d1936c1bec7dbcb9e22f44b5.e36a7e9cf123a3555ef34a2822b30f87&signature=1bf075371596cd1a308482c43af9e9e94cc671a8ef424d10b7f347e7a63991d7
