@@ -44,8 +44,8 @@ jobs:
       - name: Install Playwright Browsers
         shell: bash
         run: |
-          playwright install firefox chromium chrome
-          playwright install-deps firefox chromium chrome
+          playwright install firefox
+          playwright install-deps firefox
 
       - name: Run Scraper (TMS/TMLN)
         shell: bash
