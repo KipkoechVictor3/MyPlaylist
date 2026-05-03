@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-astro-premier-league-2/playlist.m3u8?token=5da72afade1e58bee20a9bda4defaf0a19fca2166686ef284f9e0f57008003da.1777844063.9116368009e51aaca424f3326c7980cd.319a26524bc952aeeebd9e9aabbcecd6.c1ef2e658027a0ea1e0174661b622956&signature=bb294929334fb79229a43c0f21b1c1077d925bd57c840471829dd6529eedb175

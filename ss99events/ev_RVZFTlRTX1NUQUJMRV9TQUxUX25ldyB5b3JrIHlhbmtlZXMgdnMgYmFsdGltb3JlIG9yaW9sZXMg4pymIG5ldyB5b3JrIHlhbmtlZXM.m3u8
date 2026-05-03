@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-new-york-yankees/playlist.m3u8?token=ac044b61f42f0d8b89930ba66ffe8b71ae9d30260c4d2d8374f3533b2313281c.1777844228.3e6f918b0d298eb5ecb030fa80aae48e.07f51f32349f03e22c97ebede03ff1dd.73e596272277917bea9f71a5e0b727a0&signature=9fc89e67706c86882af4bb325949b1f8b0854cd97e1dbe48a8e7e4eb9e7b6bbb

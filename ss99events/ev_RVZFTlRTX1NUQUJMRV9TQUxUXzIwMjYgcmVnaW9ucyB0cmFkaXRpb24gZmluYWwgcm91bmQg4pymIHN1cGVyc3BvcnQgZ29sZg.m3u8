@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-golf/playlist.m3u8?token=3c41a99664445521cd599fe09f8f0002f43ed2c308b229b1fb84911ac440d879.1777844184.984d462e0053afbf0c5bea3afd14bb51.d859315976bb4b3562b0da4940f3c316.3c66b8b1b80cd5abe13f483e191fa56f&signature=6f2599991ff9ead1be5b5caeca2d7026aca264c3d736417c3e039a40cf92e8f5
