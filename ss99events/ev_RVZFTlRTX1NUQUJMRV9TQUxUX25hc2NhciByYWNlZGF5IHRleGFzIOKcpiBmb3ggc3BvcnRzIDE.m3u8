@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-fox-sports-1/playlist.m3u8?token=fa4025bbccb52a43460564ed73e7189daa42f04624ca1a4beb8f927320588042.1777802960.8852ff808ae597e2efa9d70667e9019f.09b1c3a3566112821e491466cfd8c942.2e5e793da7a2beccb64271e9a64a5fdb&signature=2afb3d05d92537d5beb67c7dba6cbbc4fdffc1a7895d1195f47118e7a503ed74
