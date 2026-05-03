@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-st-louis-cardinals/playlist.m3u8?token=e6960eb5377977bd5a178720d9ae529e19f2870830e5888633fbca32ff429d35.1777806372.b2d61cbe699f44fa3ce87ea325bc0000.ce8e2c7d6b88e73db9dcfcf3ff522c05.b448aaaff0d858bc0a25a9d205e2c0ee&signature=646bfdc4e8627e92401c3a874ac71af653ff439c85c44df2135c019f0f456213

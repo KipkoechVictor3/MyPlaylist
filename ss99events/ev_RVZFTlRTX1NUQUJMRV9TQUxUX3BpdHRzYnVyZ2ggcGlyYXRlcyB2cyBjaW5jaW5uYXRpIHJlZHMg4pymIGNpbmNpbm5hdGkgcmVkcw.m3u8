@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-cincinnati-reds/playlist.m3u8?token=8af877a329f27294540a9a3e972978fbd7fed3f9769d6a8236fc63b48a858c71.1777806358.cf65227ba87baa397688abc346e264db.a1678e508ea6878b22d34f4d74f56e92.629e087cdae6de3990fd9aa3d1af8af6&signature=cf0089d3093525e055cf4f63db74068f9cd3a4ad3959839f460e89c9a4d0c779
