@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-spectrum-sportsnet-la/playlist.m3u8?token=8b89db21145db8e87c1c159f196771c9c03ec55053e244917b938e006d00a982.1777792011.030ccca8efc2ff135bccd62fde7b55fc.0d203c5950d3a4c7e26e78ebc8409561.803c5df06c7bb0eeb903435b2077a208&signature=178f77e9c1fb65e6074bf236a4be4c7eaa03eb0dcada836bbb4e004e42149f6a
