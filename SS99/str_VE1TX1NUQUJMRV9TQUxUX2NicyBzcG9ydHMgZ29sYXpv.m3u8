@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-cbs-sports-golazo/playlist.m3u8?token=5420fcf383157c5cc7e0dbe4eea2f95b9c74a57f175c682b41eea7585f2e8b5d.1777914311.f8bafa2c9c6970e38566f0b196f55344.c2cccf6bf436f02a0dbb7992d46c5ae1.975f0167aa2a1b5d263bc2001ba26878&signature=7a4a8813419cc4041b7f73b5d15c20df90004d7c83cb083aea4308621981f5d7
