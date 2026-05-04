@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-space-city-home-network/playlist.m3u8?token=8d93574ebf8a1ae4a5feaea62b3b5e18b31f846699244fc63bf95a3940133ce8.1777930595.de0e55f8fbc9bbec03af9a9409dbbed7.98a43b0a9bc508a88d9e6495d74bc382.ced9486b3fbfcdd934da96539b1c1b4d&signature=31a45a9c8d5b85c2fa0a7b504a9cfa748d1fd7159061f18d4ae980d50084783f
