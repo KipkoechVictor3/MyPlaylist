@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/sa-bein-sports-5/playlist.m3u8?token=6c603bb7ae5acb57149cd9a02c42a61dbbb9584c9cbc22e69a0a140969296f2f.1777926974.9e30260844eba7c7f1f52aadf02f46fd.6ccf068f94b6be8f9b0fa0af54fa537a.1fb3a093a95ecd39fcc3169ef2607e7d&signature=5fd2d484617702a720d46c4e5fe1214256c406406d2eda78b85ec955143a20bb
