@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-arizona-diamondbacks/playlist.m3u8?token=eb71d8c2d3951c531f18f09bcc7660f2b2162b1906dbad6172b72d3832fa6e10.1777964807.bcd6bb4d258dd81df0f66c4dfe21012a.c9f98f0376d7f88caf90a0d97eb80b08.640c875e19705a3955655d0dc15b7d5c&signature=e73e04ccc6bb073c51dd5e026958af15cfcd6cd9e83b7e2887aca5460bd7d474
