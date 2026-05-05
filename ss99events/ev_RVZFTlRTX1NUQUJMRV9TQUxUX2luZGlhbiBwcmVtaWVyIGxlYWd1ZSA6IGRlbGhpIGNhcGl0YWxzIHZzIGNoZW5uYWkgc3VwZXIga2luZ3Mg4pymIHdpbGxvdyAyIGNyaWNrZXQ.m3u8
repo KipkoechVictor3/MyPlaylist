@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-willow-2-cricket/playlist.m3u8?token=5d13d15a15ea78989bbb413f8a60c48371069e15406b7e6de9b723582d58b5ba.1778017427.7f9d1d28f50b742008c8d99796f99d6d.27ddd3e3ff2c76702c7c0d1aca3dce15.18104c45acac60692fcf07c1c5597d8e&signature=0a3680e4d8a2fbf5fad1654b2eabc824311e3cbd19ed243b68fa487e48112628
