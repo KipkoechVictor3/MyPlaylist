@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-peacock-event-1/playlist.m3u8?token=aa69537b58ac38027f61e08471e56a84ab1c57908cd247ab1ba4f29a567c439d.1778103380.23da0c1f9dd1904069825f9c387101f1.95170d24b1afa6b2e3d7c2dd7c0abf3c.cc0859c57152ce7123f218a7ea6d25bd&signature=27c2f10a2aecab8c9b59b766bf61c12df5a4f2884dc46621b74136702df50fd0

@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-sportsnet-new-york/playlist.m3u8?token=c99043ed931ce0f9c54e97edea16fdfaae060b781539eca6e93375adee1d1a4d.1778103483.5a961428fe482bd46a99fbc6d812f400.86a00129c4224a01686ef322e039beaa.30d7e0fad21dabbdeb4adfe68da30cc3&signature=cffea64a916262e8a1870cd0cb4bfdc833f5b52d9146e0c5073199b84ad536b1
