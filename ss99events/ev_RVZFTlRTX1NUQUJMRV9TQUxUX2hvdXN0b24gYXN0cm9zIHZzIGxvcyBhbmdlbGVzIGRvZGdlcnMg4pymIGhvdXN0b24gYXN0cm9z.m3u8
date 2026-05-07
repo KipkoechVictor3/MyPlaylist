@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-houston-astros/playlist.m3u8?token=a32c02ed6d35074ecf7af68de7fd26321d2e1672094d24cb5d074d46dfe5f3e8.1778189768.a8a1e948c22ecf07289a35862f5712fa.c23a901c49e2bb66234fca7ac75a84f1.edd0117431caa6a3401e0eebbc3d6a6d&signature=f750dcbf8a84f2713bc0d41e01036cad12a1c15fa82af594b293af0043d4830e

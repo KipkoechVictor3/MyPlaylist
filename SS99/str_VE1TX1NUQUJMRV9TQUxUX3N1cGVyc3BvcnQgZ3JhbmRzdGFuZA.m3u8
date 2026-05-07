@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-grandstand/playlist.m3u8?token=d1a63118ea5f38c4b0e7caf33960cbdd59dd905ea361a949b25a08a4be713ec5.1778189618.c4de625d95578bad7fcc3289f2b52f61.0fbe41de8e9fc16b65ec411e893b675b.86b523c6d9cae24f04acfeacecd8863f&signature=879a41caf1f0cc74921d76e0763a4a2d78816369e130984ce4344894501b1a2b

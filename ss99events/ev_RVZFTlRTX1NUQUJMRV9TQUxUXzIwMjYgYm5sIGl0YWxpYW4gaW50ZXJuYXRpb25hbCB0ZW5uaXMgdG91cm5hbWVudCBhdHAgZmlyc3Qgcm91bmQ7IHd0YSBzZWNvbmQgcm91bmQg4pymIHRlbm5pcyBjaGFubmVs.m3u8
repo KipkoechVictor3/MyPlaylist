@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-tennis-channel/playlist.m3u8?token=e690845f3d6429c5aaf3cdf1cc642853717b6bcec6c0cadc822a2c9bfffad48a.1778189731.f66193d07f28eaaf0795e9815cdbe957.708131f7d91d233657269794342b4438.e51c507be4d5f4021074bd2bf762d5ce&signature=74e35df97fd6bda1d8f9b09ed43abb5b9329a21cb934899f5c5fa02d7097839a
