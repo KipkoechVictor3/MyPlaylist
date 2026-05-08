@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-bein-sports-3/playlist.m3u8?token=126ed816d0d0512dfc2b2da029a7e5478063e0858348b30101fd9392ea497bd3.1778223947.6169ffdddd8ce89a0dce731b017adda0.14ff1ffb33eef99b22cc88c4e91b0c54.811d478e45b149f4fc6c14607326b91c&signature=e1e4df547c2bf48e348e7fe82c6b29ddab4811d55212c48fb014a65c29d8fb35

@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-seattle-mariners/playlist.m3u8?token=0e420ec05880b8efda38b44db8ec2e500658513f219f9ca11c5d3714f311cc7b.1778224096.5740c2feee952bc8b45bcedc3f55e1dd.57c014b84df6dd1291a76e053dc8cc48.4ee5837517f245266e5a510257698064&signature=a206ff949fc41499af1a6d1c4941bdff6b6d1c18daf32a926c5040ce331577e1
