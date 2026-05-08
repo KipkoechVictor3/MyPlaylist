@@ -127,7 +127,7 @@ jobs:
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
           # Merge local M3U files in priority order (DAMI files removed)
-          for f in "tms1.m3u" "rox.m3u" "str_final.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "pitspt.m3u"; do
+          for f in "tms1.m3u" "rox.m3u" "pitspt.m3u" "str_final.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
