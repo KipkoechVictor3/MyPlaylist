@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-football/playlist.m3u8?token=be31657c97276dacebfc05d438adc51c1cb23280fe309e35325468c9520bf3c7.1778310466.41508e8bb4ceae8d71b89d2db908f968.12845af7fde377eb081af70b2ae7bf0f.54139ee6e27b79bdaa8f9469a7207ada&signature=ef37c0ebd6ab0271d6e3eee04d329e56c2cd71810dbbe78e73329339b02208f1

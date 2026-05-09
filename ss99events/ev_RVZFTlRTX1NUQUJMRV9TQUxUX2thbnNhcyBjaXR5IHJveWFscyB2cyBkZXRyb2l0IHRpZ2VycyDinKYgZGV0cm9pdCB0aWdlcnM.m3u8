@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-detroit-tigers/playlist.m3u8?token=166fecfaee336a571fb43a9a8dd3081109383fcd4bf72450c7edc47917560cca.1778310530.9d5587bdd504803c6308bb0c812f4551.20134009a01148a5081e7ebcd148fcb6.e3fc9c0881af1ca5fc1187ebf8261d0c&signature=81bae761c3ee38d892393ff75a6c6ab5ffff31ffbe1892d4cf3bb056e17f76b7
