@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-ufc-328-backup-2/playlist.m3u8?token=29d6556038242ddc46cf65c040db2e1f73738b8cd5d0451c6bf392dba0409534.1778359075.5c906c8724448cd45fca8ed235be7a41.049ef9911d34a52676c322eaa7ad4104.ddfd5aed84fbcab2f7be1db1b6d2f8e8&signature=0ae83ae4ba95630ba110c562276c0b81711ed9a0600f7ff9f11aad834aeafcd7
