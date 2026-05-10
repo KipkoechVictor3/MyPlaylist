@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-espn-news/playlist.m3u8?token=fd313d4e33f0dd97f647349993358ef3e6f18549129d21229e18ce9da1ea6ca6.1778448949.c5bfd416503a0eae7a04e6fd8fa65972.6cc981d58101a95b6f2467b03fb79b80.1be23eca77f67d09461ebc2250b0c24b&signature=a5d26d6186563390c8f1801e568bb3f3d9c96730db78d5ee9bd841aacadbf2db
