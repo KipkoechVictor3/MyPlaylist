@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/gb-hub-premier-2/playlist.m3u8?token=870a316eb7444b3558896aea51fb0cd62382b4dbb25edf70ca100600a456fb54.1778481372.cf4f183021f0f5db98def6db7436dc6f.8e7d1605da79a011ac13a2090087cf28.165bf69fd83bc2fdb37dc39ea7128cc6&signature=b3b3f594bb869fd792eb669de127cf985da99273e8d127e29e57f03722c5dd34

@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-chicago-white-sox/playlist.m3u8?token=e87df84cfac4bb2a6c1e7758c2034520e05e50ffa5fdeb8d2ea826c5538ed3c1.1778481479.fe2c461c909df8b2d91b7eb424b160f5.5abdcb05116e2e9cc73fd74f40dd759a.26f98fa3ccf41df4e25d898c00fff22d&signature=f32fe8b077479f7c0af4b52b2bb89a50cbfd24a35b2929e40dac780a8e683ed3
