@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/us-ufc-328-paramount-es/playlist.m3u8?token=0111c9b1c9250a1fc8f2e920f467f3604ab4bf72434295b920743651522ddf2e.1778621739.de39ac3d04a6ff8ea9b5ba19ba217791.f9db93068ec3c7695e252a253f144e37.3163ecfb79a4b98c4e2a61c10442b674&signature=dff25eb33906e3395bfc6093cdb6cd16a0ea91cfef47464fd070bdc7e5a935e9
