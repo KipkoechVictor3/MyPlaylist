@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-rugby/playlist.m3u8?token=aac5596440d80783783d86236b65a2f2343ff8ed31d4bf197c80270bb7347119.1778749585.d72be9eff5d3a464bb859a810b9e11d1.4b943623d0498a26cc9ee1e18ca47a74.8e16a6aefc02dde9fa4e204c484e7df7&signature=b6129858eb87aa38f107d837ff6c5a7f4997dc2743c48a5b26ac5c8aa08d06ad
