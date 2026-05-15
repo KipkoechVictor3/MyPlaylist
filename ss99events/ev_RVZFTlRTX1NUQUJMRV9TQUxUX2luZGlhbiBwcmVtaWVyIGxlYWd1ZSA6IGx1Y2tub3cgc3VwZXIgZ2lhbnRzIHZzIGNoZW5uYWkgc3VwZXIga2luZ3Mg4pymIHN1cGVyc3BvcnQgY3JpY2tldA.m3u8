@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-cricket/playlist.m3u8?token=a0cec76288dae2982a9c6f50501dbe5a215c1b5e11a67186c1f10b9fcdf27310.1778828779.2184887de5244f0cf7eb70e898eb0441.0b46a0cc361f45ea7819edbad16f89ed.79cd6686934ad774a9728c63b703f1fb&signature=1b80188d5474c53038a13ab48e198908f3298bee62f8992addc5bca3e0df7bf0

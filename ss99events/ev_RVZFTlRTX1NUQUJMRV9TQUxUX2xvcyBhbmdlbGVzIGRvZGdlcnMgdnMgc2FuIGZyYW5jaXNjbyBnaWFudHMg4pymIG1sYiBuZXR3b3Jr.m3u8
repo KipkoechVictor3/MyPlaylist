@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-network/playlist.m3u8?token=a515e4e8a0f9ec063ffac83f8a67039a9d52bc7a281e0d056505d59ea78ac0a5.1778827258.cc757dbd051389cb4c7b002934b3f5b3.9f9a8dd3b80b817912292b0bde8ffa46.2e3a85666b6e275b1b9de4f62b74dff9&signature=05d61b6b560b209dc5ac6caf87dfb4b5918b2124cac23b07628f608112f6da5e
