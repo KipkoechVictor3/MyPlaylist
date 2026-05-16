@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-telemundo/playlist.m3u8?token=8a4d52a6dc814ab8b38f1f45f91556bdba44dc330f5de0d9ceaf285f98cf86c1.1778915274.27cc76ae082343fd68babd9e5fc2d61e.0163d3f061aaadcf609e1412ab014ae5.91a0372503b10295905d1974b9182d8c&signature=0c3189b3cd607a7a330ecd97dd7e76169ed642907908bfbc09785dd28dd265b6
