@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-variety-4/playlist.m3u8?token=8806c625f4983653c53be7e83ccdbbbcf1b0f33cd2f276875fe2c5533e132884.1778967405.76deed6d17decf71f436870e35400db1.8be3aad1f226594934261a7ba19f84d3.f69e3b2779a84ce321f70f685241eb2b&signature=c4b407fc5d92fb9a51e0981f9c7a20d81f0ccfca39fb355fe79113fe6cefae55

@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-viaplay-sports-2/playlist.m3u8?token=31424b639efa35602e06db6d7b1d03fdd74c5c5da2114ac5a2e3e746a0a755ac.1778967395.18e3cb4c24e8c4ace9bf76051d8d97f3.2337c96e0551fcd2d4b6fc4465e24c41.6c28fca43a7440f4c144b6edf25ebb05&signature=46ee019b09059b429ace8829baa1fc81ecfc8bcdcf2745ca19df371a06aac628
