@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdnlivetv.ru/secure/api/v1/ca-sportsnet-360/playlist.m3u8?token=5db465c8608acf32cbdd9498d1eae8c5f029b91054a45fe216fbe0f2ed4c4074.1779043012.d20f9b4cb4438fc16fb55271313fc6ae.17d0b7330edf8b3bc746111ec135e224.f1aa01f1bb39e54d1521145b19bddbab&signature=6cec0ab3b6fc3f41b2e958d5c5e5e4d9c0fc6944e0168a0ec3de48829e6fee4f
