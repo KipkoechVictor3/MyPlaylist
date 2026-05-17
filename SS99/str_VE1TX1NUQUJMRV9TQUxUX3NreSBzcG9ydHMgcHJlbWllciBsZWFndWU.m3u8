@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=1280000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-premier-league/playlist.m3u8?token=d434be6144140bece9e9bbeab6a1bd671dbdb26065696981fe5de581098d505c.1779053767.8add2c59ac453f423f6afdda55469e40.b66686b40f004a820dffcc0cb679a8be.d9ba9395846a0699f5488f1321255b91&signature=db0d1627c8974c1114898b70882dc0ec794d279447aebfffd344d51d514ab217
