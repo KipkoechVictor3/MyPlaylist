@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-minnesota-twins/playlist.m3u8?token=b21e8d8f8121eb090be07ae83ceb5880709e7636ba9f4bf93bf7deeddfa73268.1779046669.7cf5c9af792f2a8f99de14f4672b6f13.ca11e86058761e86eee4ceb63db6ae11.01fd3e64bf3fddfabb475f663b52e48a&signature=b30840e824a040dfd686b688fd842471594e1208b15d966f8b796269e253b4cc

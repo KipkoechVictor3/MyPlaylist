@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-mix/playlist.m3u8?token=94cff70b942e47ce01ba68a9196a16b21b78e9157702ae2cede3200a4d8e77c5.1779046645.3d57a616a452fa363e56a3439f1d2ee7.89305fc9b4aacbdfec27cf03096141c9.c823e15491ceacbe7388e84261adbfb6&signature=54a7be4b40bc6c51690c35eeee3b1617349b59e6a8c5bcdfb2ecd15f5cd8bfed
