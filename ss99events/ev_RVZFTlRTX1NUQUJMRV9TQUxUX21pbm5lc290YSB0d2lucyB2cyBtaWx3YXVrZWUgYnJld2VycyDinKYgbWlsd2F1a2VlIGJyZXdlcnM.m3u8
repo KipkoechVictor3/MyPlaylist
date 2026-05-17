@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-milwaukee-brewers/playlist.m3u8?token=884c47de4691bd62e71b37b9d4a4e5285b8b306a49982feff3b9a0fd8c29deca.1779050280.b0152f3bbaffb59bc5296adef8efc0bd.93397f0ba74a173fb77c765a06ca3a87.03ed2043c464efec754345b546e99251&signature=60174b66cfc0d06f95b7685c137c4004d94b1f86fda5b85057b2c1d267a42904
