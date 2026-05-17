@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-texas-rangers/playlist.m3u8?token=af710185c2279496c32a9b4e6369024cdb24e7e66328b2b0fc21fdc9cf7e9160.1779001678.0a81eb4fbf821ae938d17145d0feeec8.409fbbecab2f52b8e99e6ff11caee5c0.02d690111565b38388aa1d1edd3c1705&signature=8d6d36f44a83a0187aa07d102c0ec74558e8dbf6b405a07b617b58b91ff89c1c
