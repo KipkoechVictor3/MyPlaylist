@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-san-francisco-giants/playlist.m3u8?token=06a471f53622fc77be1f61988ebe962ace2452f8dc1c7a1cd3379c33a17028ba.1779140155.49ac0de984e0cae89005a1de8a43f19d.969aba080f358bc265015f5ce6cb4bb4.9deceb97d421c0a835dd6fa7f72a5f74&signature=4c1b039eb5a7ceeb14994214d551bc3182d362fdf28228b0b92f12da6c50fe4f

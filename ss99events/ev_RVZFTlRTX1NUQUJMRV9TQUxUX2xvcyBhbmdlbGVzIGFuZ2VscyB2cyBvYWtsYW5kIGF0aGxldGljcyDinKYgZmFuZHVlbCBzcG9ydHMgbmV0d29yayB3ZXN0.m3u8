@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-fanduel-sports-west/playlist.m3u8?token=470cf0ccac6f25cdcafd11a159ccd4907ce42f0985f858fbb9e249e885655b19.1779140155.7fe2320b6b681393f3bd9bfed2794d6e.6a5cf55006ce5fb3c6746e4132d15b9d.00919b6caa39b3cd863803c3366523e4&signature=bf833cb12579cd0076d3c663130fea76782d1eafedce17228122568cf2ec9902
