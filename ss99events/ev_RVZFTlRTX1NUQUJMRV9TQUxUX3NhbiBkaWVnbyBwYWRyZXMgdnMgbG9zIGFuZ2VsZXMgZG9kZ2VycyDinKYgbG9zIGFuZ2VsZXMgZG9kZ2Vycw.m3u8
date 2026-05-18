@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-los-angeles-dodgers/playlist.m3u8?token=6a69dff605b822bbed0f26ba53b45b862f347cd9fb49f591bfb03d140a55eaf6.1779088054.80de771cfa8a848d44401565bcba3999.e7788ec231c6a45e0607d580fb41c94b.9c964950f89852a11fdb31008b3320d3&signature=0edc146fe29c3f94ab7a4dff0227154d495a95cf606a677603a178ded1486427
