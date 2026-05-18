@@ -135,7 +135,7 @@ jobs:
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
           # Merge local M3U files in priority order
-          for f in "pits_vlc.m3u8" "playlist.m3u8" "rox.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "DamiPPV_vlc.m3u8" "StreamedCDN.m3u" ; do
+          for f in "pits_vlc.m3u8" "playlist.m3u8" "DamiPPV_vlc.m3u8" "StreamedCDN.m3u" "rox.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -181,6 +181,16 @@ jobs:
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
           source_path: MyPlayList.m3u
           dest_path: /MyStuff/MyPlayList.m3u
+
+      - name: Upload MovByte Backup
+        if: hashFiles('playlist.m3u8') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: playlist.m3u8
+          dest_path: /MyStuff/playlist.m3u8
 
       - name: Upload SS99 Backup
         if: hashFiles('SSpo99.m3u8') != ''
