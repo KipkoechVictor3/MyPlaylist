@@ -54,7 +54,7 @@ jobs:
           echo "--- Running PITS Scraper ---"
           rm -rf ptsp/* && mkdir -p ptsp
           curl -L -f -o pits.py "${{ secrets.PTSPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pits.py || echo "⚠️ PITS failed..."
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pits.py || echo "⚠️ pits failed..."
           sync
 
       - name: Run DamiPPV Scraper
@@ -66,13 +66,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiPPV.py || echo "⚠️ DamiPPV failed..."
           sync
 
-      - name: Run DamiStreamed Scraper
+      - name: Run Dami CDN Scraper
         shell: bash
         continue-on-error: true
         run: |
-          echo "--- Running DamiStreamed Scraper ---"
-          curl -L -f -o DamiStreamed.py "${{ secrets.DAMISTREAMED_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiStreamed.py || echo "⚠️ DamiStreamed failed..."
+          echo "--- Running Dami CDN Scraper ---"
+          curl -L -f -o DamiCDN.py "${{ secrets.DAMICDN_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiCDN.py || echo "⚠️ Dami CDN failed..."
           sync
 
       - name: Run RawGit Scraper
@@ -125,8 +125,8 @@ jobs:
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           
-          # Merge local M3U files in targeted priority order
-          for f in "pits_vlc.m3u8" "DamiPPV_vlc.m3u8" "StreamedCDN.m3u" "rox.m3u" "pitspt.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
+          # Merge local M3U files in priority order
+          for f in "pits_vlc.m3u8" "DamiPPV_vlc.m3u8" "StreamedCDN.m3u" "rox.m3u" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -161,7 +161,7 @@ jobs:
           
           git add SS99/ ss99events/ rox/ ptsp/
           
-          git commit -m "Update Script Data & Clean Mirrors: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
       - name: Upload Main Playlist to Dropbox
@@ -193,12 +193,12 @@ jobs:
           source_path: SS99_Events.m3u8
           dest_path: /MyStuff/SS99_Events.m3u8
 
-      - name: Upload PTSPT Backup
-        if: hashFiles('pitspt.m3u') != ''
+      - name: Upload PITS Backup
+        if: hashFiles('pits_vlc.m3u8') != ''
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
         with:
           DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
           DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
           DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-          source_path: pitspt.m3u
-          dest_path: /MyStuff/pitspt.m3u
+          source_path: pits_vlc.m3u8
+          dest_path: /MyStuff/pits_vlc.m3u8
