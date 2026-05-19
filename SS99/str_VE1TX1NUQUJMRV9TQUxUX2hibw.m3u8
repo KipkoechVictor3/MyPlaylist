@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=1280000
-https://edge.cdnlivetv.ru/secure/api/v1/us-hbo/playlist.m3u8?token=05fc95ff78906eac5b8df0a43e44b49fc3f59beac50bf5cc0eb86e4444fb21bc.1779232183.7f24d43d667255bc1991806a89f2ff65.45a570de1620372462ce41d9a770b48d.e49d1a4b165e4702870715607c5935ee&signature=01bab6e4e8598b1bbc26bcf242594e64b0ae59706b518436fae4cc79f3a133d3
+https://edge.cdnlivetv.ru/secure/api/v1/us-hbo/playlist.m3u8?token=3da1d962900f2ced01721f534fcec1b344ffc24f39399b0e34c82b768d49032d.1779233978.bda962e5428af57c0eea13f19d6a2d13.1b6eba52b3f137c6d0a3291c082dc6b3.e2ccef921ebfd55f2bd4ccb272b9e5b9&signature=e9cb45be29d6c38bbd249ba95159390ecdb667bc16ca661e65dcd932deb695f9
