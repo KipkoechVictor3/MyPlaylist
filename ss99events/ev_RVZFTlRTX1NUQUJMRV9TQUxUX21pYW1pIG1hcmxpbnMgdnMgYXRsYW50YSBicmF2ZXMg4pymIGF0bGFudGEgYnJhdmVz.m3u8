@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-atlanta-braves/playlist.m3u8?token=7b49ed181b0c3be7ac98f0ba16d4a7a189c1750c1ed4aeba27de1cb3a36dfe08.1779174632.9ba1c10a225cbc24b313202c8b2642fa.da2a784d6b520be4db5bbb668bc45186.1f96d00965cdafc7ce9894cadd048b04&signature=7d3da205c4571b09ea05e7afbe8d67a73db5c1c879ba2d56e87df3ece3a95505
