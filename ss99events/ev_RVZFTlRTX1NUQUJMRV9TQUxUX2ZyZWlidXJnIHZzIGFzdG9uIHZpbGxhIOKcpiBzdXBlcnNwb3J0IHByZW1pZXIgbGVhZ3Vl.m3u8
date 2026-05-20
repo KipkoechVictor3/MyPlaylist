@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/za-supersport-premier-league/playlist.m3u8?token=804a0f238dd6d6fc6efd517c271487be8067d67a39aff1245f24ad5897ceccb7.1779261359.ef3710b784ea5f7a7e2eae567021b904.f9fe195054e37fd81bbfab210ecd9141.2e89384810f08d883cd38cda672fb4e6&signature=1003a727779941e9a2a69510f94a138dc3eb60aac35db9409a2b809bd0556ca8
