@@ -1,4 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=2500000
-https://edge.cdnlivetv.ru/secure/api/v1/us-marquee-sports-network/playlist.m3u8?token=10a0fbc7929187814bd8eb1ed07ca12a0803c3536d51bda019ca7c3f90482cc1.1779345635.75710d89e619d9fd9ff0f694aa63f50b.fe0931be0963e397b7f9ef330ddaafca.0c2594dadd50241937ac011f36001acc&signature=04dfbc34a4388a790d450fea60ee7398f027f9784d589aec097362334d87db14
