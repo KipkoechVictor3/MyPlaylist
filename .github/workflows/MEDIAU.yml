@@ -1,0 +1,62 @@
+name: Combined Remote Playlist
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch: 
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: combined-processing
+  cancel-in-progress: true
+
+jobs:
+  update-all-playlists:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Packages
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Run Media4u Scraper
+        shell: bash
+        run: |
+          echo "--- Running Media4u Processing Script ---"
+          curl -L -f -o media4u_worker.py "${{ secrets.MEDIAU_URL }}"
+          python3 -u media4u_worker.py
+
+      - name: Final Cleanup and Sanitization
+        shell: bash
+        if: hashFiles('Mediauu.m3u') != ''
+        run: |
+          sed -i 's/\r//g' Mediauu.m3u
+          sed -i '/^[[:space:]]*$/d' Mediauu.m3u
+
+      - name: Upload Mediauu Playlist to Dropbox
+        if: hashFiles('Mediauu.m3u') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: Mediauu.m3u
+          dest_path: /MyStuff/Mediauu.m3u
