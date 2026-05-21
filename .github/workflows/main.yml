@@ -136,7 +136,7 @@ jobs:
           
           # Priority Merge Order: ROX first, then FreeShot, then others, DamiPPV last
           # Note: DLHD and StreamedCDN (Dami CDN) have been removed from this loop
-          for f in "rox.m3u" "freeshot_direct.m3u" "pits_vlc.m3u8" "playlist.m3u8" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8" "DamiPPV_vlc.m3u8"; do
+          for f in "rox.m3u"  "DamiPPV_vlc.m3u8" "pits_vlc.m3u8" "playlist.m3u8" "RawGit.m3u" "spx.m3u" "SSpo99.m3u8" "SS99_Events.m3u8"  "freeshot_direct.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
