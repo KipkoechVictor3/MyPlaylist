@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-kansas-city-royals/playlist.m3u8?token=bb044d4d1c89f5debcf54047a5009a34798deb316088382ca5fc9756be551cc0.1779433495.88eb7174e0f903fc0ed23666a74544dc.e982e5cab1be91fe8c1dd213b8bec471.17519a7496ffc3ad3eb7ce9223bb5afc&signature=813b8b62c6392c74312efb80aea024a1098ef09a3ce09eea5f13315ac505a010

@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-los-angeles-angels/playlist.m3u8?token=63168648935c40d851a0d6c9f8c32eebb011bb94854a7b6aa88e889f3266ee66.1779433507.43b812699bfbc19740c854cfb58601da.23185d5549feb1cd1537ae0419b9ef1b.ac6b849c065d739d18feca6ef5ee3190&signature=7c30fcc649c9701bb68cab4b6b4af9c051ced7462936a91bf5cf91da261fe2d4

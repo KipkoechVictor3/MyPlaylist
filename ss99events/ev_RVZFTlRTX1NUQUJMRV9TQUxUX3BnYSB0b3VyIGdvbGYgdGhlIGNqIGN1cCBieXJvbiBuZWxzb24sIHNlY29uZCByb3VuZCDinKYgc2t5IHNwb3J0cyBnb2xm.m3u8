@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/gb-sky-sports-golf/playlist.m3u8?token=6b66a1f8d14a1c36c5c75ccca4ce81ba0576a8e91f85f9d3c1013afc9695be50.1779433482.0df65f3e2af0b3c7358d871b10cba258.8fb13dddeb47d722a30637caa4fe240f.d3ad9482036bf37f3651e8b8cc8e4d1a&signature=dcc56ce6ff7ba4989e6f90b385d7088f7874a7a4a04022086e24491415ed2d72

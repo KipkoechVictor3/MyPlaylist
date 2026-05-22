@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=2500000
+https://edge.cdnlivetv.ru/secure/api/v1/us-mlb-san-diego-padres/playlist.m3u8?token=f2aabb53bba072457fc1b8e15528944180f36e3506ba0c60ece11bdc2669a93f.1779433507.754dfffb335c15ad522a3e69cb0ae815.008eded0664672ef888c43dcf85f9df7.297297a087a4e35488e625cbe07e12ea&signature=59c0cbf2213e88467839463cb33f8c02e9f11d2d3000b846a9b9e06f0692d3c9
