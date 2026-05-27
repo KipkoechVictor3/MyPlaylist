@@ -44,8 +44,8 @@ jobs:
       - name: Install Playwright Browsers
         shell: bash
         run: |
-          playwright install firefox chrome chromium
-          playwright install-deps firefox chrome chromium
+          playwright install firefox
+          playwright install-deps firefox
 
       - name: Run NinjaSGO Scraper
         shell: bash
