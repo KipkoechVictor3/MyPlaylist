@@ -47,7 +47,6 @@ jobs:
           playwright install firefox
           playwright install-deps firefox
 
-      # --- NEW SCRAPER ADDED AT THE TOP ---
       - name: Run XYZ Scraper
         shell: bash
         continue-on-error: true
@@ -142,7 +141,6 @@ jobs:
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
 
-          # --- UPDATED MERGE LIST: Added XYZplaylist.m3u at the start ---
           for f in "XYZplaylist.m3u" "SGo.m3u" "rox.m3u" "DamiPPV_vlc.m3u8" "pits_vlc.m3u8" "spx.m3u" "playlist.m3u8" "channels.m3u" "dropbox_mediauu.m3u" "RawGit.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
@@ -175,7 +173,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --soft origin/main
-          git add rox/ ptsp/
+          # Only add the specific folders containing the stream files
+          git add ptsp/
           git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
           git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
 
