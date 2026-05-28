@@ -44,35 +44,70 @@ jobs:
           playwright install firefox
           playwright install-deps firefox
 
-      - name: Run Scrapers
+      - name: Run XYZ Scraper
         continue-on-error: true
         run: |
-          # XYZ
-          curl -L -f -o XYZ.py "${{ secrets.XYZ_URL }}" && python3 -u XYZ.py
-          # Ninja
-          curl -L -f -o ninjasgo.py "${{ secrets.NINJASGO_URL }}" && python3 -u ninjasgo.py
-          # ROX
-          rm -rf rox/* && mkdir -p rox
-          curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}" && python3 -u rox_script.py
-          # PITS (Creates ptsp/ and pits_vlc.m3u8)
-          rm -rf ptsp/* && mkdir -p ptsp
-          curl -L -f -o pits.py "${{ secrets.PTSPT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pits.py
-          # Others
-          curl -L -f -o movbyte.py "${{ secrets.MOVEBITE_URL }}" && python3 -u movbyte.py
-          curl -L -f -o dami_channels.py "${{ secrets.DAMICHANNELS_URL }}" && python3 -u dami_channels.py
-          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}" && timeout 360s python3 -u SpX.py
-          curl -L -f -o DamiPPV.py "${{ secrets.DAMIPPV_URL }}" && python3 -u DamiPPV.py
-          curl -L -f -o RawGit_Scraper.py "${{ secrets.RAWGIT_URL }}" && python3 -u RawGit_Scraper.py
+          curl -L -f -o XYZ.py "${{ secrets.XYZ_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u XYZ.py || echo "XYZ failed"
           sync
 
-      - name: Deploy Script Folders to GitHub
+      - name: Run NinjaSGO Scraper
+        continue-on-error: true
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add ptsp/
-          git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
-          git push origin main
+          curl -L -f -o ninjasgo.py "${{ secrets.NINJASGO_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ninjasgo.py || echo "Ninja failed"
+          sync
+
+      - name: Run ROX Scraper
+        continue-on-error: true
+        run: |
+          rm -rf rox/* && mkdir -p rox
+          curl -L -f -o rox_script.py "${{ secrets.ROX_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rox_script.py || echo "ROX failed"
+          sync
+
+      - name: Run PITS Scraper
+        continue-on-error: true
+        run: |
+          rm -rf ptsp/* && mkdir -p ptsp
+          curl -L -f -o pits.py "${{ secrets.PTSPT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pits.py || echo "PITS failed"
+          sync
+
+      - name: Run MovByte Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o movbyte.py "${{ secrets.MOVEBITE_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u movbyte.py || echo "MovByte failed"
+          sync
+
+      - name: Run DamiChannels Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o dami_channels.py "${{ secrets.DAMICHANNELS_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u dami_channels.py || echo "DamiC failed"
+          sync
+
+      - name: Run SPX Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
+          timeout 360s python3 -u SpX.py || echo "SPX failed"
+          sync
+
+      - name: Run DamiPPV Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o DamiPPV.py "${{ secrets.DAMIPPV_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiPPV.py || echo "DamiPPV failed"
+          sync
+
+      - name: Run RawGit Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o RawGit_Scraper.py "${{ secrets.RAWGIT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u RawGit_Scraper.py || echo "RawGit failed"
+          sync
 
       - name: Process and Merge All Playlists
         run: |
@@ -90,7 +125,6 @@ jobs:
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
             fi
           done
-
           rm -f dropbox_mediauu.m3u
 
           while read -r url || [ -n "$url" ]; do
@@ -107,6 +141,17 @@ jobs:
         run: |
           sed -i 's/\r//g' MyPlayList.m3u
           sed -i '/^[[:space:]]*$/d' MyPlayList.m3u
+
+      - name: Deploy Script Folders to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add ptsp/
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')"
+            git pull --rebase origin main
+            git push origin main
+          fi
 
       - name: Upload Main Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
