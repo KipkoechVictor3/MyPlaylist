@@ -171,12 +171,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git reset --soft origin/main
-          # Only add the specific folders containing the stream files
           git add ptsp/
-          git commit -m "Update Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
-          git push origin main --force-with-lease || (git pull origin main --rebase && git push origin main)
+          git commit -m "Update PITS Script Data: $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+          git push origin main
 
       - name: Upload Main Playlist to Dropbox
         uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
