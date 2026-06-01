@@ -41,8 +41,8 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          playwright install firefox
-          playwright install-deps firefox
+          playwright install firefox chromium
+          playwright install-deps firefox chromium
 
       - name: Run XYZ Scraper
         continue-on-error: true
