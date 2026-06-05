@@ -95,13 +95,6 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u dami_daddybite.py || echo "DamiDaddyBite failed"
           sync
 
-      - name: Run StreamedSU Proxy Scraper
-        continue-on-error: true
-        run: |
-          curl -L -f -o streamed_proxy.py "${{ secrets.STREAMED_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u streamed_proxy.py || echo "StreamedSU Scraper failed"
-          sync
-
       - name: Run SPX Scraper
         continue-on-error: true
         run: |
