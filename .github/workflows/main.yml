@@ -130,10 +130,11 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u RawGit_Scraper.py || echo "RawGit failed"
           sync
 
-      - name: Fetch Free Proxy Playlist
+      - name: Run Fresht Scraper
         continue-on-error: true
         run: |
-          curl -L -f -o freeproxy.m3u "${{ secrets.FRESHT_URL }}" || echo "Failed to fetch freeproxy playlist"
+          curl -L -f -o fresht.py "${{ secrets.FRESHT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u fresht.py || echo "Fresht failed"
           sync
 
       - name: Process and Merge All Playlists
