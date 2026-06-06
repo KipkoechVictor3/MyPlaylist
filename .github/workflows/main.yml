@@ -127,7 +127,7 @@ jobs:
           curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
 
           # Added freeproxy.m3u and streamedProxy.m3u8 to the source list for merging
-          for f in "PitsProxied.m3u8" "xyzProxied.m3u8" "SGo.m3u" "roxProxied.m3u" "DamiPPV_vlc.m3u8" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "Bite_MatchDay.m3u8" "spx.m3u"; do
+          for f in "PitsProxied.m3u8" "xyzProxied.m3u8" "DamiPPV_vlc.m3u8" "SGo.m3u" "roxProxied.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "Bite_MatchDay.m3u8" "spx.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
