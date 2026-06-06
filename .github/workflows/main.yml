@@ -135,6 +135,16 @@ jobs:
           done
           rm -f dropbox_mediauu.m3u
 
+          # Fetch and process the Channels.m3u8 remote link from Dropbox
+          CHANNELS_TEMP="channels_temp.m3u8"
+          if curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/gl2hvy7ozhd28bn21espb/Channels.m3u8?rlkey=rjrpuyexji855s9wmt7jyxzvd&st=1uu9kuqs&dl=1" -o "$CHANNELS_TEMP" -s; then
+            if [ -s "$CHANNELS_TEMP" ]; then
+              echo -e "\n######## REMOTE: Channels.m3u8 ########" >> "$OUTPUT_FILE"
+              sed 's/\r$//' "$CHANNELS_TEMP" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            fi
+          fi
+          rm -f "$CHANNELS_TEMP"
+
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
             temp="remote_t.m3u"
