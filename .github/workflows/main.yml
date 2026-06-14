@@ -130,19 +130,7 @@ jobs:
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
-          curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
-
-          # Added freeproxy.m3u, streamedProxy.m3u8, DamiStreams.m3u8 and DamiStreamsProxied.m3u8 to the source list for merging  "DamiChannels.m3u8" 
-          for f in "Pits.m3u8" "roxProxied.m3u" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "DamiStreams.m3u8" "DamiPPVProxy_vlc.m3u8" "PitsProxied.m3u8" "Bite_MatchDay.m3u8" "rox.m3u" "xyz.m3u8" "DamiStreamsProxied.m3u8" "xyzProxied.m3u8" ; do
-            if [ -s "$f" ]; then
-              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
-              sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
-            fi
-          done
-          rm -f dropbox_mediauu.m3u
-
-          # Fetch and process the Channels.m3u8 remote link from Dropbox
+          # Fetch and process the Channels.m3u8 remote link from Dropbox FIRST
           CHANNELS_TEMP="channels_temp.m3u8"
           if curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/gl2hvy7ozhd28bn21espb/Channels.m3u8?rlkey=rjrpuyexji855s9wmt7jyxzvd&st=1uu9kuqs&dl=1" -o "$CHANNELS_TEMP" -s; then
             if [ -s "$CHANNELS_TEMP" ]; then
@@ -151,6 +139,18 @@ jobs:
             fi
           fi
           rm -f "$CHANNELS_TEMP"
+
+          curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
+          curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
+
+          # Process local source list files
+          for f in "Pits.m3u8" "roxProxied.m3u" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "DamiStreams.m3u8" "DamiPPVProxy_vlc.m3u8" "PitsProxied.m3u8" "Bite_MatchDay.m3u8" "rox.m3u" "xyz.m3u8" "DamiStreamsProxied.m3u8" "xyzProxied.m3u8" ; do
+            if [ -s "$f" ]; then
+              echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
+              sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            fi
+          done
+          rm -f dropbox_mediauu.m3u
 
           while read -r url || [ -n "$url" ]; do
             [[ -z "$url" || "$url" =~ ^# ]] && continue
