@@ -88,12 +88,12 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u movbite_channels.py || echo "MovBiteChannels failed"
           sync
 
-      - name: Run DamiDaddyBite Scraper
-        continue-on-error: true
-        run: |
-          curl -L -f -o dami_daddybite.py "${{ secrets.DAMIDADDYBITE_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u dami_daddybite.py || echo "DamiDaddyBite failed"
-          sync
+      #- name: Run DamiDaddyBite Scraper
+      #  continue-on-error: true
+      #  run: |
+        #  curl -L -f -o dami_daddybite.py "${{ secrets.DAMIDADDYBITE_URL }}"
+        #  xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u dami_daddybite.py || echo "DamiDaddyBite failed"
+       #   sync
 
       - name: Run SPX Scraper
         continue-on-error: true
