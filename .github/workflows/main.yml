@@ -51,13 +51,6 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u XYZ.py || echo "XYZ failed"
           sync
 
-      - name: Run NinjaSGO Scraper
-        continue-on-error: true
-        run: |
-          curl -L -f -o ninjasgo.py "${{ secrets.NINJASGO_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ninjasgo.py || echo "Ninja failed"
-          sync
-
       - name: Run ROX Scraper
         continue-on-error: true
         run: |
@@ -95,13 +88,6 @@ jobs:
         #  xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u dami_daddybite.py || echo "DamiDaddyBite failed"
        #   sync
 
-      - name: Run SPX Scraper
-        continue-on-error: true
-        run: |
-          curl -L -f -o SpX.py "${{ secrets.SPX_URL }}"
-          timeout 360s python3 -u SpX.py || echo "SPX failed"
-          sync
-
       - name: Run DamiPPV Scraper
         continue-on-error: true
         run: |
@@ -132,22 +118,38 @@ jobs:
 
           # Fetch and process the Channels.m3u8 remote link from Dropbox FIRST
           CHANNELS_TEMP="channels_temp.m3u8"
-          if curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/gl2hvy7ozhd28bn21espb/Channels.m3u8?rlkey=rjrpuyexji855s9wmt7jyxzvd&st=1uu9kuqs&dl=1" -o "$CHANNELS_TEMP" -s; then
+          if curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/gl2hvy7ozhd28bn21espb/Channels.m3u8?rlkey=rjrpuyexji855s9wmt7jyxzvd&st=1uu9kuqs&dl=1" -o "$CHANNELS_TEMP" -s; then
             if [ -s "$CHANNELS_TEMP" ]; then
               echo -e "\n######## REMOTE: Channels.m3u8 ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$CHANNELS_TEMP" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+              
+              # Verification logging for Channels.m3u8
+              echo "==> Channels.m3u8 Verification <=="
+              echo "File size: $(wc -c < "$CHANNELS_TEMP") bytes"
+              echo "Total lines: $(wc -l < "$CHANNELS_TEMP")"
+              echo "Checking line lengths (first 10 lines):"
+              awk '{print "Line " NR " length:", length}' "$CHANNELS_TEMP" | head -n 10
             fi
           fi
           rm -f "$CHANNELS_TEMP"
 
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
-          curl -L -f -k --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
+          curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/a1ux3ha4kwn5pb895jj5s/Mediauu.m3u?rlkey=z688agdc3h5o8312j00fwe4qx&st=th1tmh3k&dl=1" -o "dropbox_mediauu.m3u" -s
 
           # DO NOT TOUCH THIS OR MOVE IT ANYWHERE, LEAVE IT AS IT IS -----  "DamiPPVProxy_vlc.m3u8" "PitsProxied.m3u8" "Bite_MatchDay.m3u8" "DamiStreamsProxied.m3u8" "xyzProxied.m3u8" "roxProxied.m3u"
           for f in "Pits.m3u8" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "dropbox_mediauu.m3u" "DamiStreams.m3u8" "rox.m3u" "xyz.m3u8" ; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+              
+              # Verification logging for Mediauu / dropbox_mediauu
+              if [ "$f" = "dropbox_mediauu.m3u" ]; then
+                echo "==> dropbox_mediauu.m3u Verification <=="
+                echo "File size: $(wc -c < "$f") bytes"
+                echo "Total lines: $(wc -l < "$f")"
+                echo "Checking line lengths (first 10 lines):"
+                awk '{print "Line " NR " length:", length}' "$f" | head -n 10
+              fi
             fi
           done
           rm -f dropbox_mediauu.m3u
