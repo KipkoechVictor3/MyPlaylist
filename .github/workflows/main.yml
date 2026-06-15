@@ -67,6 +67,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u pits.py || echo "PITS failed"
           sync
 
+      - name: Run SPX Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o spx_script.py "${{ secrets.SPX_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u spx_script.py || echo "SPX failed"
+          sync
+
       - name: Run MovByte Scraper
         continue-on-error: true
         run: |
@@ -137,7 +144,7 @@ jobs:
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/5xk2pwf36svddp39yqrp5/Mediauu.m3u?rlkey=s1gsuqpnco9ilj97p8vf3phj2&st=uworudum&dl=1" -o "dropbox_mediauu.m3u" -s
 
           # DO NOT TOUCH THIS OR MOVE IT ANYWHERE, LEAVE IT AS IT IS -----  "DamiPPVProxy_vlc.m3u8" "PitsProxied.m3u8" "Bite_MatchDay.m3u8" "DamiStreamsProxied.m3u8" "xyzProxied.m3u8" "roxProxied.m3u"
-          for f in "Pits.m3u8" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "dropbox_mediauu.m3u" "DamiStreams.m3u8" "rox.m3u" "xyz.m3u8" ; do
+          for f in "Pits.m3u8" "spx.m3u" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "dropbox_mediauu.m3u" "DamiStreams.m3u8" "rox.m3u" "xyz.m3u8" ; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
