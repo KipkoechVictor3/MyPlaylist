@@ -1,0 +1,44 @@
+name: Macg Filtering
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-magroup2-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run ASARAO Scraper
+        run: |
+          # Fetch the consolidated script and save it locally as ASARAO.py
+          curl -L "https://www.dropbox.com/scl/fi/mnrzu31eyhdk5ythu7g9d/ASARAOfILTERING.py?rlkey=02dtjvypquw8bdgddje26nz8u&st=44l9h8jm&dl=1" -o ASARAO.py
+          
+          # Adjust configuration inside the script dynamically to use your target output name asarao.m3u8
+          sed -i 's/OUTPUT_M3U_FILE = "Scrubbed_Channels.m3u"/OUTPUT_M3U_FILE = "asarao.m3u8"/g' ASARAO.py
+          
+          # Run the script
+          python3 ASARAO.py
+
+      - name: Upload asarao.m3u8 to Dropbox
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "asarao.m3u8"
+          dest_path: "/MyStuff/asarao.m3u8"
