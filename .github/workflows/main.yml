@@ -147,7 +147,7 @@ jobs:
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/k4iafut5kmys261ms3951/asarao.m3u8?rlkey=ovcvg7zqydoivrw4vanub9su4&st=me5y4i2h&dl=1" -o "asarao.m3u8" -s
 
           # DO NOT TOUCH THIS OR MOVE IT ANYWHERE, LEAVE IT AS IT IS -----  "DamiPPVProxy_vlc.m3u8" "PitsProxied.m3u8" "Bite_MatchDay.m3u8" "DamiStreamsProxied.m3u8" "xyzProxied.m3u8" "roxProxied.m3u"
-          for f in "Pits.m3u8" "spx.m3u" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "dropbox_mediauu.m3u" "asarao.m3u8" "DamiStreams.m3u8" "rox.m3u" "xyz.m3u8" ; do
+          for f in "Pits.m3u8" "rox.m3u" "xyz.m3u8" "spx.m3u" "DamiPPV_vlc.m3u8" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "Bite247.m3u8" "dropbox_mediauu.m3u" "asarao.m3u8" "DamiStreams.m3u8"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
