@@ -214,6 +214,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Force create a placeholder file if a directory turns out empty so git doesn't skip it
+          mkdir -p ptsp ss99events ss99channels
+          touch ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep
+          
           git add ptsp/ ss99events/ ss99channels/
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')"
