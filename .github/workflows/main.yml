@@ -204,9 +204,6 @@ jobs:
             rm -f "$temp"
           done < <(tr -d '\r' < channels.txt)
 
-      current-time-step:
-        run: echo "Current Execution Time $(date)"
-
       - name: Final Cleanup
         run: |
           sed -i 's/\r//g' MyPlayList.m3u
