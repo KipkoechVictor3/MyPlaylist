@@ -139,6 +139,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u ss99_channels.py || echo "SS99 Channels failed"
           sync
 
+      - name: Run TMLMAIN Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o tmlmain.py "${{ secrets.TMLMAIN_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u tmlmain.py || echo "TMLMAIN failed"
+          sync
+
       - name: Process and Merge All Playlists
         run: |
           set +e 
