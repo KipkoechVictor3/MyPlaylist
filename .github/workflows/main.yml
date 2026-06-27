@@ -176,7 +176,7 @@ jobs:
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/k4iafut5kmys261ms3951/asarao.m3u8?rlkey=ovcvg7zqydoivrw4vanub9su4&st=me5y4i2h&dl=1" -o "asarao.m3u8" -s
 
           # Loop through existing structured local outputs
-          for f in   "Pits.m3u8" "DamiPPV_vlc.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "tms1.m3u" "BiteEvents.m3u8" "rox.m3u" "xyz.m3u8" "SS99_Events.m3u8" "SSpo99.m3u8" "Daddy247.m3u8" "spx.m3u" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "dropbox_mediauu.m3u" "RawGit.m3u"; do
+          for f in   "Pits.m3u8" "DamiPPV_vlc.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "tms1.m3u" "BiteEvents.m3u8" "rox.m3u" "xyz.m3u8" "SS99_Events.m3u8" "SSpo99.m3u8" "Daddy247.m3u8" "spx.m3u" "SGo.m3u" "playlist.m3u8" "ddhd.m3u8" "Bite.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
