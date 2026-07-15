@@ -146,6 +146,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u tmlmain.py || echo "TMLMAIN failed"
           sync
 
+      - name: Run ZLive Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o zlive.py "${{ secrets.ZLIVE_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u zlive.py || echo "ZLive failed"
+          sync
+
       - name: Process and Merge All Playlists
         run: |
           set +e 
@@ -171,12 +178,13 @@ jobs:
           rm -f "$CHANNELS_TEMP"
 
           # Fetch common files
+          bytes_asarao=0
           curl -L -s -o channels.txt "https://tinyurl.com/4ze5nm6p"
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/5xk2pwf36svddp39yqrp5/Mediauu.m3u?rlkey=s1gsuqpnco9ilj97p8vf3phj2&st=uworudum&dl=1" -o "dropbox_mediauu.m3u" -s
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/k4iafut5kmys261ms3951/asarao.m3u8?rlkey=ovcvg7zqydoivrw4vanub9su4&st=me5y4i2h&dl=1" -o "asarao.m3u8" -s
 
-          # Loop through existing structured local outputs
-          for f in   "Pits.m3u8" "tms1.m3u" "Damiplaylist.m3u" "DamiPopular.m3u8" "BiteEvents.m3u8" "SS99_Events.m3u8" "SSpo99.m3u8" "SportsBiteChannels.m3u8" "DamiPPV_vlc.m3u8" "rox.m3u" "xyz.m3u8" "asaraaaaaaao.m3u8" "Daddy247.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
+          # Loop through existing structured local outputs (zlive.m3u8 inserted right after tms1.m3u)
+          for f in   "Pits.m3u8" "tms1.m3u" "zlive.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "BiteEvents.m3u8" "SS99_Events.m3u8" "SSpo99.m3u8" "SportsBiteChannels.m3u8" "DamiPPV_vlc.m3u8" "rox.m3u" "xyz.m3u8" "asaraaaaaaao.m3u8" "Daddy247.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
