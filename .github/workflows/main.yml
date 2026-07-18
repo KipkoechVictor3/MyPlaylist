@@ -142,6 +142,7 @@ jobs:
       - name: Run TMLMAIN Scraper
         continue-on-error: true
         run: |
+          rm -rf TML/* && mkdir -p TML
           curl -L -f -o tmlmain.py "${{ secrets.TMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u tmlmain.py || echo "TMLMAIN failed"
           sync
@@ -183,8 +184,14 @@ jobs:
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/5xk2pwf36svddp39yqrp5/Mediauu.m3u?rlkey=s1gsuqpnco9ilj97p8vf3phj2&st=uworudum&dl=1" -o "dropbox_mediauu.m3u" -s
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/k4iafut5kmys261ms3951/asarao.m3u8?rlkey=ovcvg7zqydoivrw4vanub9su4&st=me5y4i2h&dl=1" -o "asarao.m3u8" -s
 
-          # Loop through existing structured local outputs (zlive.m3u8 inserted right after tms1.m3u)
-          for f in   "Pits.m3u8" "tms1.m3u" "zlive.m3u8" "SSpo99.m3u8" "SportsBiteChannels.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "BiteEvents.m3u8" "SS99_Events.m3u8" "DamiPPV_vlc.m3u8" "rox.m3u" "xyz.m3u8" "asaraaaaaaao.m3u8" "Daddy247.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
+          # Determine dynamically whether Approach 1 or Approach 2 playlist was created
+          TML_PLAYLIST="tms1.m3u"
+          if [ -s "tms1Git.m3u" ]; then
+            TML_PLAYLIST="tms1Git.m3u"
+          fi
+
+          # Loop through existing structured local outputs (using our dynamically resolved playlist variable)
+          for f in "Pits.m3u8" "$TML_PLAYLIST" "zlive.m3u8" "SSpo99.m3u8" "SportsBiteChannels.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "BiteEvents.m3u8" "SS99_Events.m3u8" "DamiPPV_vlc.m3u8" "rox.m3u" "xyz.m3u8" "asaraaaaaaao.m3u8" "Daddy247.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
@@ -229,11 +236,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Force create a placeholder file if a directory turns out empty so git doesn't skip it
-          mkdir -p ptsp ss99events ss99channels
-          touch ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep
+          # Force create placeholder files if a directory turns out empty so git doesn't skip it
+          mkdir -p ptsp ss99events ss99channels TML
+          touch ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep TML/.gitkeep
           
-          git add ptsp/ ss99events/ ss99channels/
+          git add ptsp/ ss99events/ ss99channels/ TML/
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase origin main
