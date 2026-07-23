@@ -1,6 +1,6 @@
 name: Combined Remote Playlist
 
-on:
+on: 
   workflow_dispatch: 
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
       - name: Install Python Packages
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright
+          pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright cryptography
 
       - name: Install Playwright Browsers
         run: |
