@@ -47,7 +47,7 @@ jobs:
       - name: Run Hoofoot Scraper
         continue-on-error: true
         run: |
-          curl -L -f -o hoofoot.py "${{ secrets.HOOFOO000Tll_URL }}"
+          curl -L -f -o hoofoot.py "${{ secrets.HOOFOOT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u hoofoot.py || echo "Hoofoot failed"
           sync
 
