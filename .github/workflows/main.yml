@@ -44,6 +44,13 @@ jobs:
           playwright install firefox chromium
           playwright install-deps firefox chromium
 
+      - name: Run Rerace Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o rerace.py "${{ secrets.RERACE_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u rerace.py || echo "Rerace failed"
+          sync
+
       - name: Run Hoofoot Scraper
         continue-on-error: true
         run: |
@@ -168,7 +175,13 @@ jobs:
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
-          # Fetch and process the Channels.m3u8 remote link from Dropbox FIRST
+          # Append Race.m3u8 FIRST to the main playlist
+          if [ -s "Race.m3u8" ]; then
+            echo -e "\n######## SOURCE: Race ########" >> "$OUTPUT_FILE"
+            sed 's/\r$//' "Race.m3u8" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+          fi
+
+          # Fetch and process the Channels.m3u8 remote link from Dropbox
           CHANNELS_TEMP="channels_temp.m3u8"
           if curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/gl2hvy7ozhd28bn21espb/Channels.m3u8?rlkey=rjrpuyexji855s9wmt7jyxzvd&st=1uu9kuqs&dl=1" -o "$CHANNELS_TEMP" -s; then
             if [ -s "$CHANNELS_TEMP" ]; then
@@ -197,7 +210,7 @@ jobs:
             TML_PLAYLIST="tms1Git.m3u"
           fi
 
-          # Loop through existing structured local outputs (using our dynamically resolved playlist variable)
+          # Loop through existing structured local outputs
           for f in "xyz.m3u8" "Pits.m3u8" "hoofoot_playlist.m3u" "$TML_PLAYLIST" "Daddy247.m3u8" "SSpo99.m3u8" "SportsBiteChannels.m3u8" "Damiplaylist.m3u" "DamiPopular.m3u8" "BiteEvents.m3u8" "SS99_Events.m3u8" "DamiPPV_vlc.m3u8" "rox.m3u" "zlive.m3u8" "asaraaaaaaao.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit333.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
