@@ -1,0 +1,5 @@
+#EXTM3U
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=6810000,BANDWIDTH=8510000,RESOLUTION=1920x1080,FRAME-RATE=50.000,CODECS="avc1.4d402a,mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/gebdacefgfacicdfigpghhdhjcacieee/tracks-v1a1/style.css
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=230000,BANDWIDTH=290000,CODECS="mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/gebdacefgfacicdfigpghhdhjcacieee/tracks-a1/style.css
