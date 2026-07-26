@@ -1,5 +1,5 @@
-https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/Error 404
-https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/Object not found
-https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/This object does not exist or is not publicly accessible at this URL. Check the URL of the object that you're looking for or contact the owner to enable Public access.
-https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/Is this your bucket
-https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/Learn how to enable Public Access
+#EXTM3U
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=8330000,BANDWIDTH=10420000,RESOLUTION=1920x1080,FRAME-RATE=50.000,CODECS="avc1.4d402a,mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/tracks-v1a1/style.css
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=170000,BANDWIDTH=210000,CODECS="mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/dflgjhacdfahpgchehacbdacoekfacieee/tracks-a1/style.css
