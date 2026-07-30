@@ -169,6 +169,13 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u zlive.py || echo "ZLive failed"
           sync
 
+      - name: Run VenueVault Scraper
+        continue-on-error: true
+        run: |
+          curl -L -f -o venuevault.py "${{ secrets.VENUEVAULT_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u venuevault.py || echo "VenueVault failed"
+          sync
+
       - name: Process and Merge All Playlists
         run: |
           set +e 
@@ -176,7 +183,13 @@ jobs:
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
 
-          # Append Race.m3u8 FIRST to the main playlist
+          # Append VenueVault.m3u8 FIRST to the main playlist
+          if [ -s "VenueVault.m3u8" ]; then
+            echo -e "\n######## SOURCE: VenueVault ########" >> "$OUTPUT_FILE"
+            sed 's/\r$//' "VenueVault.m3u8" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+          fi
+
+          # Append Race.m3u8 SECOND to the main playlist
           if [ -s "Race.m3u8" ]; then
             echo -e "\n######## SOURCE: Race ########" >> "$OUTPUT_FILE"
             sed 's/\r$//' "Race.m3u8" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
