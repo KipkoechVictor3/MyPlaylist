@@ -165,7 +165,7 @@ jobs:
       - name: Run ZLive Scraper
         continue-on-error: true
         run: |
-          curl -L -f -o zlive.py "${{ secrets.ZLIVE_URL }}"
+          curl -L -f -o zlive.py "${{ secrets.aaaZLIVEaaaaaa_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u zlive.py || echo "ZLive failed"
           sync
 
