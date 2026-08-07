@@ -172,6 +172,7 @@ jobs:
       - name: Run VenueVault Scraper
         continue-on-error: true
         run: |
+          rm -rf venuev/* && mkdir -p venuev
           curl -L -f -o venuevault.py "${{ secrets.VENUEVAULT_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u venuevault.py || echo "VenueVault failed"
           sync
@@ -271,10 +272,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Force create placeholder files if a directory turns out empty so git doesn't skip it
-          mkdir -p race ptsp ss99events ss99channels TML
-          touch race/.gitkeep ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep TML/.gitkeep
+          mkdir -p race ptsp ss99events ss99channels TML venuev
+          touch race/.gitkeep ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep TML/.gitkeep venuev/.gitkeep
           
-          git add race/ ptsp/ ss99events/ ss99channels/ TML/
+          git add race/ ptsp/ ss99events/ ss99channels/ TML/ venuev/
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase origin main
