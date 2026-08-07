@@ -69,7 +69,7 @@ jobs:
       - name: Run DamiChannels Scraper
         continue-on-error: true
         run: |
-          curl -L -f -o DamiChannels.py "${{ secrets.DAMICHANNELS_URL }}"
+          curl -L -f -o DamiChannels.py "${{ secrets.AAAAAANNNDAMICHANNELS_UUUUURL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u DamiChannels.py || echo "DamiChannels failed"
           sync
 
