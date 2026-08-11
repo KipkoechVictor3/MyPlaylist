@@ -182,7 +182,16 @@ jobs:
           set +e 
           OUTPUT_FILE="MyPlayList.m3u"
           EPG_URL="https://raw.githubusercontent.com/KipkoechVictor3/MyEPG/main/combined_epg.xml.gz"
-          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" > "$OUTPUT_FILE"
+          
+          # Generate GMT+3 Date and Time strings
+          CURR_DATE=$(TZ="Etc/GMT-3" date +"%d %B %Y")
+          CURR_TIME=$(TZ="Etc/GMT-3" date +"%I:%M:%S %p")
+
+          # Prepend Date, Time, and EXTM3U header to playlist
+          echo "#Date: ${CURR_DATE}" > "$OUTPUT_FILE"
+          echo "#Time: ${CURR_TIME}" >> "$OUTPUT_FILE"
+          echo "" >> "$OUTPUT_FILE"
+          echo "#EXTM3U url-tvg=\"${EPG_URL}\"" >> "$OUTPUT_FILE"
 
           # Append VenueVault.m3u8 FIRST to the main playlist
           if [ -s "VenueVault.m3u8" ]; then
