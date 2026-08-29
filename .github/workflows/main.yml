@@ -235,7 +235,7 @@ jobs:
           fi
 
           # Loop through existing structured local outputs
-          for f in  "$TML_PLAYLIST" "MovieBiteChannels.m3u8" "SSpo99.m3u8" "Damiplaylist.m3u" "xyz.m3u8" "Pits.m3u8" "BiteEvents.m3u8" "hoofootppppp_pppppplaylist.m3u" "DamiPPV_vlc.m3u8" "SS99_Events.m3u8" "rox.m3u"  "Daddy247.m3u8" "SportsBiteChannels.m3u8" "DamiPopular.m3u8" "asaraaaaaaao.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit.m3u" "palco.m3u"; do
+          for f in  "$TML_PLAYLIST" "MovieBiteChannels.m3u8" "SSpo99.m3u8" "DamiPopular.m3u8" "Damiplaylist.m3u" "xyz.m3u8" "Pits.m3u8" "BiteEvents.m3u8" "hoofootppppp_pppppplaylist.m3u" "DamiPPV_vlc.m3u8" "SS99_Events.m3u8" "rox.m3u"  "Daddy247.m3u8" "SportsBiteChannels.m3u8" "asaraaaaaaao.m3u8" "spx.m3u" "playlist.m3u8" "ddhd.m3u8" "dropbox_mediauu.m3u" "RawGit.m3u" "ppppappplco.m3u"; do
             if [ -s "$f" ]; then
               echo -e "\n######## SOURCE: ${f%.*} ########" >> "$OUTPUT_FILE"
               sed 's/\r$//' "$f" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
