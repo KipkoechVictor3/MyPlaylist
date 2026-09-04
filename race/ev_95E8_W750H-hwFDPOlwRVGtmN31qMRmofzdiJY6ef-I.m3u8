@@ -1,0 +1,13 @@
+#EXTM3U
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="English",DEFAULT=YES,AUTOSELECT=YES,LANGUAGE="eng",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a1/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="German",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="deu",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a2/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="French",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="fra",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a3/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="Japanese",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="jpn",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a5/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="Dutch",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="nld",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a6/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="Portuguese",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="por",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a7/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="Spanish",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="spa",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a8/style.css"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aac",NAME="Track FX",DEFAULT=NO,AUTOSELECT=NO,LANGUAGE="fx",URI="https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a4/style.css"
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=8840000,BANDWIDTH=11050000,AUDIO="aac",RESOLUTION=1920x1080,FRAME-RATE=50.000,CODECS="avc1.4d402a,mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-v1a1/style.css
+#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=240000,BANDWIDTH=300000,AUDIO="aac",CODECS="mp4a.40.2",CLOSED-CAPTIONS=NONE
+https://weelo.live/gebdacefgfacicgeddjcacieee/tracks-a1/style.css
