@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-magroup-script:
+  run-ddlhd-script:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -27,10 +27,11 @@ jobs:
           apt-get install -y python3-venv curl git
           python3 -m venv venv
           source venv/bin/activate
-          pip install requests beautifulsoup4
+          pip install --upgrade pip
+          pip install requests beautifulsoup4 playwright
         shell: bash
 
-      - name: Download MAgroup Script
+      - name: Download DDLHD Script
         run: |
           curl -L -o MAgroup.py "${{ secrets.DADDYLIVE_SCHEDULE_URL }}"
         shell: bash
