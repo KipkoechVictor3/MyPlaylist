@@ -1,20 +1,12 @@
-name: DLHD
+name: DDLHD
 
-on: 
+on:
   schedule:
     - cron: '40 */1 * * *' # Every 1 hour 40 minutes
-  workflow_dispatch: 
-
-permissions:
-  contents: write
-  actions: write
-
-concurrency:
-  group: combined-processing
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
-  update-all-playlists:
+  run-ddlhd-script:
     runs-on: ubuntu-latest
     env:
       PYTHONUNBUFFERED: "1"
@@ -34,12 +26,12 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y --no-install-recommends xvfb
+          sudo apt-get install -y --no-install-recommends xvfb curl git
 
       - name: Install Python Packages
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[http2] aiohttp h2 dropbox requests pycryptodome python-dateutil tqdm beautifulsoup4 playwright cryptography
+          pip install requests beautifulsoup4 playwright
 
       - name: Install Playwright Browsers
         run: |
@@ -51,11 +43,10 @@ jobs:
           curl -L -f -o MAgroup.py "${{ secrets.DADDYLIVE_SCHEDULE_URL }}"
         shell: bash
 
-      - name: Run DDLHD Scraper
-        continue-on-error: true
+      - name: Run Scraper
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u MAgroup.py || echo "DDLHD Scraper failed"
-          sync
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u MAgroup.py
+        shell: bash
 
       - name: Upload Schedule JSON to Dropbox
         if: hashFiles('daddyliveSchedule.json') != ''
