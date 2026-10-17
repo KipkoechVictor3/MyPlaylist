@@ -1,0 +1,52 @@
+name: Scraper Script MAgroup
+
+on:
+  schedule:
+    - cron: '40 */1 * * *' # Every 1 hour 40 minutes
+  workflow_dispatch:
+
+jobs:
+  run-magroup-script:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    env:
+      HOME: /root
+      DOCKER_CONFIG: /tmp/.docker 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y python3-venv curl git
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install requests beautifulsoup4
+        shell: bash
+
+      - name: Download MAgroup Script
+        run: |
+          curl -L -o MAgroup.py "${{ secrets.DADDYLIVE_SCHEDULE_URL }}"
+        shell: bash
+
+      - name: Run Scraper
+        run: |
+          source venv/bin/activate
+          PYTHONUNBUFFERED=1 python MAgroup.py
+        shell: bash
+
+      - name: Upload Schedule JSON to Dropbox
+        if: hashFiles('daddyliveSchedule.json') != ''
+        uses: gomes042/gh-actions-dropbox/files/upload@23ce81287e83f01c19c9f60b1849b746db6616b5
+        with:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+          source_path: "daddyliveSchedule.json"
+          dest_path: "/MyStuff/daddyliveSchedule.json"
