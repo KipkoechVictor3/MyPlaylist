@@ -158,7 +158,7 @@ jobs:
         continue-on-error: true
         run: |
           rm -rf TML/* && mkdir -p TML
-          curl -L -f -o tmlmain.py "${{ secrets.TMLMAIN_URL }}"
+          curl -L -f -o tmlmain.py "${{ secrets.TTTTTTTMLMAIN_URL }}"
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u tmlmain.py || echo "TMLMAIN failed"
           sync
 
