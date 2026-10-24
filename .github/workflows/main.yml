@@ -228,7 +228,7 @@ jobs:
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/5xk2pwf36svddp39yqrp5/Mediauu.m3u?rlkey=s1gsuqpnco9ilj97p8vf3phj2&st=uworudum&dl=1" -o "dropbox_mediauu.m3u" -s
           curl -L -f -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" --connect-timeout 15 "https://www.dropbox.com/scl/fi/k4iafut5kmys261ms3951/asarao.m3u8?rlkey=ovcvg7zqydoivrw4vanub9su4&st=me5y4i2h&dl=1" -o "asarao.m3u8" -s
 
-          # Determine dynamically whether Approach 1 or Approach 2 playlist was created
+          # Dynamically detect if tms1Git.m3u was created by tmlmain.py, otherwise fallback to tms1.m3u
           TML_PLAYLIST="tms1.m3u"
           if [ -s "tms1Git.m3u" ]; then
             TML_PLAYLIST="tms1Git.m3u"
