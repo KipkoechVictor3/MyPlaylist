@@ -169,12 +169,12 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u zlive.py || echo "ZLive failed"
           sync
 
-      - name: Run VenueVault Scraper
+      - name: Run DaddyLive Scraper
         continue-on-error: true
         run: |
-          rm -rf venuev/* && mkdir -p venuev
-          curl -L -f -o venuevault.py "${{ secrets.VENUEVTTTTAULTTTTTTTT_URL }}"
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u venuevault.py || echo "VenueVault failed"
+          rm -rf daddylive/* && mkdir -p daddylive
+          curl -L -f -o daddylive.py "${{ secrets.DADDYLIVE_SCHEDULE_URL }}"
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" python3 -u daddylive.py || echo "DaddyLive failed"
           sync
 
       - name: Process and Merge All Playlists
@@ -193,10 +193,10 @@ jobs:
           echo "" >> "$OUTPUT_FILE"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" >> "$OUTPUT_FILE"
 
-          # Append VenueVault.m3u8 FIRST to the main playlist
-          if [ -s "VenueVault.m3u8" ]; then
-            echo -e "\n######## SOURCE: VenueVault ########" >> "$OUTPUT_FILE"
-            sed 's/\r$//' "VenueVault.m3u8" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+          # Append DADDYPlaylist.m3u FIRST to the main playlist
+          if [ -s "DADDYPlaylist.m3u" ]; then
+            echo -e "\n######## SOURCE: DADDYPlaylist ########" >> "$OUTPUT_FILE"
+            sed 's/\r$//' "DADDYPlaylist.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
 
           # Append Race.m3u8 SECOND to the main playlist
@@ -281,10 +281,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Force create placeholder files if a directory turns out empty so git doesn't skip it
-          mkdir -p race ptsp ss99events ss99channels TML venuev
-          touch race/.gitkeep ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep TML/.gitkeep venuev/.gitkeep
+          mkdir -p race ptsp ss99events ss99channels TML daddylive
+          touch race/.gitkeep ptsp/.gitkeep ss99events/.gitkeep ss99channels/.gitkeep TML/.gitkeep daddylive/.gitkeep
           
-          git add race/ ptsp/ ss99events/ ss99channels/ TML/ venuev/
+          git add race/ ptsp/ ss99events/ ss99channels/ TML/ daddylive/
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Update Scraper Data: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase origin main
