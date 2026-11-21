@@ -193,13 +193,23 @@ jobs:
           echo "" >> "$OUTPUT_FILE"
           echo "#EXTM3U url-tvg=\"${EPG_URL}\"" >> "$OUTPUT_FILE"
 
-          # Append DADDYPlaylist.m3u FIRST to the main playlist
+          # Fetch and append live_schedule_Optimize.m3u FIRST to the main playlist
+          STALKER_TEMP="stalker_optimize_temp.m3u"
+          if curl -L -f -k --connect-timeout 15 "https://raw.githubusercontent.com/Love4vn/Stalker2M3U/1/live_schedule_Optimize.m3u" -o "$STALKER_TEMP" -s; then
+            if [ -s "$STALKER_TEMP" ]; then
+              echo -e "\n######## REMOTE: live_schedule_Optimize.m3u ########" >> "$OUTPUT_FILE"
+              sed 's/\r$//' "$STALKER_TEMP" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
+            fi
+          fi
+          rm -f "$STALKER_TEMP"
+
+          # Append DADDYPlaylist.m3u SECOND to the main playlist
           if [ -s "DADDYPlaylist.m3u" ]; then
             echo -e "\n######## SOURCE: DADDYPlaylist ########" >> "$OUTPUT_FILE"
             sed 's/\r$//' "DADDYPlaylist.m3u" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
           fi
 
-          # Append Race.m3u8 SECOND to the main playlist
+          # Append Race.m3u8 THIRD to the main playlist
           if [ -s "Race.m3u8" ]; then
             echo -e "\n######## SOURCE: Race ########" >> "$OUTPUT_FILE"
             sed 's/\r$//' "Race.m3u8" | grep -v '^#EXTM3U' >> "$OUTPUT_FILE"
